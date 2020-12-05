@@ -69,6 +69,12 @@ registerRoute(
   })
 );
 
+// for Unicode IDS flat files
+registerRoute(
+  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.txt'),
+  new StaleWhileRevalidate(),
+);
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {

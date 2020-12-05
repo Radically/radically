@@ -1,0 +1,34 @@
+import React from "react";
+
+const defaultValue = {
+  exactRadicalFreq: false,
+  setExactRadicalFreq: (unused: boolean) => {},
+};
+
+export const SettingsContext = React.createContext(defaultValue);
+
+const usePersistedState = (key: string, defaultValue: any) => {
+  const [state, setState] = React.useState(() => {
+    const persistedState = localStorage.getItem(key);
+    return persistedState ? JSON.parse(persistedState) : defaultValue;
+  });
+  React.useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(state));
+  }, [state, key]);
+  return [state, setState];
+};
+
+// TODO: figure out the typing of props lol (should be a react component or styled component)
+export const SettingsContextProvider = (props: { children: any }) => {
+  const [exactRadicalFreq, setExactRadicalFreq] = usePersistedState(
+    "exactRadicalFreqMatch",
+    false
+  );
+
+  const context = React.useMemo(
+    () => ({ exactRadicalFreq, setExactRadicalFreq }),
+    [exactRadicalFreq, setExactRadicalFreq]
+  );
+
+  return <SettingsContext.Provider value={context} {...props} />;
+};
