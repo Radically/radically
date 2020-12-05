@@ -27,7 +27,7 @@ const performQuery = (
   let t0 = performance.now();
   const charToSet = {};
 
-  for (let char of radicals) {
+  for (let char of Object.keys(radicalFrequencies)) {
     const q = new Queue();
     charToSet[char] = new Set();
     q.enqueue(char);
@@ -127,7 +127,7 @@ self.onmessage = ($event) => {
       reverseMap,
       radicals,
       idcs,
-      exactRadicalFreq,
+      exactRadicalFreq
       // forwardMapUint8,
       // reverseMapUint8
     );
@@ -142,7 +142,7 @@ self.onmessage = ($event) => {
         // forwardMapUint8,
         // reverseMapUint8,
         // must send this back
-      },
+      }
       // [forwardMapUint8, reverseMapUint8]
     );
   }
