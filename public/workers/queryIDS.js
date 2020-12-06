@@ -1,3 +1,18 @@
+const IDCSet = new Set([
+  "⿰",
+  "⿱",
+  "⿲",
+  "⿳",
+  "⿴",
+  "⿵",
+  "⿶",
+  "⿷",
+  "⿸",
+  "⿹",
+  "⿺",
+  "⿻",
+]);
+
 importScripts("../Queue.js");
 
 // e.g 車車 should return 䡛, 亻丁 should return 停 because ⿰亻亭 and 亭 is ⿱⿳亠口冖丁
@@ -7,7 +22,7 @@ importScripts("../Queue.js");
  idcs in the form of
  /⿰.*⿴/g should match ⿰魚⿱彑⿴北矢
 */
-const performQuery = (
+const performRadicalQuery = (
   forwardMap,
   reverseMap,
   radicals,
@@ -92,6 +107,33 @@ const performQuery = (
   return { charToSet, res };
 };
 
+const filterIDCQuery = (
+  res,
+  forwardMap,
+  reverseMap,
+  radicals,
+  idcs,
+  exactRadicalFreq
+) => {
+  idcs = idcs.split("").filter((idc) => IDCSet.has(idc));
+  console.log(idcs);
+  const pattern = RegExp(idcs.join(".*"), "g");
+  console.log(pattern);
+  let _res = new Set();
+  for (let char of res) {
+    const { ids_strings } = reverseMap[char];
+    for (let { ids } of ids_strings) {
+      console.log(ids);
+      if (pattern.test(ids)) {
+        console.log("match " + pattern);
+        _res.add(char);
+        break;
+      }
+    }
+  }
+  return { res: _res };
+};
+
 self.onmessage = ($event) => {
   if ($event && $event.data && $event.data.msg === "query") {
     // console.log($event.data);
@@ -122,7 +164,7 @@ self.onmessage = ($event) => {
     let reverseMap = JSON.parse(string); */
 
     const t2 = performance.now();
-    const result = performQuery(
+    let { charToSet, res } = performRadicalQuery(
       forwardMap,
       reverseMap,
       radicals,
@@ -132,13 +174,26 @@ self.onmessage = ($event) => {
       // reverseMapUint8
     );
     const t3 = performance.now();
-    console.log(`Actual query time took ${t3 - t2} milliseconds.`);
+    console.log(`Radical query time took ${t3 - t2} milliseconds.`);
+
+    if (!!idcs) {
+      const { res: _res } = filterIDCQuery(
+        res,
+        forwardMap,
+        reverseMap,
+        radicals,
+        idcs,
+        exactRadicalFreq
+      );
+      res = _res;
+    }
+
     const t1 = performance.now();
     console.log(`Total query time took ${t1 - t0} milliseconds.`);
     self.postMessage(
       {
         msg: "done",
-        ...result,
+        ...{ charToSet, res },
         // forwardMapUint8,
         // reverseMapUint8,
         // must send this back
