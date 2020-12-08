@@ -17,6 +17,8 @@ import { SettingsContextProvider } from "./contexts/SettingsContextProvider";
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 
 const IDS_URL = "/ids.txt";
+const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
+const UNICODE_VARIANTS_URL = "/Unihan_Variants.txt";
 
 const AppNameh1 = styled.h1`
   font-size: 3rem;
@@ -94,6 +96,7 @@ function App() {
   const baseRadicals = useRef({});
   const forwardMap = useRef({});
   const reverseMap = useRef({});
+  const strokeCount = useRef({});
   // const forwardMapUint8 = useRef(new Float64Array());
   // const reverseMapUint8 = useRef(new Float64Array());
 
@@ -105,6 +108,7 @@ function App() {
           baseRadicals: _baseRadicals,
           forwardMap: _forwardMap,
           reverseMap: _reverseMap,
+          strokeCount: _strokeCount,
           // forwardMapUint8: _forwardMapUint8,
           // reverseMapUint8: _reverseMapUint8,
           metadata,
@@ -121,6 +125,7 @@ function App() {
         baseRadicals.current = _baseRadicals;
         forwardMap.current = _forwardMap;
         reverseMap.current = _reverseMap;
+        strokeCount.current = _strokeCount;
         // forwardMapUint8.current = _forwardMapUint8;
         // reverseMapUint8.current = _reverseMapUint8;
         setMetadata(metadata);
@@ -150,7 +155,12 @@ function App() {
 
   useEffect(() => {
     setLoadingText("Loading IDS File");
-    loadIDSWorker.postMessage({ msg: "load", ids_url: IDS_URL });
+    loadIDSWorker.postMessage({
+      msg: "load",
+      ids_url: IDS_URL,
+      unicode_irg_url: UNICODE_IRG_URL,
+      unicode_variants_url: UNICODE_VARIANTS_URL,
+    });
   }, []);
 
   return (

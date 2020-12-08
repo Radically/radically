@@ -161,16 +161,142 @@ const processIDSText = (text) => {
   return { baseRadicals, forwardMap, reverseMap, metadata };
 };
 
+const processIDSData = async (eventdata) => {
+  const { ids_url } = eventdata;
+  const resp = await fetch(ids_url);
+  const text = await resp.text();
+  const { baseRadicals, forwardMap, reverseMap, metadata } = processIDSText(
+    text
+  );
+  metadata.date = resp.headers.get("Last-modified");
+  return { baseRadicals, forwardMap, reverseMap, metadata };
+};
+
+const processStrokeCountText = (text) => {
+  const strokeCount = {};
+  const split = text.split("\n");
+
+  for (let _entry of split) {
+    if (_entry.trim().startsWith("#")) continue;
+    const entry = _entry.split("\t");
+    const [code, field] = [entry[0], entry[1]];
+
+    if (field === "kTotalStrokes") {
+      strokeCount[
+        String.fromCodePoint(parseInt(code.substring(2), 16))
+      ] = parseInt(entry[2]);
+    }
+  }
+  return { strokeCount };
+};
+
+const processStrokeCountData = async (eventdata) => {
+  const { unicode_irg_url } = eventdata;
+  const resp = await fetch(unicode_irg_url);
+  const text = await resp.text();
+  const { strokeCount } = processStrokeCountText(text);
+  return { strokeCount };
+};
+
+/* a collection of basic 0-stroke radicals and
+their known variants (any type), for use in the
+radical searcher */
+const processIRGVariantsTexts = (IRGtext, Variantsresp) => {
+  const zeroVariants = {};
+  {
+    const split = IRGtext.split("\n");
+
+    for (let _entry of split) {
+      if (!_entry) continue;
+      if (_entry.trim().startsWith("#")) continue;
+      const entry = _entry.split("\t");
+      const [code, field] = [entry[0], entry[1]];
+      if (field !== "kRSUnicode") continue;
+      const values = entry[2].split(" ");
+      for (let i = 0; i < values.length; i++) {
+        const value = values[i].replace("'", "");
+        if (value.endsWith(".0")) {
+          if (!zeroVariants[value]) zeroVariants[value] = new Set();
+          zeroVariants[value].add(
+            String.fromCodePoint(parseInt(code.substring(2), 16))
+          );
+        }
+      }
+    }
+  }
+
+  const mapifiedVariants = {};
+  {
+    const split = Variantsresp.split("\n");
+    for (let _entry of split) {
+      if (!_entry) continue;
+      if (_entry.trim().startsWith("#")) continue;
+      const entry = _entry.split("\t");
+      const [code, field] = [entry[0], entry[1]];
+      // if (field === "kSpoofingVariant") continue;
+      const char = String.fromCodePoint(parseInt(code.substring(2), 16));
+      if (!mapifiedVariants[char]) mapifiedVariants[char] = [];
+      const values = entry[2].split(" ");
+      for (let value of values) {
+        value = value.substring(0, value.indexOf("<")) || value;
+        const variant = String.fromCodePoint(parseInt(value.substring(2), 16));
+        mapifiedVariants[char].push(variant);
+      }
+    }
+
+    for (let set of Object.values(zeroVariants)) {
+      for (let char of set) {
+        // modification of set is intended
+        if (!mapifiedVariants[char]) continue;
+        for (let variant of mapifiedVariants[char]) {
+          set.add(variant);
+        }
+      }
+    }
+  }
+
+  const variantRadicals = {};
+
+  for (let set of Object.values(zeroVariants)) {
+    for (let char of set) {
+      variantRadicals[char] = set;
+    }
+  }
+
+  return { variantRadicals };
+};
+
+const processIRGVariantsData = async (eventdata) => {
+  const { unicode_irg_url, unicode_variants_url } = eventdata;
+  const IRGresp = await fetch(unicode_irg_url);
+  const IRGtext = await IRGresp.text();
+
+  const Variantsresp = await fetch(unicode_variants_url);
+  const Variantstext = await Variantsresp.text();
+  return processIRGVariantsTexts(IRGtext, Variantstext);
+};
+
 self.onmessage = async ($event) => {
   if ($event && $event.data && $event.data.msg === "load") {
     const t0 = performance.now();
-    const { ids_url } = $event.data;
+    /* const { ids_url } = $event.data;
     const resp = await fetch(ids_url);
     const text = await resp.text();
     const { baseRadicals, forwardMap, reverseMap, metadata } = processIDSText(
       text
     );
-    metadata.date = resp.headers.get("Last-modified");
+    metadata.date = resp.headers.get("Last-modified"); */
+
+    const {
+      baseRadicals,
+      forwardMap,
+      reverseMap,
+      metadata,
+    } = await processIDSData($event.data);
+
+    const { strokeCount } = await processStrokeCountData($event.data);
+
+    const { variantRadicals } = await processIRGVariantsData($event.data);
 
     // https://stackoverflow.com/questions/34057127/how-to-transfer-large-objects-using-postmessage-of-webworker
     // transferring forwardMap and reverseMap over and over again to the web worker is slow
@@ -191,10 +317,12 @@ self.onmessage = async ($event) => {
         baseRadicals,
         forwardMap,
         reverseMap,
+        strokeCount,
+        variantRadicals,
         // forwardMapUint8,
         // reverseMapUint8,
         metadata,
-      },
+      }
       // [forwardMapUint8, reverseMapUint8]
     );
   }
