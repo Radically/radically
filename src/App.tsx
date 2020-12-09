@@ -15,6 +15,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import { SettingsContextProvider } from "./contexts/SettingsContextProvider";
 import { SettingsContext } from "./contexts/SettingsContextProvider";
+import RadicalPicker from "./components/RadicalPicker";
 
 const IDS_URL = "/ids.txt";
 const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
@@ -48,7 +49,6 @@ const SearchArea = styled.div`
 `;
 
 const RadicalPickerArea = styled.div`
-  background-color: grey;
   flex: 0.3;
 `;
 
@@ -93,10 +93,14 @@ function App() {
   //   }));
   // };
 
-  const baseRadicals = useRef({});
+  const [strokeCount, setStrokeCount] = useState({});
+  const [baseRadicals, setBaseRadicals] = useState([] as string[]);
+
+  // const baseRadicals: React.MutableRefObject<BaseRadicals> = useRef(new Set());
   const forwardMap = useRef({});
   const reverseMap = useRef({});
-  const strokeCount = useRef({});
+  // const strokeCount: React.MutableRefObject<StrokeCount> = useRef({});
+  const variantRadicals = useRef({});
   // const forwardMapUint8 = useRef(new Float64Array());
   // const reverseMapUint8 = useRef(new Float64Array());
 
@@ -109,6 +113,7 @@ function App() {
           forwardMap: _forwardMap,
           reverseMap: _reverseMap,
           strokeCount: _strokeCount,
+          variantRadicals: _variantRadicals,
           // forwardMapUint8: _forwardMapUint8,
           // reverseMapUint8: _reverseMapUint8,
           metadata,
@@ -122,13 +127,17 @@ function App() {
 
         // console.log(_forwardMapUint8);
 
-        baseRadicals.current = _baseRadicals;
+        // baseRadicals.current = _baseRadicals;
         forwardMap.current = _forwardMap;
         reverseMap.current = _reverseMap;
-        strokeCount.current = _strokeCount;
+        // strokeCount.current = _strokeCount;
+        variantRadicals.current = _variantRadicals;
         // forwardMapUint8.current = _forwardMapUint8;
         // reverseMapUint8.current = _reverseMapUint8;
-        setMetadata(metadata);
+        // setMetadata(metadata);
+
+        setStrokeCount(_strokeCount);
+        setBaseRadicals(_baseRadicals);
         setLoadingText("");
       }
     }
@@ -259,7 +268,12 @@ function App() {
                     </p>
                   </div>
                 </SearchArea>
-                <RadicalPickerArea></RadicalPickerArea>
+                <RadicalPickerArea>
+                  <RadicalPicker
+                    baseRadicals={baseRadicals}
+                    strokeCount={strokeCount}
+                  />
+                </RadicalPickerArea>
               </SearchAndRadicalContainer>
             </AppContainer>
           </Container>

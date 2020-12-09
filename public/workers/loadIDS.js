@@ -314,7 +314,7 @@ self.onmessage = async ($event) => {
     self.postMessage(
       {
         msg: "done",
-        baseRadicals,
+        baseRadicals: Array.from(baseRadicals),
         forwardMap,
         reverseMap,
         strokeCount,
