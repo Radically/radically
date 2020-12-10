@@ -1,9 +1,5 @@
-import React from "react";
-import {
-  FixedSizeList as List,
-  FixedSizeListProps,
-  ListChildComponentProps,
-} from "react-window";
+import React, { useState } from "react";
+import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
 import { Input } from "semantic-ui-react";
@@ -11,6 +7,14 @@ import styled from "styled-components";
 import SimpleBar from "simplebar-react";
 
 const RADICALS_PER_ROW = 8; // arbitrary
+
+const ReadingsSection = styled(SimpleBar)`
+  background-color: lightgray;
+  margin-top: 5px;
+  border-radius: 5px;
+  padding: 5px;
+  max-height: 100px;
+`;
 
 const HeaderRow = styled.div`
   font-size: 12pt;
@@ -34,8 +38,9 @@ const IndividualRadicalCell = styled.div`
 
 const RadicalPickerRow = (props: ListChildComponentProps) => {
   const { index, style, data } = props;
-  if (data[index].header) {
-    return <HeaderRow style={style}>{data[index].name}</HeaderRow>;
+  const { arrayified, handleRadicalClick, selectedInfo } = data;
+  if (arrayified[index].header) {
+    return <HeaderRow style={style}>{arrayified[index].name}</HeaderRow>;
   }
   return (
     <NormalRow
@@ -44,11 +49,17 @@ const RadicalPickerRow = (props: ListChildComponentProps) => {
         ...style,
       }}
     >
-      {data[index].radicals.map((radical: string) => (
-        <IndividualRadicalCell>{radical}</IndividualRadicalCell>
+      {arrayified[index].radicals.map((radical: string, col: number) => (
+        <IndividualRadicalCell
+          onClick={() => {
+            handleRadicalClick(index, col, radical);
+          }}
+        >
+          {radical}
+        </IndividualRadicalCell>
       ))}
 
-      {new Array(RADICALS_PER_ROW - data[index].radicals.length)
+      {new Array(RADICALS_PER_ROW - arrayified[index].radicals.length)
         .fill(undefined)
         .map((x) => (
           <IndividualRadicalCell />
@@ -62,7 +73,7 @@ const RadicalPickerContainer = styled.div`
   padding: 5px;
   border-radius: 5px;
   // max-height: 300px;
-  height: 300px;
+  height: 400px;
   display: flex;
   flex-direction: column;
 `;
@@ -79,17 +90,27 @@ const StrokesScrollContainer = styled(SimpleBar)`
   width: 50px;
   // overflow: scroll;
   // background-color: red;
-  background-color: darkgrey;
+  background-color: lightgray;
 `;
 
 interface RadicalPickerProps {
   baseRadicals: BaseRadicals;
   strokeCount: StrokeCount;
+  readings: Readings;
+}
+
+interface SelectedInfo {
+  index: number;
+  col: number;
+  radical: string;
 }
 
 const RadicalPicker = (props: RadicalPickerProps) => {
-  const { baseRadicals, strokeCount } = props;
+  const { baseRadicals, strokeCount, readings } = props;
 
+  const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
+  // console.log("within radical picker");
+  // console.log(readings);
   const strokeCountToRadicals: { [key: number]: string[] } = { 999: [] };
   for (let radical of baseRadicals) {
     const strokes = strokeCount[radical] || 999;
@@ -97,7 +118,6 @@ const RadicalPicker = (props: RadicalPickerProps) => {
     strokeCountToRadicals[strokes].push(radical);
   }
 
-  console.log(strokeCountToRadicals);
   const arrayified: {
     header: boolean;
     name?: string;
@@ -127,8 +147,14 @@ const RadicalPicker = (props: RadicalPickerProps) => {
       });
     }
   }
-  console.log(arrayified);
+  // console.log(arrayified);
 
+  const handleRadicalClick = (index: number, col: number, radical: string) => {
+    console.log(index, col);
+    setSelectedInfo({ index, col, radical });
+  };
+
+  const radicalSelected = "index" in selectedInfo && "col" in selectedInfo;
   return (
     <RadicalPickerContainer>
       <Input action={{ icon: "search" }} placeholder="Search..." />
@@ -153,7 +179,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
             fontFamily: "Hanamin",
             fontWeight: "bold",
             fontSize: "15pt",
-            backgroundColor: "darkgray",
+            backgroundColor: "lightgray",
             flex: 1,
             marginLeft: "5px",
             borderRadius: "5px",
@@ -163,7 +189,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
             {({ height, width }) => (
               <List
                 height={height}
-                itemData={arrayified}
+                itemData={{ arrayified, selectedInfo, handleRadicalClick }}
                 itemCount={arrayified.length}
                 itemSize={35}
                 width={width}
@@ -174,6 +200,19 @@ const RadicalPicker = (props: RadicalPickerProps) => {
           </AutoSizer>
         </div>
       </TwoPaneContainer>
+
+      {radicalSelected && (
+        <ReadingsSection>
+          {selectedInfo.radical in readings
+            ? Object.entries(readings[selectedInfo.radical]).map((entry) => (
+                <div>
+                  <span style={{ fontWeight: "bold" }}>{entry[0]}:</span>{" "}
+                  {entry[1]}
+                </div>
+              ))
+            : "No info available."}
+        </ReadingsSection>
+      )}
     </RadicalPickerContainer>
   );
 };

@@ -276,6 +276,30 @@ const processIRGVariantsData = async (eventdata) => {
   return processIRGVariantsTexts(IRGtext, Variantstext);
 };
 
+const processReadingsText = (text) => {
+  const map = {};
+  const split = text.split("\n");
+  for (let _entry of split) {
+    if (!_entry) continue;
+    if (_entry.trim().startsWith("#")) continue;
+
+    const entry = _entry.split("\t");
+    const [code, field] = [entry[0], entry[1]];
+
+    const char = String.fromCodePoint(parseInt(code.substring(2), 16));
+    if (!map[char]) map[char] = {};
+    map[char][field] = entry[2];
+  }
+  return { readings: map };
+};
+
+const processReadingsData = async (eventdata) => {
+  const { unicode_readings_url } = eventdata;
+  const resp = await fetch(unicode_readings_url);
+  const text = await resp.text();
+  return processReadingsText(text);
+};
+
 self.onmessage = async ($event) => {
   if ($event && $event.data && $event.data.msg === "load") {
     const t0 = performance.now();
@@ -298,6 +322,7 @@ self.onmessage = async ($event) => {
 
     const { variantRadicals } = await processIRGVariantsData($event.data);
 
+    const { readings } = await processReadingsData($event.data);
     // https://stackoverflow.com/questions/34057127/how-to-transfer-large-objects-using-postmessage-of-webworker
     // transferring forwardMap and reverseMap over and over again to the web worker is slow
 
@@ -319,6 +344,7 @@ self.onmessage = async ($event) => {
         reverseMap,
         strokeCount,
         variantRadicals,
+        readings,
         // forwardMapUint8,
         // reverseMapUint8,
         metadata,

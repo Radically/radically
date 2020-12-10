@@ -20,6 +20,7 @@ import RadicalPicker from "./components/RadicalPicker";
 const IDS_URL = "/ids.txt";
 const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
 const UNICODE_VARIANTS_URL = "/Unihan_Variants.txt";
+const UNICODE_READINGS_URL = "/Unihan_Readings.txt";
 
 const AppNameh1 = styled.h1`
   font-size: 3rem;
@@ -95,6 +96,7 @@ function App() {
 
   const [strokeCount, setStrokeCount] = useState({});
   const [baseRadicals, setBaseRadicals] = useState([] as string[]);
+  const [readings, setReadings] = useState({});
 
   // const baseRadicals: React.MutableRefObject<BaseRadicals> = useRef(new Set());
   const forwardMap = useRef({});
@@ -114,6 +116,7 @@ function App() {
           reverseMap: _reverseMap,
           strokeCount: _strokeCount,
           variantRadicals: _variantRadicals,
+          readings: _readings,
           // forwardMapUint8: _forwardMapUint8,
           // reverseMapUint8: _reverseMapUint8,
           metadata,
@@ -138,6 +141,7 @@ function App() {
 
         setStrokeCount(_strokeCount);
         setBaseRadicals(_baseRadicals);
+        setReadings(_readings);
         setLoadingText("");
       }
     }
@@ -169,6 +173,7 @@ function App() {
       ids_url: IDS_URL,
       unicode_irg_url: UNICODE_IRG_URL,
       unicode_variants_url: UNICODE_VARIANTS_URL,
+      unicode_readings_url: UNICODE_READINGS_URL,
     });
   }, []);
 
@@ -272,6 +277,7 @@ function App() {
                   <RadicalPicker
                     baseRadicals={baseRadicals}
                     strokeCount={strokeCount}
+                    readings={readings}
                   />
                 </RadicalPickerArea>
               </SearchAndRadicalContainer>
