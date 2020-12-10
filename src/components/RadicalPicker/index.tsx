@@ -1,17 +1,61 @@
 import React from "react";
-import { FixedSizeList as List } from "react-window";
-import { Icon, Input } from "semantic-ui-react";
+import {
+  FixedSizeList as List,
+  FixedSizeListProps,
+  ListChildComponentProps,
+} from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+
+import { Input } from "semantic-ui-react";
 import styled from "styled-components";
+import SimpleBar from "simplebar-react";
 
-{
-  /* <List>
-        {({ index, style }) =>
-            <div style={style}>Item {index}</div>
-        }
-    </List> */
-}
+const RADICALS_PER_ROW = 8; // arbitrary
 
-const RadicalPickerRow = (props: any) => {};
+const HeaderRow = styled.div`
+  font-size: 12pt;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: flex;
+  align-items: center;
+`;
+
+const NormalRow = styled.div`
+  padding-left: 5px;
+  padding-right: 5px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const IndividualRadicalCell = styled.div`
+  width: 25px;
+  text-align: center;
+`;
+
+const RadicalPickerRow = (props: ListChildComponentProps) => {
+  const { index, style, data } = props;
+  if (data[index].header) {
+    return <HeaderRow style={style}>{data[index].name}</HeaderRow>;
+  }
+  return (
+    <NormalRow
+      key={index}
+      style={{
+        ...style,
+      }}
+    >
+      {data[index].radicals.map((radical: string) => (
+        <IndividualRadicalCell>{radical}</IndividualRadicalCell>
+      ))}
+
+      {new Array(RADICALS_PER_ROW - data[index].radicals.length)
+        .fill(undefined)
+        .map((x) => (
+          <IndividualRadicalCell />
+        ))}
+    </NormalRow>
+  );
+};
 
 const RadicalPickerContainer = styled.div`
   background-color: grey;
@@ -30,10 +74,10 @@ const TwoPaneContainer = styled.div`
   min-height: 0;
 `;
 
-const StrokesScrollContainer = styled.div`
+const StrokesScrollContainer = styled(SimpleBar)`
   border-radius: 5px;
   width: 50px;
-  overflow: scroll;
+  // overflow: scroll;
   // background-color: red;
   background-color: darkgrey;
 `;
@@ -54,7 +98,11 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   }
 
   console.log(strokeCountToRadicals);
-  const arrayified = [];
+  const arrayified: {
+    header: boolean;
+    name?: string;
+    radicals?: string[];
+  }[] = [];
   for (let strokeCount in strokeCountToRadicals) {
     arrayified.push({
       header: true,
@@ -62,10 +110,22 @@ const RadicalPicker = (props: RadicalPickerProps) => {
         strokeCount === "999" ? "不詳" : ""
       }`,
     });
-    arrayified.push({
-      header: false,
-      radicals: strokeCountToRadicals[strokeCount],
-    });
+
+    let tempArray;
+    for (
+      let i = 0, j = strokeCountToRadicals[strokeCount].length;
+      i < j;
+      i += RADICALS_PER_ROW
+    ) {
+      tempArray = strokeCountToRadicals[strokeCount].slice(
+        i,
+        i + RADICALS_PER_ROW
+      );
+      arrayified.push({
+        header: false,
+        radicals: tempArray,
+      });
+    }
   }
   console.log(arrayified);
 
@@ -87,6 +147,32 @@ const RadicalPicker = (props: RadicalPickerProps) => {
             </div>
           ))}
         </StrokesScrollContainer>
+
+        <div
+          style={{
+            fontFamily: "Hanamin",
+            fontWeight: "bold",
+            fontSize: "15pt",
+            backgroundColor: "darkgray",
+            flex: 1,
+            marginLeft: "5px",
+            borderRadius: "5px",
+          }}
+        >
+          <AutoSizer>
+            {({ height, width }) => (
+              <List
+                height={height}
+                itemData={arrayified}
+                itemCount={arrayified.length}
+                itemSize={35}
+                width={width}
+              >
+                {RadicalPickerRow}
+              </List>
+            )}
+          </AutoSizer>
+        </div>
       </TwoPaneContainer>
     </RadicalPickerContainer>
   );

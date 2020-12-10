@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import "semantic-ui-css/semantic.min.css";
+import 'simplebar/dist/simplebar.min.css';
 import "hanamin";
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
