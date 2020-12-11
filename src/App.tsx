@@ -95,15 +95,17 @@ function App() {
   //   }));
   // };
 
+  const [reverseMap, setReverseMap] = useState({});
   const [strokeCount, setStrokeCount] = useState({});
   const [baseRadicals, setBaseRadicals] = useState([] as string[]);
+  const [variantRadicals, setVariantRadicals] = useState({});
   const [readings, setReadings] = useState({});
 
   // const baseRadicals: React.MutableRefObject<BaseRadicals> = useRef(new Set());
   const forwardMap = useRef({});
-  const reverseMap = useRef({});
+  // const reverseMap = useRef({});
   // const strokeCount: React.MutableRefObject<StrokeCount> = useRef({});
-  const variantRadicals = useRef({});
+  // const variantRadicals = useRef({});
   // const forwardMapUint8 = useRef(new Float64Array());
   // const reverseMapUint8 = useRef(new Float64Array());
 
@@ -133,15 +135,17 @@ function App() {
 
         // baseRadicals.current = _baseRadicals;
         forwardMap.current = _forwardMap;
-        reverseMap.current = _reverseMap;
+        // reverseMap.current = _reverseMap;
         // strokeCount.current = _strokeCount;
-        variantRadicals.current = _variantRadicals;
+        // variantRadicals.current = _variantRadicals;
         // forwardMapUint8.current = _forwardMapUint8;
         // reverseMapUint8.current = _reverseMapUint8;
         // setMetadata(metadata);
 
+        setReverseMap(_reverseMap);
         setStrokeCount(_strokeCount);
         setBaseRadicals(_baseRadicals);
+        setVariantRadicals(_variantRadicals);
         setReadings(_readings);
         setLoadingText("");
       }
@@ -252,7 +256,7 @@ function App() {
                             {
                               msg: "query",
                               forwardMap: forwardMap.current,
-                              reverseMap: reverseMap.current,
+                              reverseMap: reverseMap,
                               // forwardMapUint8: forwardMapUint8.current,
                               // reverseMapUint8: reverseMapUint8.current,
                               radicals,
@@ -283,6 +287,8 @@ function App() {
                   <RadicalPicker
                     onRadicalSelected={handleRadicalSelected}
                     baseRadicals={baseRadicals}
+                    variantRadicals={variantRadicals}
+                    reverseMap={reverseMap}
                     strokeCount={strokeCount}
                     readings={readings}
                   />

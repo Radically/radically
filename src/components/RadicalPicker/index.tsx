@@ -9,6 +9,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { Input } from "semantic-ui-react";
 import styled from "styled-components";
 import SimpleBar from "simplebar-react";
+import { IDCSet } from "../../constants";
 
 const RADICALS_PER_ROW = 8; // arbitrary
 
@@ -105,6 +106,8 @@ const StrokesScrollContainer = styled(SimpleBar)`
 `;
 
 interface RadicalPickerProps {
+  reverseMap: ReverseMap;
+  variantRadicals: VariantRadicals;
   baseRadicals: BaseRadicals;
   strokeCount: StrokeCount;
   readings: Readings;
@@ -118,15 +121,24 @@ interface SelectedInfo {
 }
 
 const RadicalPicker = (props: RadicalPickerProps) => {
-  const { baseRadicals, strokeCount, readings, onRadicalSelected } = props;
+  const {
+    baseRadicals,
+    variantRadicals,
+    strokeCount,
+    readings,
+    reverseMap,
+    onRadicalSelected,
+  } = props;
 
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
 
+  const [narrowedRadicals, setNarrowedRadicals] = useState([] as string[]);
+
+  const searchText = useRef<string>("");
   const radicalListRef = useRef<FixedSizeList>(null);
-  // console.log("within radical picker");
-  // console.log(readings);
   const strokeCountToRadicals: { [key: number]: string[] } = { 999: [] };
-  for (let radical of baseRadicals) {
+  // for (let radical of baseRadicals) {
+  for (let radical of Object.keys(variantRadicals)) {
     const strokes = strokeCount[radical] || 999;
     if (!strokeCountToRadicals[strokes]) strokeCountToRadicals[strokes] = [];
     strokeCountToRadicals[strokes].push(radical);
@@ -172,10 +184,47 @@ const RadicalPicker = (props: RadicalPickerProps) => {
     setSelectedInfo({ index, col, radical });
   };
 
+  // get the 1st level decomposition of each individual character + all related radicals, add them all into a set
+  const handleSearchClick = (e: Event, data: any) => {
+    const relatedRadicals = new Set<string>();
+    if (searchText.current) {
+      for (let char of searchText.current) {
+        // add the 1st level decomp
+        if (reverseMap[char])
+          for (let { ids } of reverseMap[char].ids_strings) {
+            for (let radical of ids) {
+              if (!IDCSet.has(radical)) relatedRadicals.add(radical);
+            }
+          }
+
+        if (variantRadicals[char])
+          for (let radical of Array.from(variantRadicals[char]))
+            relatedRadicals.add(radical);
+      }
+    }
+    // add all variants of the result for convenience, e.g. 见 -> 見
+    for (let char of Array.from(relatedRadicals)) {
+      if (variantRadicals[char])
+        for (let radical of Array.from(variantRadicals[char]))
+          relatedRadicals.add(radical);
+    }
+    setNarrowedRadicals(Array.from(relatedRadicals));
+  };
+
   const radicalSelected = "index" in selectedInfo && "col" in selectedInfo;
   return (
     <RadicalPickerContainer>
-      <Input action={{ icon: "search" }} placeholder="Search..." />
+      <Input
+        onChange={(e) => {
+          searchText.current = e.target.value;
+          if (searchText.current === "") setNarrowedRadicals([]);
+        }}
+        action={{
+          icon: "search",
+          onClick: handleSearchClick,
+        }}
+        placeholder="Search..."
+      />
       <TwoPaneContainer>
         <StrokesScrollContainer>
           {Object.keys(strokeCountToRadicals).map((strokeCount) => (
