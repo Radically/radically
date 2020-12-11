@@ -1,5 +1,9 @@
-import React, { useState } from "react";
-import { FixedSizeList as List, ListChildComponentProps } from "react-window";
+import React, { useState, useRef } from "react";
+import {
+  FixedSizeList,
+  FixedSizeList as List,
+  ListChildComponentProps,
+} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
 import { Input } from "semantic-ui-react";
@@ -117,6 +121,8 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   const { baseRadicals, strokeCount, readings, onRadicalSelected } = props;
 
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
+
+  const radicalListRef = useRef<FixedSizeList>(null);
   // console.log("within radical picker");
   // console.log(readings);
   const strokeCountToRadicals: { [key: number]: string[] } = { 999: [] };
@@ -126,12 +132,15 @@ const RadicalPicker = (props: RadicalPickerProps) => {
     strokeCountToRadicals[strokes].push(radical);
   }
 
+  const strokeCountToStart: { [key: string]: number } = {};
+
   const arrayified: {
     header: boolean;
     name?: string;
     radicals?: string[];
   }[] = [];
   for (let strokeCount in strokeCountToRadicals) {
+    strokeCountToStart[strokeCount] = arrayified.length;
     arrayified.push({
       header: true,
       name: `${strokeCount === "999" ? "" : strokeCount}筆畫${
@@ -171,11 +180,18 @@ const RadicalPicker = (props: RadicalPickerProps) => {
         <StrokesScrollContainer>
           {Object.keys(strokeCountToRadicals).map((strokeCount) => (
             <div
+              onClick={() => {
+                (radicalListRef as any).current.scrollToItem(
+                  strokeCountToStart[strokeCount],
+                  "center"
+                );
+              }}
               style={{
                 fontWeight: "bold",
                 textAlign: "center",
                 paddingTop: "10px",
                 paddingBottom: "10px",
+                cursor: "pointer",
               }}
             >
               {strokeCount === "999" ? "不詳" : strokeCount}
@@ -197,6 +213,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
           <AutoSizer>
             {({ height, width }) => (
               <List
+                ref={radicalListRef}
                 height={height}
                 itemData={{ arrayified, selectedInfo, handleRadicalClick }}
                 itemCount={arrayified.length}
