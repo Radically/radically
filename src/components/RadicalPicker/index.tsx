@@ -104,6 +104,7 @@ interface RadicalPickerProps {
   baseRadicals: BaseRadicals;
   strokeCount: StrokeCount;
   readings: Readings;
+  onRadicalSelected: (radical: string) => void;
 }
 
 interface SelectedInfo {
@@ -113,7 +114,7 @@ interface SelectedInfo {
 }
 
 const RadicalPicker = (props: RadicalPickerProps) => {
-  const { baseRadicals, strokeCount, readings } = props;
+  const { baseRadicals, strokeCount, readings, onRadicalSelected } = props;
 
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
   // console.log("within radical picker");
@@ -157,7 +158,8 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   // console.log(arrayified);
 
   const handleRadicalClick = (index: number, col: number, radical: string) => {
-    console.log(index, col);
+    if (selectedInfo.index === index && selectedInfo.col === col)
+      onRadicalSelected(radical);
     setSelectedInfo({ index, col, radical });
   };
 

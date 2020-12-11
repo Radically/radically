@@ -178,6 +178,11 @@ function App() {
     });
   }, []);
 
+  const handleRadicalSelected = (radical: string) => {
+    // console.log(radical);
+    setRadicals(radicals + radical);
+  };
+
   return (
     <SettingsContextProvider>
       <SettingsContext.Consumer>
@@ -276,6 +281,7 @@ function App() {
                 </SearchArea>
                 <RadicalPickerArea>
                   <RadicalPicker
+                    onRadicalSelected={handleRadicalSelected}
                     baseRadicals={baseRadicals}
                     strokeCount={strokeCount}
                     readings={readings}
