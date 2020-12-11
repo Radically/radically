@@ -31,9 +31,15 @@ const NormalRow = styled.div`
   justify-content: space-between;
 `;
 
-const IndividualRadicalCell = styled.div`
+const IndividualRadicalCell = styled("div")<{ selected: boolean }>`
   width: 25px;
-  text-align: center;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => (props.selected ? "white" : "none")};
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const RadicalPickerRow = (props: ListChildComponentProps) => {
@@ -51,6 +57,7 @@ const RadicalPickerRow = (props: ListChildComponentProps) => {
     >
       {arrayified[index].radicals.map((radical: string, col: number) => (
         <IndividualRadicalCell
+          selected={selectedInfo.index === index && selectedInfo.col === col}
           onClick={() => {
             handleRadicalClick(index, col, radical);
           }}
@@ -62,7 +69,7 @@ const RadicalPickerRow = (props: ListChildComponentProps) => {
       {new Array(RADICALS_PER_ROW - arrayified[index].radicals.length)
         .fill(undefined)
         .map((x) => (
-          <IndividualRadicalCell />
+          <IndividualRadicalCell selected={false} />
         ))}
     </NormalRow>
   );
@@ -176,7 +183,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
 
         <div
           style={{
-            fontFamily: "Hanamin",
+            // fontFamily: "Hanamin",
             fontWeight: "bold",
             fontSize: "15pt",
             backgroundColor: "lightgray",

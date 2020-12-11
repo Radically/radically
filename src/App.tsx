@@ -59,6 +59,7 @@ const SearchFieldInput = styled(Input)`
 `;
 
 const Caption = styled.p`
+  font-weight: bold;
   font-size: 8.5pt;
 `;
 
@@ -263,14 +264,14 @@ function App() {
                   </Segment>
 
                   <div style={{ width: "100%", padding: "5px" }}>
-                    <p>Entries: {metadata.entries}</p>
-                    <p>Unique Radicals: {metadata.unique_radicals}</p>
-                    <p>
+                    <div>Entries: {metadata.entries}</div>
+                    <div>Unique Radicals: {metadata.unique_radicals}</div>
+                    <div>
                       IDS Last Modified:{" "}
                       {metadata.date
                         ? moment(metadata.date).format("lll")
                         : "Never"}
-                    </p>
+                    </div>
                   </div>
                 </SearchArea>
                 <RadicalPickerArea>
