@@ -34,6 +34,7 @@ const NormalRow = styled.div`
   padding-right: 5px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const IndividualRadicalCell = styled("div")<{ selected: boolean }>`
@@ -80,6 +81,25 @@ const RadicalPickerRow = (props: ListChildComponentProps) => {
   );
 };
 
+const NarrowedRadicalPickerRow = (props: ListChildComponentProps) => {
+  const { index, style, data } = props;
+  const { narrowedArrayified, selectedInfo, handleRadicalClick } = data;
+  return (
+    <NormalRow key={index} style={style}>
+      {narrowedArrayified[index].map((radical: string, col: number) => (
+        <IndividualRadicalCell
+          selected={selectedInfo.index === index && selectedInfo.col === col}
+          onClick={() => {
+            handleRadicalClick(index, col, radical);
+          }}
+        >
+          {radical}
+        </IndividualRadicalCell>
+      ))}
+    </NormalRow>
+  );
+};
+
 const RadicalPickerContainer = styled.div`
   background-color: grey;
   padding: 5px;
@@ -103,6 +123,16 @@ const StrokesScrollContainer = styled(SimpleBar)`
   // overflow: scroll;
   // background-color: red;
   background-color: lightgray;
+`;
+
+const NarrowedRadicalsContainer = styled.div`
+  margin-top: 5px;
+  background-color: lightgray;
+  border-radius: 5px;
+  flex: 1;
+  min-height: 0;
+  font-size: 15pt;
+  font-weight: bold;
 `;
 
 interface RadicalPickerProps {
@@ -136,6 +166,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
 
   const searchText = useRef<string>("");
   const radicalListRef = useRef<FixedSizeList>(null);
+  const narrowedRadicalListRef = useRef<FixedSizeList>(null);
   const strokeCountToRadicals: { [key: number]: string[] } = { 999: [] };
   // for (let radical of baseRadicals) {
   for (let radical of Object.keys(variantRadicals)) {
@@ -176,7 +207,13 @@ const RadicalPicker = (props: RadicalPickerProps) => {
       });
     }
   }
-  // console.log(arrayified);
+
+  const narrowedArrayified: string[][] = [];
+  let tempArray;
+  for (let i = 0, j = narrowedRadicals.length; i < j; i += RADICALS_PER_ROW) {
+    tempArray = narrowedRadicals.slice(i, i + RADICALS_PER_ROW);
+    narrowedArrayified.push(tempArray);
+  }
 
   const handleRadicalClick = (index: number, col: number, radical: string) => {
     if (selectedInfo.index === index && selectedInfo.col === col)
@@ -189,6 +226,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
     const relatedRadicals = new Set<string>();
     if (searchText.current) {
       for (let char of searchText.current) {
+        relatedRadicals.add(char);
         // add the 1st level decomp
         if (reverseMap[char])
           for (let { ids } of reverseMap[char].ids_strings) {
@@ -225,56 +263,82 @@ const RadicalPicker = (props: RadicalPickerProps) => {
         }}
         placeholder="Search..."
       />
-      <TwoPaneContainer>
-        <StrokesScrollContainer>
-          {Object.keys(strokeCountToRadicals).map((strokeCount) => (
-            <div
-              onClick={() => {
-                (radicalListRef as any).current.scrollToItem(
-                  strokeCountToStart[strokeCount],
-                  "center"
-                );
-              }}
-              style={{
-                fontWeight: "bold",
-                textAlign: "center",
-                paddingTop: "10px",
-                paddingBottom: "10px",
-                cursor: "pointer",
-              }}
-            >
-              {strokeCount === "999" ? "不詳" : strokeCount}
-            </div>
-          ))}
-        </StrokesScrollContainer>
 
-        <div
-          style={{
-            // fontFamily: "Hanamin",
-            fontWeight: "bold",
-            fontSize: "15pt",
-            backgroundColor: "lightgray",
-            flex: 1,
-            marginLeft: "5px",
-            borderRadius: "5px",
-          }}
-        >
+      {narrowedRadicals.length > 0 && (
+        <NarrowedRadicalsContainer>
           <AutoSizer>
             {({ height, width }) => (
               <List
-                ref={radicalListRef}
+                ref={narrowedRadicalListRef}
                 height={height}
-                itemData={{ arrayified, selectedInfo, handleRadicalClick }}
-                itemCount={arrayified.length}
+                itemData={{
+                  narrowedArrayified,
+                  selectedInfo,
+                  handleRadicalClick,
+                }}
+                itemCount={narrowedArrayified.length}
                 itemSize={35}
                 width={width}
               >
-                {RadicalPickerRow}
+                {NarrowedRadicalPickerRow}
               </List>
             )}
           </AutoSizer>
-        </div>
-      </TwoPaneContainer>
+        </NarrowedRadicalsContainer>
+      )}
+
+      {narrowedRadicals.length === 0 && (
+        <TwoPaneContainer>
+          <StrokesScrollContainer>
+            {Object.keys(strokeCountToRadicals).map((strokeCount) => (
+              <div
+                onClick={() => {
+                  (radicalListRef as any).current.scrollToItem(
+                    strokeCountToStart[strokeCount],
+                    "center"
+                  );
+                }}
+                style={{
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                {strokeCount === "999" ? "不詳" : strokeCount}
+              </div>
+            ))}
+          </StrokesScrollContainer>
+
+          <div
+            style={{
+              // fontFamily: "Hanamin",
+              fontWeight: "bold",
+              fontSize: "15pt",
+              backgroundColor: "lightgray",
+              flex: 1,
+              marginLeft: "5px",
+              borderRadius: "5px",
+            }}
+          >
+            <AutoSizer>
+              {({ height, width }) => (
+                <List
+                  ref={radicalListRef}
+                  height={height}
+                  itemData={{ arrayified, selectedInfo, handleRadicalClick }}
+                  itemCount={arrayified.length}
+                  itemSize={35}
+                  width={width}
+                >
+                  {RadicalPickerRow}
+                </List>
+              )}
+            </AutoSizer>
+          </div>
+        </TwoPaneContainer>
+      )}
 
       {radicalSelected && (
         <ReadingsSection>
