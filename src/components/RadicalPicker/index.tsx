@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FixedSizeList,
   FixedSizeList as List,
@@ -6,15 +6,16 @@ import {
 } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
-import { Input } from "semantic-ui-react";
+import { Button, Icon, Input } from "semantic-ui-react";
 import styled from "styled-components";
 import SimpleBar from "simplebar-react";
 import { IDCSet } from "../../constants";
+import { setConstantValue } from "typescript";
 
 const RADICALS_PER_ROW = 8; // arbitrary
 
 const ReadingsSection = styled(SimpleBar)`
-  background-color: lightgray;
+  background-color: white;
   margin-top: 5px;
   border-radius: 5px;
   padding: 5px;
@@ -43,7 +44,8 @@ const IndividualRadicalCell = styled("div")<{ selected: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => (props.selected ? "white" : "none")};
+  background-color: ${(props) => (props.selected ? "#2185d0" : "none")};
+  color: ${(props) => (props.selected ? "white" : "black")};
   border-radius: 5px;
   cursor: pointer;
 `;
@@ -96,12 +98,19 @@ const NarrowedRadicalPickerRow = (props: ListChildComponentProps) => {
           {radical}
         </IndividualRadicalCell>
       ))}
+
+      {new Array(RADICALS_PER_ROW - narrowedArrayified[index].length)
+        .fill(undefined)
+        .map((x) => (
+          <IndividualRadicalCell selected={false} />
+        ))}
     </NormalRow>
   );
 };
 
 const RadicalPickerContainer = styled.div`
-  background-color: grey;
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+  background-color: #e3e3e3;
   padding: 5px;
   border-radius: 5px;
   // max-height: 300px;
@@ -122,12 +131,21 @@ const StrokesScrollContainer = styled(SimpleBar)`
   width: 50px;
   // overflow: scroll;
   // background-color: red;
-  background-color: lightgray;
+  background-color: white;
+`;
+
+const RadicalsScrollContainer = styled.div`
+  font-weight: bold;
+  font-size: 15pt;
+  background-color: white;
+  flex: 1;
+  margin-left: 5px;
+  border-radius: 5px;
 `;
 
 const NarrowedRadicalsContainer = styled.div`
   margin-top: 5px;
-  background-color: lightgray;
+  background-color: white;
   border-radius: 5px;
   flex: 1;
   min-height: 0;
@@ -164,7 +182,13 @@ const RadicalPicker = (props: RadicalPickerProps) => {
 
   const [narrowedRadicals, setNarrowedRadicals] = useState([] as string[]);
 
-  const searchText = useRef<string>("");
+  // const searchText = useRef<string>("");
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    if (searchText === "") setNarrowedRadicals([]);
+  }, [searchText]);
+
   const radicalListRef = useRef<FixedSizeList>(null);
   const narrowedRadicalListRef = useRef<FixedSizeList>(null);
   const strokeCountToRadicals: { [key: number]: string[] } = { 999: [] };
@@ -222,11 +246,11 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   };
 
   // get the 1st level decomposition of each individual character + all related radicals, add them all into a set
-  const handleSearchClick = (e: Event, data: any) => {
+  const handleSearchClick = () => {
     const relatedRadicals = new Set<string>();
-    if (searchText.current) {
-      for (let char of searchText.current) {
-        relatedRadicals.add(char);
+    if (searchText) {
+      for (let char of searchText) {
+        if (char in reverseMap) relatedRadicals.add(char);
         // add the 1st level decomp
         if (reverseMap[char])
           for (let { ids } of reverseMap[char].ids_strings) {
@@ -253,16 +277,39 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   return (
     <RadicalPickerContainer>
       <Input
-        onChange={(e) => {
-          searchText.current = e.target.value;
-          if (searchText.current === "") setNarrowedRadicals([]);
+        onKeyDown={({ key }: { key: string }) => {
+          if (key === "Enter") handleSearchClick();
         }}
-        action={{
+        value={searchText}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+        }}
+        /* action={{
+          color: "blue",
           icon: "search",
           onClick: handleSearchClick,
-        }}
+        }} */
         placeholder="Search..."
-      />
+        action
+      >
+        <input />
+
+        {searchText && (
+          <Button
+            onClick={() => {
+              setSearchText("");
+            }}
+            icon
+            color="grey"
+          >
+            <Icon name="close" />
+          </Button>
+        )}
+
+        <Button onClick={handleSearchClick} icon color="blue">
+          <Icon name="search" />
+        </Button>
+      </Input>
 
       {narrowedRadicals.length > 0 && (
         <NarrowedRadicalsContainer>
@@ -311,17 +358,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
             ))}
           </StrokesScrollContainer>
 
-          <div
-            style={{
-              // fontFamily: "Hanamin",
-              fontWeight: "bold",
-              fontSize: "15pt",
-              backgroundColor: "lightgray",
-              flex: 1,
-              marginLeft: "5px",
-              borderRadius: "5px",
-            }}
-          >
+          <RadicalsScrollContainer>
             <AutoSizer>
               {({ height, width }) => (
                 <List
@@ -336,7 +373,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
                 </List>
               )}
             </AutoSizer>
-          </div>
+          </RadicalsScrollContainer>
         </TwoPaneContainer>
       )}
 
