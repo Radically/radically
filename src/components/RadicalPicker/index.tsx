@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, SyntheticEvent } from "react";
 import {
   FixedSizeList,
   FixedSizeList as List,
@@ -11,6 +11,7 @@ import styled from "styled-components";
 import SimpleBar from "simplebar-react";
 import { IDCSet } from "../../constants";
 import { setConstantValue } from "typescript";
+import { usePrevious } from "../../utils";
 
 const RADICALS_PER_ROW = 8; // arbitrary
 
@@ -179,15 +180,27 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   } = props;
 
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
-
   const [narrowedRadicals, setNarrowedRadicals] = useState([] as string[]);
 
-  // const searchText = useRef<string>("");
+  const inputRef = useRef<Input>(null);
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     if (searchText === "") setNarrowedRadicals([]);
   }, [searchText]);
+
+  useEffect(() => {
+    if (!radicalSelected) return;
+    const narrowed = !!narrowedArrayified.length;
+    let { index, col } = selectedInfo;
+    // todo: avoid using setTimeout..
+    setTimeout(() => {
+      (narrowed
+        ? (narrowedRadicalListRef as any)
+        : (radicalListRef as any)
+      ).current.scrollToItem(index, "center");
+    }, 5);
+  }, [selectedInfo]);
 
   const radicalListRef = useRef<FixedSizeList>(null);
   const narrowedRadicalListRef = useRef<FixedSizeList>(null);
@@ -246,7 +259,8 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   };
 
   // get the 1st level decomposition of each individual character + all related radicals, add them all into a set
-  const handleSearchClick = () => {
+  const performSearch = () => {
+    setSelectedInfo({} as SelectedInfo);
     const relatedRadicals = new Set<string>();
     if (searchText) {
       for (let char of searchText) {
@@ -274,11 +288,73 @@ const RadicalPicker = (props: RadicalPickerProps) => {
   };
 
   const radicalSelected = "index" in selectedInfo && "col" in selectedInfo;
+
+  // todo: move the "next index, col" calculation to another function for easier unit testing
+  const handleFocusedArrowButton = (btn: string) => {
+    const narrowed = !!narrowedArrayified.length;
+    const _selectedInfo = { ...selectedInfo };
+
+    if (!radicalSelected) {
+      // first row, first col
+      _selectedInfo.index = narrowed ? 0 : 1;
+      _selectedInfo.col = 0;
+    } else {
+      let { index, col } = _selectedInfo;
+
+      if (btn.endsWith("Up")) {
+        _selectedInfo.index = Math.max(index - 1, narrowed ? 0 : 1);
+        // if we are using the regular radical picker
+        if (!narrowed && arrayified[_selectedInfo.index].header)
+          _selectedInfo.index -= 1;
+      } else if (btn.endsWith("Down")) {
+        _selectedInfo.index = Math.min(
+          index + 1,
+          narrowed
+            ? narrowedArrayified.length - 1
+            : arrayified.length -
+                (arrayified[arrayified.length - 1].header ? 2 : 1)
+          // edge case
+        );
+        // if we are using the regular radical picker
+        if (!narrowed && arrayified[_selectedInfo.index].header)
+          _selectedInfo.index += 1;
+      } else if (btn.endsWith("Left")) {
+        _selectedInfo.col = Math.max(col - 1, 0);
+      } else if (btn.endsWith("Right")) {
+        _selectedInfo.col = Math.min(
+          col + 1,
+          (narrowed
+            ? narrowedArrayified[index].length - 1
+            : (arrayified[index] as any).radicals.length) - 1
+        );
+      }
+    }
+
+    // set the radical
+    let { index, col } = _selectedInfo;
+    col = Math.min(
+      col,
+      narrowed
+        ? narrowedArrayified[index].length - 1
+        : (arrayified[index].radicals as any).length - 1
+    );
+    _selectedInfo.col = col;
+    if (narrowed) _selectedInfo.radical = narrowedArrayified[index][col];
+    else _selectedInfo.radical = (arrayified[index].radicals as any)[col];
+    setSelectedInfo(_selectedInfo);
+  };
+
   return (
     <RadicalPickerContainer>
       <Input
-        onKeyDown={({ key }: { key: string }) => {
-          if (key === "Enter") handleSearchClick();
+        ref={inputRef}
+        onKeyDown={(e: any) => {
+          const { key } = e;
+          if (key.startsWith("Arrow")) {
+            e.preventDefault();
+            handleFocusedArrowButton(key);
+          }
+          if (key === "Enter") performSearch();
         }}
         value={searchText}
         onChange={(e) => {
@@ -287,7 +363,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
         /* action={{
           color: "blue",
           icon: "search",
-          onClick: handleSearchClick,
+          onClick: performSearch,
         }} */
         placeholder="Search..."
         action
@@ -297,6 +373,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
         {searchText && (
           <Button
             onClick={() => {
+              setSelectedInfo({} as SelectedInfo);
               setSearchText("");
             }}
             icon
@@ -306,7 +383,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
           </Button>
         )}
 
-        <Button onClick={handleSearchClick} icon color="blue">
+        <Button onClick={performSearch} icon color="blue">
           <Icon name="search" />
         </Button>
       </Input>
