@@ -10,7 +10,6 @@ import { Button, Icon, Input } from "semantic-ui-react";
 import styled from "styled-components";
 import SimpleBar from "simplebar-react";
 import { IDCSet } from "../../constants";
-import { setConstantValue } from "typescript";
 import { usePrevious } from "../../utils";
 
 const RADICALS_PER_ROW = 8; // arbitrary
@@ -181,6 +180,8 @@ const RadicalPicker = (props: RadicalPickerProps) => {
 
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
   const [narrowedRadicals, setNarrowedRadicals] = useState([] as string[]);
+
+  const arrowKeyPressed = useRef(false);
 
   const inputRef = useRef<Input>(null);
   const [searchText, setSearchText] = useState("");
@@ -353,12 +354,17 @@ const RadicalPicker = (props: RadicalPickerProps) => {
           if (key.startsWith("Arrow")) {
             e.preventDefault();
             handleFocusedArrowButton(key);
+            arrowKeyPressed.current = true;
           }
-          if (key === "Enter") performSearch();
+          if (key === "Enter") {
+            if (!arrowKeyPressed.current) performSearch();
+            else onRadicalSelected(selectedInfo.radical);
+          }
         }}
         value={searchText}
         onChange={(e) => {
           setSearchText(e.target.value);
+          arrowKeyPressed.current = false;
         }}
         /* action={{
           color: "blue",
