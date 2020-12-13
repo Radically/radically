@@ -195,12 +195,13 @@ const RadicalPicker = (props: RadicalPickerProps) => {
     const narrowed = !!narrowedArrayified.length;
     let { index, col } = selectedInfo;
     // todo: avoid using setTimeout..
-    setTimeout(() => {
-      (narrowed
-        ? (narrowedRadicalListRef as any)
-        : (radicalListRef as any)
-      ).current.scrollToItem(index, "center");
-    }, 5);
+    if (arrowKeyPressed.current)
+      setTimeout(() => {
+        (narrowed
+          ? (narrowedRadicalListRef as any)
+          : (radicalListRef as any)
+        ).current.scrollToItem(index, "center");
+      }, 5);
   }, [selectedInfo]);
 
   const radicalListRef = useRef<FixedSizeList>(null);
@@ -345,8 +346,14 @@ const RadicalPicker = (props: RadicalPickerProps) => {
     setSelectedInfo(_selectedInfo);
   };
 
+  const narrowed = narrowedRadicals.length;
+
   return (
-    <RadicalPickerContainer>
+    <RadicalPickerContainer
+      onClick={() => {
+        arrowKeyPressed.current = false;
+      }}
+    >
       <Input
         ref={inputRef}
         onKeyDown={(e: any) => {
@@ -427,6 +434,21 @@ const RadicalPicker = (props: RadicalPickerProps) => {
                     strokeCountToStart[strokeCount],
                     "center"
                   );
+
+                  if (!narrowed) {
+                    const firstOfSectionIndex =
+                      strokeCountToStart[strokeCount] + 1;
+                    if (firstOfSectionIndex === arrayified.length) return;
+
+                    setSelectedInfo({
+                      index: firstOfSectionIndex,
+                      col: 0,
+                      radical: (arrayified[firstOfSectionIndex] as any)
+                        .radicals[0],
+                    });
+                  }
+
+                  (inputRef.current as any).focus();
                 }}
                 style={{
                   fontWeight: "bold",
