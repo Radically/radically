@@ -324,9 +324,9 @@ const RadicalPicker = (props: RadicalPickerProps) => {
       } else if (btn.endsWith("Right")) {
         _selectedInfo.col = Math.min(
           col + 1,
-          (narrowed
+          narrowed
             ? narrowedArrayified[index].length - 1
-            : (arrayified[index] as any).radicals.length) - 1
+            : (arrayified[index] as any).radicals.length - 1
         );
       }
     }
