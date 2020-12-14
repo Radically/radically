@@ -117,6 +117,9 @@ const RadicalPickerContainer = styled.div`
   height: 400px;
   display: flex;
   flex-direction: column;
+  &:focus {
+    outline: none;
+  }
 `;
 
 const TwoPaneContainer = styled.div`
@@ -196,6 +199,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
 
   const inputRef = useRef<Input>(null);
   const listOuterRef = useRef<HTMLElement>(null);
+  const pickerContainerRef = useRef<HTMLDivElement>(null);
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
@@ -213,7 +217,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
           ? (narrowedRadicalListRef as any)
           : (radicalListRef as any)
         ).current.scrollToItem(index, "center");
-        listOuterRef.current?.focus();
+        pickerContainerRef.current?.focus();
       }, 5);
   }, [selectedInfo]);
 
@@ -279,7 +283,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
     setSelectedInfo({ index, col, radical });
     event.stopPropagation();
     event.preventDefault();
-    listOuterRef.current?.focus();
+    pickerContainerRef.current?.focus();
   };
 
   // get the 1st level decomposition of each individual character + all related radicals, add them all into a set
@@ -382,15 +386,19 @@ const RadicalPicker = (props: RadicalPickerProps) => {
 
   return (
     <RadicalPickerContainer
+      ref={pickerContainerRef}
       onKeyDown={(e: React.KeyboardEvent) => {
         const { key } = e;
-        if (key.startsWith("Arrow") && !isInputFocused)
+        if (key.startsWith("Arrow") && !isInputFocused) {
+          // click on radical -> still false -> use arrow key to scroll
+          arrowKeyPressed.current = true;
           handleFocusedArrowButton(key);
-        else if (key === "Enter") {
+          e.preventDefault();
+        } else if (key === "Enter") {
           if (arrowKeyPressed.current) onRadicalSelected(selectedInfo.radical);
         }
       }}
-      // tabIndex={-1}
+      tabIndex={-1}
     >
       <Input
         ref={inputRef}
@@ -404,7 +412,7 @@ const RadicalPicker = (props: RadicalPickerProps) => {
             e.stopPropagation();
             e.preventDefault();
             handleInputArrowDown();
-            listOuterRef.current?.focus();
+            pickerContainerRef.current?.focus();
           } else if (key === "Enter") {
             if (!arrowKeyPressed.current) performSearch();
           }
@@ -505,10 +513,6 @@ const RadicalPicker = (props: RadicalPickerProps) => {
           </StrokesScrollContainer>
 
           <RadicalsScrollContainer
-            onKeyDown={(e) => {
-              const { key } = e;
-              if (key.startsWith("Arrow")) arrowKeyPressed.current = true;
-            }}
             onClick={() => {
               setSelectedInfo({} as SelectedInfo);
             }}
