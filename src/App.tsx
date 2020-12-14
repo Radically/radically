@@ -3,6 +3,8 @@ import {
   Container,
   Input,
   Button,
+  Icon,
+  Label,
   Dimmer,
   Loader,
   Checkbox,
@@ -208,20 +210,37 @@ function App() {
                       <Loader>{loadingText}</Loader>
                     </Dimmer>
                     <div style={{ maxWidth: "1000px" }}>
-                      <div style={{ display: "flex" }}>
+                      <div style={{ display: "flex", width: "100%" }}>
                         <Input
                           style={{
-                            width: "100%",
+                            width: "300px",
                             padding: "5px",
                             // display: "inline-block",
                           }}
-                          label="Radicals"
+                          // label="Radicals"
+                          labelPosition="left"
                           placeholder="食喜"
                           onChange={(evt) => {
                             setRadicals(evt.target.value);
                           }}
                           value={radicals}
-                        />
+                          action={!!radicals}
+                        >
+                          <Label>Radicals</Label>
+                          <input />
+                          {!!radicals && (
+                            <Button
+                              onClick={() => {
+                                setRadicals("");
+                              }}
+                              icon
+                              color="grey"
+                            >
+                              <Icon name="close" />
+                            </Button>
+                          )}
+                        </Input>
+
                         <div style={{ width: "110px", textAlign: "center" }}>
                           <Checkbox
                             toggle
@@ -271,6 +290,20 @@ function App() {
                       </Button>
                     </div>
                   </Segment>
+
+                  <Input
+                    style={{ width: "75%", padding: "15px" }}
+                    // label={{ content: "Output", color: "blue" }}
+                    labelPosition="left"
+                    placeholder=""
+                    action
+                  >
+                    <Label color="blue">Output</Label>
+                    <input />
+                    <Button onClick={() => {}} icon color="blue">
+                      <Icon name="copy" />
+                    </Button>
+                  </Input>
 
                   <div style={{ width: "100%", padding: "5px" }}>
                     <div>Entries: {metadata.entries}</div>
