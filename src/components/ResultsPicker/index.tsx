@@ -26,7 +26,7 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
 
   let tempArray;
   for (let i = 0, j = resArray.length; i < j; i += RESULTS_PER_PAGE) {
-    tempArray = resArray.slice(i, (i += RESULTS_PER_PAGE));
+    tempArray = resArray.slice(i, i + RESULTS_PER_PAGE);
     paginated.push(tempArray);
   }
 
@@ -37,13 +37,11 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
     const rowified: string[][] = [];
     // tempArray variable reuse
     for (let i = 0, j = page.length; i < j; i += RADICALS_PER_ROW) {
-      tempArray = page.slice(i, (i += RADICALS_PER_ROW));
+      tempArray = page.slice(i, i + RADICALS_PER_ROW);
       rowified.push(tempArray);
     }
     paginatedRowified.push(rowified);
   }
-
-  console.log(paginatedRowified);
 
   return <div />;
 
