@@ -182,7 +182,7 @@ const outerElementType = forwardRef((props, ref: any) => (
   />
 ));
 
-const RadicalPicker = (props: RadicalPickerProps) => {
+const RadicalPicker = React.memo((props: RadicalPickerProps) => {
   const {
     baseRadicals,
     variantRadicals,
@@ -551,6 +551,6 @@ const RadicalPicker = (props: RadicalPickerProps) => {
       )}
     </RadicalPickerContainer>
   );
-};
+});
 
 export default RadicalPicker;

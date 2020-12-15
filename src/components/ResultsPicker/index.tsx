@@ -11,7 +11,7 @@ const ROWS = 9;
 
 const RESULTS_PER_PAGE = RADICALS_PER_ROW * ROWS;
 
-const ResultsPicker = (props: ResultsPickerProps) => {
+const ResultsPicker = React.memo((props: ResultsPickerProps) => {
   const { queryResults } = props;
 
   let { res } = queryResults;
@@ -30,7 +30,20 @@ const ResultsPicker = (props: ResultsPickerProps) => {
     paginated.push(tempArray);
   }
 
-  console.log(paginated);
+  const paginatedRowified: string[][][] = [];
+
+  for (let k = 0; k < paginated.length; k++) {
+    const page = paginated[k];
+    const rowified: string[][] = [];
+    // tempArray variable reuse
+    for (let i = 0, j = page.length; i < j; i += RADICALS_PER_ROW) {
+      tempArray = page.slice(i, (i += RADICALS_PER_ROW));
+      rowified.push(tempArray);
+    }
+    paginatedRowified.push(rowified);
+  }
+
+  console.log(paginatedRowified);
 
   return <div />;
 
@@ -52,6 +65,6 @@ const ResultsPicker = (props: ResultsPickerProps) => {
         getPageItemProps,
       }) => <div />}
     </Pagination> */
-};
+});
 
 export default ResultsPicker;
