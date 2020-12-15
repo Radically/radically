@@ -18,6 +18,7 @@ import "./App.css";
 import { SettingsContextProvider } from "./contexts/SettingsContextProvider";
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 import RadicalPicker from "./components/RadicalPicker";
+import ResultsPicker from "./components/ResultsPicker";
 
 const IDS_URL = "/ids.txt";
 const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
@@ -87,8 +88,13 @@ function App() {
 
   const [queryResults, setQueryResults] = useState({
     res: null,
-    charToMap: null,
+    charToSet: null,
   });
+
+  const clearQueryResults = () => {
+    setQueryResults({ res: null, charToSet: null });
+  };
+
   // const handleChange = (e) => {
   //   const { name, value } = e.target;
   //   setState((prevState) => ({
@@ -199,7 +205,7 @@ function App() {
           exactRadicalFreq: boolean;
           setExactRadicalFreq: (arg0: boolean) => void;
         }) => (
-          <Container style={{ paddingTop: "calc(.3 * 100vh)", height: "100%" }}>
+          <Container style={{ marginTop: "calc(.3 * 100vh)", height: "100%" }}>
             <AppContainer>
               <SearchAndRadicalContainer>
                 <SearchArea>
@@ -213,7 +219,7 @@ function App() {
                       <div style={{ display: "flex", width: "100%" }}>
                         <Input
                           style={{
-                            width: "300px",
+                            width: "320px",
                             padding: "5px",
                             // display: "inline-block",
                           }}
@@ -304,6 +310,8 @@ function App() {
                       <Icon name="copy" />
                     </Button>
                   </Input>
+
+                  <ResultsPicker queryResults={queryResults} />
 
                   <div style={{ width: "100%", padding: "5px" }}>
                     <div>Entries: {metadata.entries}</div>

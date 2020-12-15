@@ -24,3 +24,10 @@ interface Readings {
     [key: string]: string;
   };
 }
+
+interface QueryResults {
+  charToSet: {
+    [key: string]: Set<string>;
+  } | null;
+  res: Set<string> | null;
+}
