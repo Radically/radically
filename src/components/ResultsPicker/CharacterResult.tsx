@@ -5,27 +5,19 @@ import SimpleBar from "simplebar-react";
 import { INDIVIDUAL_RADICAL_WIDTH_PX, RADICALS_PER_ROW } from "./Constants";
 
 // the result block, max width should be the width of individual radical * number of radicals in a row
-const Container = styled(SimpleBar)`
-  //   width: ${INDIVIDUAL_RADICAL_WIDTH_PX * RADICALS_PER_ROW};
-  height: 100px;
+const Container = styled.div`
+  width: ${INDIVIDUAL_RADICAL_WIDTH_PX * RADICALS_PER_ROW}px;
+  display: flex;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  align-items: center;
 `;
 
 const CharacterResult = React.memo(
   (props: { char: string; readings: Readings }) => {
     const { char, readings } = props;
     return (
-      <div
-        style={{
-          display: "flex",
-          borderColor: "red",
-          borderWidth: "2px",
-          borderRadius: "5px",
-          boxShadow: "inset 0 0 10px rgba(0,0,0,.5)",
-
-          // justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Container>
         <div
           style={{
             fontSize: "45pt",
@@ -38,7 +30,7 @@ const CharacterResult = React.memo(
           {char}
         </div>
 
-        <Container style={{ flex: 1, paddingTop: "5px" }}>
+        <SimpleBar style={{ flex: 1, paddingTop: "5px", height: "100px" }}>
           {/* <div> */}
           {char in readings
             ? Object.entries(readings[char]).map((entry) => (
@@ -49,8 +41,8 @@ const CharacterResult = React.memo(
               ))
             : "No info available."}
           {/* </div> */}
-        </Container>
-      </div>
+        </SimpleBar>
+      </Container>
     );
   }
 );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Segment } from "semantic-ui-react";
 import styled from "styled-components";
 import UltimatePagination from "../UltimatePagination";
@@ -19,7 +19,7 @@ const RESULTS_PER_PAGE = RADICALS_PER_ROW * ROWS;
 const IndividualRadicalCell = styled("div")<{
   selected: boolean;
 }>`
-  width: 35px;
+  width: ${INDIVIDUAL_RADICAL_WIDTH_PX}px;
   height: ${INDIVIDUAL_RADICAL_WIDTH_PX}px;
   display: flex;
   justify-content: center;
@@ -78,6 +78,12 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInfo, setSelectedInfo] = useState({} as ResultsSelectedInfo);
+
+  // if the query results changes, clear the selected info
+  useEffect(() => {
+    setSelectedInfo({} as ResultsSelectedInfo);
+    setCurrentPage(1);
+  }, [queryResults]);
 
   const charSelected = "index" in selectedInfo && "col" in selectedInfo;
 
@@ -144,7 +150,7 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
         </Segment>
       </CharClickContext.Provider>
       <UltimatePagination
-        currentPage={currentPage}
+        currentPage={Math.min(currentPage, paginatedRowified.length)}
         totalPages={paginatedRowified.length}
         // siblingPagesRange={3}
         onChange={handlePageChange}
