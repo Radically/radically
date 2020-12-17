@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { Segment } from "semantic-ui-react";
 import styled from "styled-components";
 import UltimatePagination from "../UltimatePagination";
+import CharacterResult from "./CharacterResult";
+
+import { INDIVIDUAL_RADICAL_WIDTH_PX, RADICALS_PER_ROW } from "./Constants";
 
 // results as a big long array or set..
 interface ResultsPickerProps {
   queryResults: QueryResults;
+  readings: Readings;
 }
 
-const RADICALS_PER_ROW = 10;
 const ROWS = 10;
 
 const RESULTS_PER_PAGE = RADICALS_PER_ROW * ROWS;
@@ -17,7 +20,7 @@ const IndividualRadicalCell = styled("div")<{
   selected: boolean;
 }>`
   width: 35px;
-  height: 35px;
+  height: ${INDIVIDUAL_RADICAL_WIDTH_PX}px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,8 +31,8 @@ const IndividualRadicalCell = styled("div")<{
   cursor: pointer;
 `;
 
-const PageRow = (props: { data: string[] }) => {
-  const { data } = props;
+const PageRow = (props: { index: number; data: string[] }) => {
+  const { index, data } = props;
   return (
     <div
       style={{
@@ -40,17 +43,43 @@ const PageRow = (props: { data: string[] }) => {
         // width: "350px",
       }}
     >
-      {data.map((char) => (
-        <IndividualRadicalCell selected={false}>{char}</IndividualRadicalCell>
+      {data.map((char, col) => (
+        <CharClickContext.Consumer>
+          {(handleRadicalClick) => {
+            return (
+              <IndividualRadicalCell
+                onClick={() => {
+                  handleRadicalClick(index, col, char);
+                }}
+                selected={false}
+              >
+                {char}
+              </IndividualRadicalCell>
+            );
+          }}
+        </CharClickContext.Consumer>
       ))}
     </div>
   );
 };
 
+interface ResultsSelectedInfo {
+  index: number;
+  col: number;
+  char: string;
+}
+
+export const CharClickContext = React.createContext(
+  (index: number, col: number, char: string) => {}
+);
+
 const ResultsPicker = React.memo((props: ResultsPickerProps) => {
-  const { queryResults } = props;
+  const { queryResults, readings } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedInfo, setSelectedInfo] = useState({} as ResultsSelectedInfo);
+
+  const charSelected = "index" in selectedInfo && "col" in selectedInfo;
 
   let { res } = queryResults;
   if (!res) return null;
@@ -96,13 +125,24 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
 
   const currentPageData = paginatedRowified[currentPage - 1];
 
+  const handleRadicalClick = (index: number, col: number, char: string) => {
+    setSelectedInfo({ index, col, char });
+  };
+
   return (
     <>
-      <Segment>
-        {currentPageData?.map((row) => (
-          <PageRow data={row} />
-        ))}
-      </Segment>
+      {/* info on the selected character */}
+
+      <CharClickContext.Provider value={handleRadicalClick}>
+        <Segment>
+          {charSelected && (
+            <CharacterResult char={selectedInfo.char} readings={readings} />
+          )}
+          {currentPageData?.map((row, index) => (
+            <PageRow index={index} data={row} />
+          ))}
+        </Segment>
+      </CharClickContext.Provider>
       <UltimatePagination
         currentPage={currentPage}
         totalPages={paginatedRowified.length}

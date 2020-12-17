@@ -311,7 +311,10 @@ function App() {
                     </Button>
                   </Input>
 
-                  <ResultsPicker queryResults={queryResults} />
+                  <ResultsPicker
+                    queryResults={queryResults}
+                    readings={readings}
+                  />
 
                   <div style={{ width: "100%", padding: "5px" }}>
                     <div>Entries: {metadata.entries}</div>
