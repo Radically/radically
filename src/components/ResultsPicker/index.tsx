@@ -59,6 +59,10 @@ const PageRow = (props: { index: number; data: string[] }) => {
           }}
         </CharClickContext.Consumer>
       ))}
+
+      {new Array(RADICALS_PER_ROW - data.length).fill(undefined).map((x) => (
+        <IndividualRadicalCell selected={false} />
+      ))}
     </div>
   );
 };
