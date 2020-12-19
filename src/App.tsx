@@ -19,6 +19,7 @@ import { SettingsContextProvider } from "./contexts/SettingsContextProvider";
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 import RadicalPicker from "./components/RadicalPicker";
 import ResultsPicker from "./components/ResultsPicker";
+import IDSPicker from "./components/IDSPicker";
 
 const IDS_URL = "/ids.txt";
 const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
@@ -274,6 +275,8 @@ function App() {
                         }}
                         value={idcs}
                       />
+
+                      <IDSPicker onIDSSelected={(idc) => setIDCs(idcs + idc)} />
                     </div>
 
                     <div style={{ padding: "5px" }}>

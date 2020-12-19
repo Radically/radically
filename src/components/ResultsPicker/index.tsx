@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Segment } from "semantic-ui-react";
 import styled from "styled-components";
 import UltimatePagination from "../UltimatePagination";
