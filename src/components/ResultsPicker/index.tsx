@@ -31,8 +31,12 @@ const IndividualRadicalCell = styled("div")<{
   cursor: pointer;
 `;
 
-const PageRow = (props: { index: number; data: string[] }) => {
-  const { index, data } = props;
+const PageRow = (props: {
+  index: number;
+  data: string[];
+  selectedInfo: ResultsSelectedInfo;
+}) => {
+  const { index, data, selectedInfo } = props;
   return (
     <div
       style={{
@@ -51,7 +55,9 @@ const PageRow = (props: { index: number; data: string[] }) => {
                 onClick={() => {
                   handleRadicalClick(index, col, char);
                 }}
-                selected={false}
+                selected={
+                  index === selectedInfo.index && col === selectedInfo.col
+                }
               >
                 {char}
               </IndividualRadicalCell>
@@ -149,7 +155,7 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
             <CharacterResult char={selectedInfo.char} readings={readings} />
           )}
           {currentPageData?.map((row, index) => (
-            <PageRow index={index} data={row} />
+            <PageRow index={index} data={row} selectedInfo={selectedInfo} />
           ))}
         </Segment>
       </CharClickContext.Provider>

@@ -11,6 +11,7 @@ const Container = styled.div`
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   align-items: center;
+  margin-bottom: 10px;
 `;
 
 const CharacterResult = React.memo(
