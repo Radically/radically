@@ -13,6 +13,7 @@
     "@types/react-window": "^1.8.2",
     "@types/styled-components": "^5.1.4",
     "hanamin": "0.0.5",
+    "kaixinsong": "0.0.2",
     "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

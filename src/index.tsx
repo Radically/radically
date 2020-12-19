@@ -4,6 +4,7 @@ import "semantic-ui-css/semantic.min.css";
 import "./index.css";
 import "simplebar/dist/simplebar.min.css";
 import "hanamin";
+import "kaixinsong";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
