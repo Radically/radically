@@ -8,6 +8,7 @@ import { INDIVIDUAL_RADICAL_WIDTH_PX, RADICALS_PER_ROW } from "./Constants";
 
 // results as a big long array or set..
 interface ResultsPickerProps {
+  onResultSelected: (radical: string) => void;
   queryResults: QueryResults;
   readings: Readings;
 }
@@ -84,7 +85,7 @@ export const CharClickContext = React.createContext(
 );
 
 const ResultsPicker = React.memo((props: ResultsPickerProps) => {
-  const { queryResults, readings } = props;
+  const { queryResults, readings, onResultSelected } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInfo, setSelectedInfo] = useState({} as ResultsSelectedInfo);
@@ -142,6 +143,8 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
   const currentPageData = paginatedRowified[currentPage - 1];
 
   const handleRadicalClick = (index: number, col: number, char: string) => {
+    if (selectedInfo.index === index && selectedInfo.col === col)
+      onResultSelected(char);
     setSelectedInfo({ index, col, char });
   };
 

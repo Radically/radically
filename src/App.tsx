@@ -80,6 +80,8 @@ function App() {
   const [radicals, setRadicals] = useState("");
   const [idcs, setIDCs] = useState("");
 
+  const [output, setOutput] = useState("");
+
   const [metadata, setMetadata] = useState({
     entries: 0,
     unique_radicals: 0,
@@ -195,6 +197,10 @@ function App() {
     setRadicals(radicals + radical);
   };
 
+  const handleResultSelected = (result: string) => {
+    setOutput(output + result);
+  };
+
   return (
     <SettingsContextProvider>
       <SettingsContext.Consumer>
@@ -302,6 +308,10 @@ function App() {
                     // label={{ content: "Output", color: "blue" }}
                     labelPosition="left"
                     placeholder=""
+                    value={output}
+                    onChange={(evt) => {
+                      setOutput(evt.target.value);
+                    }}
                     action
                   >
                     <Label color="blue">Output</Label>
@@ -312,6 +322,7 @@ function App() {
                   </Input>
 
                   <ResultsPicker
+                    onResultSelected={handleResultSelected}
                     queryResults={queryResults}
                     readings={readings}
                   />
