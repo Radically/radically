@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import useClippy from "use-clippy";
 import {
   Container,
   Input,
@@ -93,6 +94,8 @@ function App() {
     res: null,
     charToSet: null,
   });
+
+  const [showCopied, setShowCopied] = useState(false);
 
   const clearQueryResults = () => {
     setQueryResults({ res: null, charToSet: null });
@@ -201,6 +204,8 @@ function App() {
   const handleResultSelected = (result: string) => {
     setOutput(output + result);
   };
+
+  const [clipboard, setClipboard] = useClippy();
 
   return (
     <SettingsContextProvider>
@@ -319,10 +324,24 @@ function App() {
                   >
                     <Label color="blue">Output</Label>
                     <input />
-                    <Button onClick={() => {}} icon color="blue">
+                    <Button
+                      onClick={() => {
+                        setClipboard(output);
+                        setShowCopied(true);
+                        setTimeout(() => {
+                          setShowCopied(false);
+                        }, 1000);
+                      }}
+                      icon
+                      color="blue"
+                    >
                       <Icon name="copy" />
                     </Button>
                   </Input>
+
+                  <div style={{ height: "1rem", color: "grey" }}>
+                    {showCopied ? "Copied to clipboard" : ""}
+                  </div>
 
                   <ResultsPicker
                     onResultSelected={handleResultSelected}
