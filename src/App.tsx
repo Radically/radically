@@ -44,6 +44,15 @@ const AppContainer = styled.div`
 const SearchAndRadicalContainer = styled.div`
   width: 100%;
   display: flex;
+
+  @media (max-width: 991px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media (min-width: 992px) {
+    flex-direction: row;
+  }
 `;
 
 const SearchArea = styled.div`
@@ -56,6 +65,7 @@ const SearchArea = styled.div`
 
 const RadicalPickerArea = styled.div`
   flex: 0.3;
+  max-width: 500px;
 `;
 
 const SearchFieldInput = styled(Input)`
@@ -66,6 +76,22 @@ const SearchFieldInput = styled(Input)`
 const Caption = styled.p`
   font-weight: bold;
   font-size: 8.5pt;
+`;
+
+const OutputContainer = styled.div`
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+
+  @media (max-width: 991px) {
+    display: none;
+  }
+
+  @media (min-width: 992px) {
+    display: flex;
+  }
 `;
 
 const loadIDSWorker: Worker = new Worker("./workers/loadIDS.js");
@@ -217,7 +243,16 @@ function App() {
           exactRadicalFreq: boolean;
           setExactRadicalFreq: (arg0: boolean) => void;
         }) => (
-          <Container style={{ marginTop: "calc(.3 * 100vh)", height: "100%" }}>
+          <div
+            style={{
+              marginTop: "calc(.3 * 100vh)",
+              height: "100%",
+              maxWidth: "1127px",
+              // horizontally center
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
             <AppContainer>
               <SearchAndRadicalContainer>
                 <SearchArea>
@@ -311,37 +346,51 @@ function App() {
                     </div>
                   </Segment>
 
-                  <Input
-                    style={{ width: "75%", padding: "15px" }}
-                    // label={{ content: "Output", color: "blue" }}
-                    labelPosition="left"
-                    placeholder=""
-                    value={output}
-                    onChange={(evt) => {
-                      setOutput(evt.target.value);
-                    }}
-                    action
-                  >
-                    <Label color="blue">Output</Label>
-                    <input />
-                    <Button
-                      onClick={() => {
-                        setClipboard(output);
-                        setShowCopied(true);
-                        setTimeout(() => {
-                          setShowCopied(false);
-                        }, 1000);
+                  <OutputContainer>
+                    <Input
+                      style={{ width: "75%", padding: "15px" }}
+                      // label={{ content: "Output", color: "blue" }}
+                      labelPosition="left"
+                      placeholder=""
+                      value={output}
+                      onChange={(evt) => {
+                        setOutput(evt.target.value);
                       }}
-                      icon
-                      color="blue"
+                      action
                     >
-                      <Icon name="copy" />
-                    </Button>
-                  </Input>
+                      <Label color="blue">Output</Label>
+                      <input />
 
-                  <div style={{ height: "1rem", color: "grey" }}>
-                    {showCopied ? "Copied to clipboard" : ""}
-                  </div>
+                      {output && (
+                        <Button
+                          onClick={() => {
+                            setOutput("");
+                          }}
+                          icon
+                          color="grey"
+                        >
+                          <Icon name="close" />
+                        </Button>
+                      )}
+                      <Button
+                        onClick={() => {
+                          setClipboard(output);
+                          setShowCopied(true);
+                          setTimeout(() => {
+                            setShowCopied(false);
+                          }, 1000);
+                        }}
+                        icon
+                        color="blue"
+                      >
+                        <Icon name="copy" />
+                      </Button>
+                    </Input>
+
+                    <div style={{ height: "1.5rem", color: "grey" }}>
+                      {showCopied ? "Copied to clipboard" : ""}
+                    </div>
+                  </OutputContainer>
 
                   <ResultsPicker
                     onResultSelected={handleResultSelected}
@@ -372,7 +421,7 @@ function App() {
                 </RadicalPickerArea>
               </SearchAndRadicalContainer>
             </AppContainer>
-          </Container>
+          </div>
         )}
       </SettingsContext.Consumer>
     </SettingsContextProvider>
