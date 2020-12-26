@@ -29,6 +29,9 @@ const UNICODE_READINGS_URL = "/Unihan_Readings.txt";
 
 const AppNameh1 = styled.h1`
   font-size: 3rem;
+  @media (max-width: 479px) {
+    font-size: 2rem;
+  }
   font-family: Hanamin;
   color: grey;
   font-weight: bold;
@@ -61,11 +64,26 @@ const SearchArea = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 991px) {
+    // width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
 `;
 
 const RadicalPickerArea = styled.div`
-  flex: 0.3;
-  max-width: 500px;
+  @media (min-width: 992px) {
+    flex: 0.3;
+  }
+
+  @media (max-width: 991px) {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  max-width: 400px;
 `;
 
 const SearchFieldInput = styled(Input)`
@@ -92,6 +110,24 @@ const OutputContainer = styled.div`
   @media (min-width: 992px) {
     display: flex;
   }
+`;
+
+const DesktopExactCheckboxContainer = styled.div`
+  @media (max-width: 991px) {
+    display: none;
+  }
+  width: 110px;
+  text-align: center;
+`;
+
+const MobileExactCheckboxContainer = styled.div`
+  @media (min-width: 992px) {
+    display: none;
+  }
+  // width: 110px;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
 `;
 
 const loadIDSWorker: Worker = new Worker("./workers/loadIDS.js");
@@ -259,14 +295,16 @@ function App() {
                   <AppNameh1>部首組合式漢字檢索</AppNameh1>
 
                   <Segment>
-                    <Dimmer active={!!loadingText}>
+                    {/* <Dimmer active={!!loadingText}>
                       <Loader>{loadingText}</Loader>
-                    </Dimmer>
+                    </Dimmer> */}
                     <div style={{ maxWidth: "1000px" }}>
                       <div style={{ display: "flex", width: "100%" }}>
                         <Input
+                          fluid
                           style={{
-                            width: "320px",
+                            // width: "320px",
+                            width: "100%",
                             padding: "5px",
                             // display: "inline-block",
                           }}
@@ -294,7 +332,7 @@ function App() {
                           )}
                         </Input>
 
-                        <div style={{ width: "110px", textAlign: "center" }}>
+                        <DesktopExactCheckboxContainer>
                           <Checkbox
                             toggle
                             checked={exactRadicalFreq}
@@ -303,7 +341,7 @@ function App() {
                             }}
                           />
                           <Caption>部首率完全一致*</Caption>
-                        </div>
+                        </DesktopExactCheckboxContainer>
                       </div>
 
                       <Input
@@ -319,7 +357,24 @@ function App() {
                       <IDSPicker onIDSSelected={(idc) => setIDCs(idcs + idc)} />
                     </div>
 
-                    <div style={{ padding: "5px" }}>
+                    <div
+                      style={{
+                        padding: "5px",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <MobileExactCheckboxContainer>
+                        <Checkbox
+                          toggle
+                          checked={exactRadicalFreq}
+                          onChange={() => {
+                            setExactRadicalFreq(!exactRadicalFreq);
+                          }}
+                        />
+                        <Caption>部首率完全一致*</Caption>
+                      </MobileExactCheckboxContainer>
+
                       <Button
                         disabled={!!!radicals}
                         style={{ display: "block" }}
