@@ -6,7 +6,7 @@ import { INDIVIDUAL_RADICAL_WIDTH_PX, RADICALS_PER_ROW } from "./Constants";
 
 // the result block, max width should be the width of individual radical * number of radicals in a row
 const Container = styled.div`
-  width: ${INDIVIDUAL_RADICAL_WIDTH_PX * RADICALS_PER_ROW}px;
+  // width: ${INDIVIDUAL_RADICAL_WIDTH_PX * RADICALS_PER_ROW}px;
   display: flex;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 5px;

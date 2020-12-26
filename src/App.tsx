@@ -295,9 +295,9 @@ function App() {
                   <AppNameh1>部首組合式漢字檢索</AppNameh1>
 
                   <Segment>
-                    {/* <Dimmer active={!!loadingText}>
+                    <Dimmer active={!!loadingText}>
                       <Loader>{loadingText}</Loader>
-                    </Dimmer> */}
+                    </Dimmer>
                     <div style={{ maxWidth: "1000px" }}>
                       <div style={{ display: "flex", width: "100%" }}>
                         <Input

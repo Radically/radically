@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Segment } from "semantic-ui-react";
 import styled from "styled-components";
+import { useWindowDimensions } from "../../utils";
 import UltimatePagination from "../UltimatePagination";
 import CharacterResult from "./CharacterResult";
 
@@ -85,6 +86,8 @@ export const CharClickContext = React.createContext(
 );
 
 const ResultsPicker = React.memo((props: ResultsPickerProps) => {
+  const { width, height } = useWindowDimensions();
+
   const { queryResults, readings, onResultSelected } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -148,6 +151,10 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
     setSelectedInfo({ index, col, char });
   };
 
+  const siblingPagesRange = width!! > 991 ? 1 : 0;
+  const boundaryPagesRange = width!! > 991 ? 1 : 0;
+  const hideEllipsis = !(width!! > 991);
+
   return (
     <>
       {/* info on the selected character */}
@@ -165,7 +172,9 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
       <UltimatePagination
         currentPage={Math.min(currentPage, paginatedRowified.length)}
         totalPages={paginatedRowified.length}
-        // siblingPagesRange={3}
+        siblingPagesRange={siblingPagesRange}
+        boundaryPagesRange={boundaryPagesRange}
+        hideEllipsis={hideEllipsis}
         onChange={handlePageChange}
       />
     </>
