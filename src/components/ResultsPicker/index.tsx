@@ -5,7 +5,7 @@ import { useWindowDimensions } from "../../utils";
 import UltimatePagination from "../UltimatePagination";
 import CharacterResult from "./CharacterResult";
 
-import { INDIVIDUAL_RADICAL_WIDTH_PX, RADICALS_PER_ROW } from "./Constants";
+import { INDIVIDUAL_RADICAL_WIDTH_PX, RADICALS_PER_ROW_DESKTOP, RADICALS_PER_ROW_MOBILE } from "./constants";
 
 // results as a big long array or set..
 interface ResultsPickerProps {
@@ -16,9 +16,16 @@ interface ResultsPickerProps {
 
 const ROWS = 10;
 
-const RESULTS_PER_PAGE = RADICALS_PER_ROW * ROWS;
+// const RESULTS_PER_PAGE =  * ROWS;
 
-const IndividualRadicalCell = styled("div")<{
+const getRadicalsPerRow = (width: number) => {
+  if (width!! >= 992) {
+    return RADICALS_PER_ROW_DESKTOP;
+  }
+  return RADICALS_PER_ROW_MOBILE;
+}
+
+const IndividualRadicalCell = styled("div") <{
   selected: boolean;
 }>`
   width: ${INDIVIDUAL_RADICAL_WIDTH_PX}px;
@@ -39,6 +46,16 @@ const PageRow = (props: {
   selectedInfo: ResultsSelectedInfo;
 }) => {
   const { index, data, selectedInfo } = props;
+
+  const { width, height } = useWindowDimensions();
+  const RADICALS_PER_ROW = getRadicalsPerRow(width!!);
+
+  // TODO: occasionally 0
+  let EXTRA_DUMMY_ELEMENTS = (RADICALS_PER_ROW - data.length);
+  // occasionally 7 10 -3
+  // console.log(RADICALS_PER_ROW, data.length, EXTRA_DUMMY_ELEMENTS);
+  EXTRA_DUMMY_ELEMENTS = Math.max(EXTRA_DUMMY_ELEMENTS, 0);
+
   return (
     <div
       style={{
@@ -68,7 +85,7 @@ const PageRow = (props: {
         </CharClickContext.Consumer>
       ))}
 
-      {new Array(RADICALS_PER_ROW - data.length).fill(undefined).map((x) => (
+      {new Array(EXTRA_DUMMY_ELEMENTS).fill(undefined).map((x) => (
         <IndividualRadicalCell selected={false} />
       ))}
     </div>
@@ -82,11 +99,14 @@ interface ResultsSelectedInfo {
 }
 
 export const CharClickContext = React.createContext(
-  (index: number, col: number, char: string) => {}
+  (index: number, col: number, char: string) => { }
 );
 
 const ResultsPicker = React.memo((props: ResultsPickerProps) => {
   const { width, height } = useWindowDimensions();
+
+  const RADICALS_PER_ROW = getRadicalsPerRow(width!!);
+  const RESULTS_PER_PAGE = RADICALS_PER_ROW * ROWS;
 
   const { queryResults, readings, onResultSelected } = props;
 
@@ -97,7 +117,7 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
   useEffect(() => {
     setSelectedInfo({} as ResultsSelectedInfo);
     setCurrentPage(1);
-  }, [queryResults]);
+  }, [queryResults, width]);
 
   const charSelected = "index" in selectedInfo && "col" in selectedInfo;
 

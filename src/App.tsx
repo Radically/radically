@@ -86,6 +86,17 @@ const RadicalPickerArea = styled.div`
   max-width: 400px;
 `;
 
+const ResultsPickerArea = styled.div`
+  @media (max-width: 991px) {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const SearchFieldInput = styled(Input)`
   width: 100%;
   padding: 5px;
@@ -447,11 +458,13 @@ function App() {
                     </div>
                   </OutputContainer>
 
-                  <ResultsPicker
-                    onResultSelected={handleResultSelected}
-                    queryResults={queryResults}
-                    readings={readings}
-                  />
+                  <ResultsPickerArea>
+                    <ResultsPicker
+                      onResultSelected={handleResultSelected}
+                      queryResults={queryResults}
+                      readings={readings}
+                    />
+                  </ResultsPickerArea>
 
                   <div style={{ width: "100%", padding: "5px" }}>
                     <div>Entries: {metadata.entries}</div>
