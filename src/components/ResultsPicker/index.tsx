@@ -102,7 +102,9 @@ export const CharClickContext = React.createContext(
   (index: number, col: number, char: string) => { }
 );
 
-const ResultsPicker = React.memo((props: ResultsPickerProps) => {
+// because of the hook that resets the selected character to 0, 0 after switching to a new page....
+const ResultsPickerNotNull = React.memo((props: ResultsPickerProps) => {
+
   const { width, height } = useWindowDimensions();
 
   const RADICALS_PER_ROW = getRadicalsPerRow(width!!);
@@ -113,26 +115,10 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInfo, setSelectedInfo] = useState({} as ResultsSelectedInfo);
 
-  // if the query results changes, clear the selected info
-  useEffect(() => {
-    setSelectedInfo({} as ResultsSelectedInfo);
-    setCurrentPage(1);
-  }, [queryResults, width]);
-
   const charSelected = "index" in selectedInfo && "col" in selectedInfo;
 
   let { res } = queryResults;
-  if (!res) return null;
-
-  if (!res.size) {
-    return (
-      <Segment style={{ textAlign: "center", fontSize: "15pt" }}>
-        No Results
-      </Segment>
-    );
-  }
-
-  const resArray = Array.from(res);
+  const resArray = Array.from(res!!);
 
   // chunk into groups of RADICALS_PER_ROW * ROWS
   // [ [ [] ] ... ]
@@ -164,6 +150,17 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
   };
 
   const currentPageData = paginatedRowified[currentPage - 1];
+
+  // if the query results changes, clear the selected info
+  useEffect(() => {
+    setSelectedInfo({ index: 0, col: 0, char: resArray[0] } as ResultsSelectedInfo);
+    setCurrentPage(1);
+  }, [queryResults, width]);
+
+  // reset to 0, 0 upon switching page
+  useEffect(() => {
+    setSelectedInfo({ index: 0, col: 0, char: currentPageData[0][0] });
+  }, [currentPage]);
 
   const handleRadicalClick = (index: number, col: number, char: string) => {
     if (selectedInfo.index === index && selectedInfo.col === col)
@@ -199,6 +196,23 @@ const ResultsPicker = React.memo((props: ResultsPickerProps) => {
       />
     </>
   );
+});
+
+const ResultsPicker = React.memo((props: ResultsPickerProps) => {
+  const { queryResults, readings, onResultSelected } = props;
+
+  let { res } = queryResults;
+  if (!res) return null;
+
+  if (!res.size) {
+    return (
+      <Segment style={{ textAlign: "center", fontSize: "15pt" }}>
+        No Results
+      </Segment>
+    );
+  }
+
+  return <ResultsPickerNotNull {...props} />
 });
 
 export default ResultsPicker;
