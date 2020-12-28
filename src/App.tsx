@@ -357,7 +357,7 @@ function App() {
                       </div>
 
                       <Input
-                        style={{ width: "100%", padding: "5px" }}
+                        style={{ width: "99%", padding: "5px" }}
                         label="IDCs"
                         placeholder="⿺⿱"
                         onChange={(evt) => {
