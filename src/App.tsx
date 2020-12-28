@@ -79,11 +79,11 @@ const RadicalPickerArea = styled.div`
 
   @media (max-width: 991px) {
     width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
   }
 
   max-width: 400px;
+  padding-right: 15px;
+  padding-left: 15px;
 `;
 
 const ResultsPickerArea = styled.div`
@@ -315,7 +315,8 @@ function App() {
                           fluid
                           style={{
                             // width: "320px",
-                            width: "100%",
+                            // to handle chromium... 
+                            width: "99%",
                             padding: "5px",
                             // display: "inline-block",
                           }}
