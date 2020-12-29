@@ -21,6 +21,7 @@ import { SettingsContext } from "./contexts/SettingsContextProvider";
 import RadicalPicker from "./components/RadicalPicker";
 import ResultsPicker from "./components/ResultsPicker";
 import IDSPicker from "./components/IDSPicker";
+import Output from "./components/Output";
 
 const IDS_URL = "/ids.txt";
 const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
@@ -47,6 +48,7 @@ const AppContainer = styled.div`
 const SearchAndRadicalContainer = styled.div`
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
 
   @media (max-width: 991px) {
     flex-direction: column;
@@ -69,6 +71,12 @@ const SearchArea = styled.div`
     // width: 100%;
     padding-right: 15px;
     padding-left: 15px;
+  }
+`;
+
+const RadicalIDSContainer = styled(Segment)`
+  @media (min-width: 480px) {
+    width: 400px;
   }
 `;
 
@@ -155,7 +163,7 @@ function App() {
   const [radicals, setRadicals] = useState("");
   const [idcs, setIDCs] = useState("");
 
-  const [output, setOutput] = useState("");
+  // const [output, setOutput] = useState("");
 
   const [metadata, setMetadata] = useState({
     entries: 0,
@@ -168,7 +176,7 @@ function App() {
     charToSet: null,
   });
 
-  const [showCopied, setShowCopied] = useState(false);
+  // const [showCopied, setShowCopied] = useState(false);
 
   const clearQueryResults = () => {
     setQueryResults({ res: null, charToSet: null });
@@ -274,11 +282,14 @@ function App() {
     setRadicals(radicals + radical);
   };
 
-  const handleResultSelected = (result: string) => {
-    setOutput(output + result);
-  };
+  // const [clipboard, setClipboard] = useClippy();
 
-  const [clipboard, setClipboard] = useClippy();
+  type OutputHandle = React.ElementRef<typeof Output>;
+  const outputRef = useRef<OutputHandle>(null);
+
+  const handleResultSelected = (result: string) => {
+    outputRef.current!!.appendOutput(result);
+  };
 
   return (
     <SettingsContextProvider>
@@ -305,7 +316,7 @@ function App() {
                 <SearchArea>
                   <AppNameh1>部首組合式漢字檢索</AppNameh1>
 
-                  <Segment>
+                  <RadicalIDSContainer>
                     <Dimmer active={!!loadingText}>
                       <Loader>{loadingText}</Loader>
                     </Dimmer>
@@ -411,9 +422,10 @@ function App() {
                         Search
                       </Button>
                     </div>
-                  </Segment>
+                  </RadicalIDSContainer>
 
-                  <OutputContainer>
+                  <Output ref={outputRef} />
+                  {/* <OutputContainer>
                     <Input
                       style={{ width: "75%", padding: "15px" }}
                       // label={{ content: "Output", color: "blue" }}
@@ -457,26 +469,8 @@ function App() {
                     <div style={{ height: "1.5rem", color: "grey" }}>
                       {showCopied ? "Copied to clipboard" : ""}
                     </div>
-                  </OutputContainer>
+                  </OutputContainer> */}
 
-                  <ResultsPickerArea>
-                    <ResultsPicker
-                      onResultSelected={handleResultSelected}
-                      queryResults={queryResults}
-                      readings={readings}
-                    />
-                  </ResultsPickerArea>
-
-                  <div style={{ width: "100%", padding: "5px" }}>
-                    <div>Entries: {metadata.entries}</div>
-                    <div>Unique Radicals: {metadata.unique_radicals}</div>
-                    <div>
-                      IDS Last Modified:{" "}
-                      {metadata.date
-                        ? moment(metadata.date).format("lll")
-                        : "Never"}
-                    </div>
-                  </div>
                 </SearchArea>
                 <RadicalPickerArea>
                   <RadicalPicker
@@ -488,7 +482,37 @@ function App() {
                     readings={readings}
                   />
                 </RadicalPickerArea>
+
+
+
+
+                <ResultsPickerArea>
+                  <ResultsPicker
+                    onResultSelected={handleResultSelected}
+                    queryResults={queryResults}
+                    readings={readings}
+                  />
+                </ResultsPickerArea>
+
+
+
               </SearchAndRadicalContainer>
+
+
+              <div style={{ width: "100%", padding: "5px" }}>
+                <div>Entries: {metadata.entries}</div>
+                <div>Unique Radicals: {metadata.unique_radicals}</div>
+                <div>
+                  IDS Last Modified:{" "}
+                  {metadata.date
+                    ? moment(metadata.date).format("lll")
+                    : "Never"}
+                </div>
+              </div>
+
+
+
+
             </AppContainer>
           </div>
         )}

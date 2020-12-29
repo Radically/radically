@@ -47,6 +47,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+textarea {
+  font-family: var(--default-sans)
+}
+
 .ui.button {
   font-family: var(--default-sans);
 }
