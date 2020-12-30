@@ -21,7 +21,7 @@ import { SettingsContext } from "./contexts/SettingsContextProvider";
 import RadicalPicker from "./components/RadicalPicker";
 import ResultsPicker from "./components/ResultsPicker";
 import IDSPicker from "./components/IDSPicker";
-import Output from "./components/Output";
+import { DesktopOutput, MobileOutput, Output } from "./components/Output";
 
 const IDS_URL = "/ids.txt";
 const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
@@ -100,6 +100,11 @@ const ResultsPickerArea = styled.div`
     padding-right: 15px;
     padding-left: 15px;
   }
+
+  @media (min-width: 992px) {
+    flex: 0.7;
+  }
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -131,6 +136,20 @@ const OutputContainer = styled.div`
   }
 `;
 
+const DesktopOutputContainer = styled.div`
+  max-width: 400px; 
+  width: 100%;
+`;
+
+const MobileOutputContainer = styled.div`
+  max-width: 400px;
+  @media (max-width: 991px) {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+`;
+
 const DesktopExactCheckboxContainer = styled.div`
   @media (max-width: 991px) {
     display: none;
@@ -147,6 +166,23 @@ const MobileExactCheckboxContainer = styled.div`
   padding-left: 15px;
   padding-right: 15px;
   text-align: center;
+`;
+
+/* const DesktopOutput = styled(Output)`
+  @media (max-width: 991px) {
+    display: none;
+  }
+`;
+
+const MobileOutput = styled(Output)`
+  @media (min-width: 992px) {
+    display: none;
+  }
+`; */
+
+const RowFlexboxBreak = styled.div`
+  flex-basis: 100%;
+  height: 0;
 `;
 
 const loadIDSWorker: Worker = new Worker("./workers/loadIDS.js");
@@ -285,10 +321,13 @@ function App() {
   // const [clipboard, setClipboard] = useClippy();
 
   type OutputHandle = React.ElementRef<typeof Output>;
-  const outputRef = useRef<OutputHandle>(null);
+  const desktopOutputRef = useRef<OutputHandle>(null);
+  const mobileOutputRef = useRef<OutputHandle>(null);
 
   const handleResultSelected = (result: string) => {
-    outputRef.current!!.appendOutput(result);
+    desktopOutputRef.current!!.appendOutput(result);
+    mobileOutputRef.current!!.appendOutput(result);
+    // console.log(desktopOutputRef.current);
   };
 
   return (
@@ -424,52 +463,9 @@ function App() {
                     </div>
                   </RadicalIDSContainer>
 
-                  <Output ref={outputRef} />
-                  {/* <OutputContainer>
-                    <Input
-                      style={{ width: "75%", padding: "15px" }}
-                      // label={{ content: "Output", color: "blue" }}
-                      labelPosition="left"
-                      placeholder=""
-                      value={output}
-                      onChange={(evt) => {
-                        setOutput(evt.target.value);
-                      }}
-                      action
-                    >
-                      <Label color="blue">Output</Label>
-                      <input />
-
-                      {output && (
-                        <Button
-                          onClick={() => {
-                            setOutput("");
-                          }}
-                          icon
-                          color="grey"
-                        >
-                          <Icon name="close" />
-                        </Button>
-                      )}
-                      <Button
-                        onClick={() => {
-                          setClipboard(output);
-                          setShowCopied(true);
-                          setTimeout(() => {
-                            setShowCopied(false);
-                          }, 1000);
-                        }}
-                        icon
-                        color="blue"
-                      >
-                        <Icon name="copy" />
-                      </Button>
-                    </Input>
-
-                    <div style={{ height: "1.5rem", color: "grey" }}>
-                      {showCopied ? "Copied to clipboard" : ""}
-                    </div>
-                  </OutputContainer> */}
+                  <DesktopOutputContainer>
+                    <DesktopOutput ref={desktopOutputRef} />
+                  </DesktopOutputContainer>
 
                 </SearchArea>
                 <RadicalPickerArea>
@@ -483,8 +479,11 @@ function App() {
                   />
                 </RadicalPickerArea>
 
+                <MobileOutputContainer>
+                  <MobileOutput ref={mobileOutputRef} />
+                </MobileOutputContainer>
 
-
+                <RowFlexboxBreak />
 
                 <ResultsPickerArea>
                   <ResultsPicker

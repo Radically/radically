@@ -1,48 +1,50 @@
 // https://stackoverflow.com/questions/62210286/declare-type-with-react-useimperativehandle
 
 import React, { useEffect, useRef, useImperativeHandle, useState } from "react";
-import styled from "styled-components";
+import styled, { StyledComponent } from "styled-components";
 import { Button, Icon, Form, TextArea } from 'semantic-ui-react'
 import useClippy from "use-clippy";
 
-const OutputContainer1 = styled.div`
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-
-  flex-direction: column;
-
-  @media (max-width: 991px) {
-    display: none;
-  }
-
-  @media (min-width: 992px) {
-    display: flex;
-  }
-`;
-
 const OutputContainer = styled.div`
-  @media (min-width: 480px) {
+  /* @media (min-width: 480px) {
     width: 400px;
   }
 
   @media (max-width: 479px) {
     width: 100%;
-  }
+  } */
 
   text-align: center;
+  padding-top: 1.5rem;
+`;
+
+const MobileOutputContainer = styled(OutputContainer)`
+  @media (min-width: 992px) {
+    display: none;
+  }
+`;
+
+const DesktopOutputContainer = styled(OutputContainer)`
+  @media (max-width: 991px) {
+    display: none;
+  }
 `;
 
 type OutputHandle = {
   appendOutput: (text: string) => void
 }
 
-type OutputProps = {
+type PublicOutputProps = {
 
 }
 
-const Output: React.RefForwardingComponent<OutputHandle, OutputProps> = (props: OutputProps, ref) => {
+type OutputProps = {
+  ContainerComponent: StyledComponent<"div", any, {}, never>;
+}
 
+const _Output: React.RefForwardingComponent<OutputHandle, OutputProps> = (props: OutputProps, ref) => {
+
+  const { ContainerComponent } = props;
   const [output, setOutput] = useState("");
   const [clipboard, setClipboard] = useClippy();
   const [showCopied, setShowCopied] = useState(false);
@@ -53,7 +55,7 @@ const Output: React.RefForwardingComponent<OutputHandle, OutputProps> = (props: 
     }
   }));
 
-  return <OutputContainer>
+  return <ContainerComponent>
     <Form style={{ width: '100%' }}>
       <TextArea value={output} onChange={(evt) => {
         setOutput(evt.target.value);
@@ -82,7 +84,18 @@ const Output: React.RefForwardingComponent<OutputHandle, OutputProps> = (props: 
     <div style={{ height: "1.5rem", color: "grey" }}>
       {showCopied ? "Copied to clipboard" : ""}
     </div>
-  </OutputContainer>
+  </ContainerComponent>
 };
 
-export default React.forwardRef(Output);
+export const Output = React.forwardRef(_Output);
+
+// export default React.forwardRef(Output);
+export const DesktopOutput = React.forwardRef((props: PublicOutputProps, ref) => {
+  // const _Output = React.forwardRef(Output);
+  return <Output {...props} ref={ref!! as React.RefObject<OutputHandle>} ContainerComponent={DesktopOutputContainer} />
+});
+
+export const MobileOutput = React.forwardRef((props: PublicOutputProps, ref) => {
+  // const _Output = React.forwardRef(Output);
+  return <Output {...props} ref={ref!! as React.RefObject<OutputHandle>} ContainerComponent={MobileOutputContainer} />
+})
