@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import useClippy from "use-clippy";
 import {
   Container,
   Input,
@@ -115,6 +114,7 @@ const ResultsPickerArea = styled.div`
     flex: 0.7;
   }
 
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;

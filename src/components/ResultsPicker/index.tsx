@@ -5,7 +5,7 @@ import { useWindowDimensions } from "../../utils";
 import UltimatePagination from "../UltimatePagination";
 import CharacterResult from "./CharacterResult";
 
-import { INDIVIDUAL_RADICAL_WIDTH_PX, RADICALS_PER_ROW_DESKTOP, RADICALS_PER_ROW_MOBILE } from "./constants";
+import { INDIVIDUAL_RADICAL_WIDTH_PX, /* RADICALS_PER_ROW_DESKTOP, RADICALS_PER_ROW_MOBILE */ } from "./constants";
 
 // results as a big long array or set..
 interface ResultsPickerProps {
@@ -19,10 +19,9 @@ const ROWS = 10;
 // const RESULTS_PER_PAGE =  * ROWS;
 
 const getRadicalsPerRow = (width: number) => {
-  if (width!! >= 992) {
-    return RADICALS_PER_ROW_DESKTOP;
-  }
-  return RADICALS_PER_ROW_MOBILE;
+  if (width!! >= 400) {
+    return 10;
+  } else { return 8; }
 }
 
 const IndividualRadicalCell = styled("div") <{
@@ -38,6 +37,10 @@ const IndividualRadicalCell = styled("div") <{
   border-radius: 5px;
   // padding: 15px;
   cursor: pointer;
+`;
+
+const ResultsPickerContainer = styled(Segment)`
+  width: 100%;
 `;
 
 const PageRow = (props: {
@@ -177,14 +180,14 @@ const ResultsPickerNotNull = React.memo((props: ResultsPickerProps) => {
       {/* info on the selected character */}
 
       <CharClickContext.Provider value={handleRadicalClick}>
-        <Segment>
+        <ResultsPickerContainer>
           {charSelected && (
             <CharacterResult char={selectedInfo.char} readings={readings} />
           )}
           {currentPageData?.map((row, index) => (
             <PageRow index={index} data={row} selectedInfo={selectedInfo} />
           ))}
-        </Segment>
+        </ResultsPickerContainer>
       </CharClickContext.Provider>
       <UltimatePagination
         currentPage={Math.min(currentPage, paginatedRowified.length)}
