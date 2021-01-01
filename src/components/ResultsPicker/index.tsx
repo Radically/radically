@@ -41,6 +41,7 @@ const IndividualRadicalCell = styled("div") <{
 
 const ResultsPickerContainer = styled(Segment)`
   width: 100%;
+  max-width: 400px;
 `;
 
 const PageRow = (props: {
