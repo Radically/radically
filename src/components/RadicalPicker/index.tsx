@@ -428,7 +428,7 @@ const RadicalPicker = React.memo((props: RadicalPickerProps) => {
           icon: "search",
           onClick: performSearch,
         }} */
-        placeholder="Search..."
+        placeholder="Search (decomposition and variants)"
         action
       >
         <input />

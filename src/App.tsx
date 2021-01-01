@@ -12,6 +12,16 @@ import {
   Segment,
 } from "semantic-ui-react";
 import styled from "styled-components";
+
+// for the bottom tabbar
+import { makeStyles } from '@material-ui/core/styles';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+// material icons
+import ShortTextIcon from '@material-ui/icons/ShortText';
+import SearchIcon from '@material-ui/icons/Search';
+import TranslateIcon from '@material-ui/icons/Translate';
+
 import moment from "moment";
 
 import logo from "./logo.svg";
@@ -185,6 +195,27 @@ const RowFlexboxBreak = styled.div`
   height: 0;
 `;
 
+const useBottomNavStyles = makeStyles(theme => ({
+  root: {
+    position: 'fixed',
+    bottom: 0,
+    width: '100%',
+    background: 'linear-gradient(45deg, #6da2c9 30%, #2185d0 90%)',
+
+    [theme.breakpoints.up(992)]: {
+      display: 'none',
+    }
+    // fontSize: '2rem'
+    // border: 0,
+    // borderRadius: 3,
+    // boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    // color: 'white',
+    // height: 48,
+    // padding: '0 30px',
+  },
+
+}));
+
 const loadIDSWorker: Worker = new Worker("./workers/loadIDS.js");
 const queryIDSWorker: Worker = new Worker("./workers/queryIDS.js");
 
@@ -327,8 +358,13 @@ function App() {
   const handleResultSelected = (result: string) => {
     desktopOutputRef.current!!.appendOutput(result);
     mobileOutputRef.current!!.appendOutput(result);
-    // console.log(desktopOutputRef.current);
   };
+
+  const bottomNavClasses = useBottomNavStyles();
+
+
+  // refs used for scrolling in mobile mode
+  const radicalIDSContainerRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <SettingsContextProvider>
@@ -343,11 +379,13 @@ function App() {
           <div
             style={{
               marginTop: "calc(.3 * 100vh)",
-              height: "100%",
+              minHeight: "100%",
               maxWidth: "1127px",
               // horizontally center
               marginLeft: "auto",
               marginRight: "auto",
+              marginBottom: '80px',
+              // position: 'relative'
             }}
           >
             <AppContainer>
@@ -356,10 +394,12 @@ function App() {
                   <AppNameh1>部首組合式漢字檢索</AppNameh1>
 
                   <RadicalIDSContainer>
+
                     <Dimmer active={!!loadingText}>
                       <Loader>{loadingText}</Loader>
                     </Dimmer>
-                    <div style={{ maxWidth: "1000px" }}>
+                    {/* put the ref to scrollto here because it doesn't matter anyways... */}
+                    <div ref={radicalIDSContainerRef} style={{ maxWidth: "1000px" }}>
                       <div style={{ display: "flex", width: "100%" }}>
                         <Input
                           fluid
@@ -498,7 +538,7 @@ function App() {
               </SearchAndRadicalContainer>
 
 
-              <div style={{ width: "100%", padding: "5px" }}>
+              <div style={{ width: "100%", padding: "5px", display: 'flex', }}>
                 <div>Entries: {metadata.entries}</div>
                 <div>Unique Radicals: {metadata.unique_radicals}</div>
                 <div>
@@ -509,8 +549,32 @@ function App() {
                 </div>
               </div>
 
+              {/* input, radical, output, results */}
+              <BottomNavigation
+                classes={bottomNavClasses}
+                /* value={value}
+                onChange={(event, newValue) => {
+                  setValue(newValue);
+                }} */
+                showLabels
+              // className={classes.root}
+              >
+                <BottomNavigationAction onClick={() => {
+                  radicalIDSContainerRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: 'center'
+                  });
+                }} label="Search" icon={<SearchIcon />} />
 
+                <BottomNavigationAction label="Radicals" icon={
+                  <span style={{ fontFamily: 'var(--default-sans)', fontWeight: 'bold', fontSize: '1.2rem' }}>咅  阝</span>
+                } />
 
+                <BottomNavigationAction label="Output" icon={<ShortTextIcon />} />
+
+                <BottomNavigationAction label="Results" icon={<TranslateIcon />} />
+
+              </BottomNavigation>
 
             </AppContainer>
           </div>
