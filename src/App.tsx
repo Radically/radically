@@ -238,7 +238,7 @@ function App() {
     date: null,
   });
 
-  const [queryResults, setQueryResults] = useState({
+  const [queryResults, setQueryResults] = useState<QueryResults>({
     res: null,
     charToSet: null,
   });
@@ -365,6 +365,9 @@ function App() {
 
   // refs used for scrolling in mobile mode
   const radicalIDSContainerRef = useRef<HTMLDivElement | null>(null);
+  const radicalPickerAreaRef = useRef<HTMLDivElement | null>(null);
+  const mobileOutputContainerRef = useRef<HTMLDivElement | null>(null);
+  const resultsPickerAreaRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <SettingsContextProvider>
@@ -508,7 +511,7 @@ function App() {
                   </DesktopOutputContainer>
 
                 </SearchArea>
-                <RadicalPickerArea>
+                <RadicalPickerArea ref={radicalPickerAreaRef}>
                   <RadicalPicker
                     onRadicalSelected={handleRadicalSelected}
                     baseRadicals={baseRadicals}
@@ -519,13 +522,13 @@ function App() {
                   />
                 </RadicalPickerArea>
 
-                <MobileOutputContainer>
+                <MobileOutputContainer ref={mobileOutputContainerRef}>
                   <MobileOutput ref={mobileOutputRef} />
                 </MobileOutputContainer>
 
                 <RowFlexboxBreak />
 
-                <ResultsPickerArea>
+                <ResultsPickerArea ref={resultsPickerAreaRef}>
                   <ResultsPicker
                     onResultSelected={handleResultSelected}
                     queryResults={queryResults}
@@ -566,13 +569,28 @@ function App() {
                   });
                 }} label="Search" icon={<SearchIcon />} />
 
-                <BottomNavigationAction label="Radicals" icon={
+                <BottomNavigationAction onClick={() => {
+                  radicalPickerAreaRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: 'center'
+                  });
+                }} label="Radicals" icon={
                   <span style={{ fontFamily: 'var(--default-sans)', fontWeight: 'bold', fontSize: '1.2rem' }}>咅  阝</span>
                 } />
 
-                <BottomNavigationAction label="Output" icon={<ShortTextIcon />} />
+                <BottomNavigationAction onClick={() => {
+                  mobileOutputContainerRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: 'center'
+                  });
+                }} label="Output" icon={<ShortTextIcon />} />
 
-                <BottomNavigationAction label="Results" icon={<TranslateIcon />} />
+                {queryResults.res?.size && <BottomNavigationAction onClick={() => {
+                  resultsPickerAreaRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: 'center'
+                  });
+                }} label="Results" icon={<TranslateIcon />} />}
 
               </BottomNavigation>
 
