@@ -48,10 +48,15 @@ const AppNameh1 = styled.h1`
 `;
 
 const AppContainer = styled.div`
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
-  height: 100%;
+  padding-top: calc(.25 * 100vh);
+  min-height: 100%;
+  max-width: 1127px;
+  // horizontally center
+  marginLeft: auto;
+  marginRight: auto;
+  @media (max-width: 991px) {
+    padding-bottom: 80px;
+  }
 `;
 
 const SearchAndRadicalContainer = styled.div`
@@ -378,97 +383,53 @@ function App() {
           exactRadicalFreq: boolean;
           setExactRadicalFreq: (arg0: boolean) => void;
         }) => (
-          <div
-            style={{
-              marginTop: "calc(.3 * 100vh)",
-              minHeight: "100%",
-              maxWidth: "1127px",
-              // horizontally center
-              marginLeft: "auto",
-              marginRight: "auto",
-              marginBottom: '80px',
-              // position: 'relative'
-            }}
-          >
-            <AppContainer>
-              <SearchAndRadicalContainer>
-                <SearchArea>
-                  <AppNameh1>部首組合式漢字檢索</AppNameh1>
+          <AppContainer>
+            <SearchAndRadicalContainer>
+              <SearchArea>
+                <AppNameh1>部首組合式漢字檢索</AppNameh1>
 
-                  <RadicalIDSContainer>
+                <RadicalIDSContainer>
 
-                    <Dimmer active={!!loadingText}>
-                      <Loader>{loadingText}</Loader>
-                    </Dimmer>
-                    {/* put the ref to scrollto here because it doesn't matter anyways... */}
-                    <div ref={radicalIDSContainerRef} style={{ maxWidth: "1000px" }}>
-                      <div style={{ display: "flex", width: "100%" }}>
-                        <Input
-                          fluid
-                          style={{
-                            // width: "320px",
-                            // to handle chromium... 
-                            width: "99%",
-                            padding: "5px",
-                            // display: "inline-block",
-                          }}
-                          // label="Radicals"
-                          labelPosition="left"
-                          placeholder="食喜"
-                          onChange={(evt) => {
-                            setRadicals(evt.target.value);
-                          }}
-                          value={radicals}
-                          action={!!radicals}
-                        >
-                          <Label>Radicals</Label>
-                          <input />
-                          {!!radicals && (
-                            <Button
-                              onClick={() => {
-                                setRadicals("");
-                              }}
-                              icon
-                              color="grey"
-                            >
-                              <Icon name="close" />
-                            </Button>
-                          )}
-                        </Input>
-
-                        <DesktopExactCheckboxContainer>
-                          <Checkbox
-                            toggle
-                            checked={exactRadicalFreq}
-                            onChange={() => {
-                              setExactRadicalFreq(!exactRadicalFreq);
-                            }}
-                          />
-                          <Caption>部首率完全一致*</Caption>
-                        </DesktopExactCheckboxContainer>
-                      </div>
-
+                  <Dimmer active={!!loadingText}>
+                    <Loader>{loadingText}</Loader>
+                  </Dimmer>
+                  {/* put the ref to scrollto here because it doesn't matter anyways... */}
+                  <div ref={radicalIDSContainerRef} style={{ maxWidth: "1000px" }}>
+                    <div style={{ display: "flex", width: "100%" }}>
                       <Input
-                        style={{ width: "99%", padding: "5px" }}
-                        label="IDCs"
-                        placeholder="⿺⿱"
-                        onChange={(evt) => {
-                          setIDCs(evt.target.value);
+                        fluid
+                        style={{
+                          // width: "320px",
+                          // to handle chromium... 
+                          width: "99%",
+                          padding: "5px",
+                          // display: "inline-block",
                         }}
-                        value={idcs}
-                      />
+                        // label="Radicals"
+                        labelPosition="left"
+                        placeholder="食喜"
+                        onChange={(evt) => {
+                          setRadicals(evt.target.value);
+                        }}
+                        value={radicals}
+                        action={!!radicals}
+                      >
+                        <Label>Radicals</Label>
+                        <input />
+                        {!!radicals && (
+                          <Button
+                            onClick={() => {
+                              setRadicals("");
+                            }}
+                            icon
+                            color="grey"
+                          >
+                            <Icon name="close" />
+                          </Button>
+                        )}
+                      </Input>
 
-                      <IDSPicker onIDSSelected={(idc) => setIDCs(idcs + idc)} />
-                    </div>
-
-                    <div
-                      style={{
-                        padding: "5px",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <MobileExactCheckboxContainer>
+                      <DesktopExactCheckboxContainer>
                         <Checkbox
                           toggle
                           checked={exactRadicalFreq}
@@ -477,124 +438,155 @@ function App() {
                           }}
                         />
                         <Caption>部首率完全一致*</Caption>
-                      </MobileExactCheckboxContainer>
-
-                      <Button
-                        disabled={!!!radicals}
-                        style={{ display: "block" }}
-                        primary
-                        onClick={() => {
-                          setLoadingText("Querying...");
-                          queryIDSWorker.postMessage(
-                            {
-                              msg: "query",
-                              forwardMap: forwardMap.current,
-                              reverseMap: reverseMap,
-                              // forwardMapUint8: forwardMapUint8.current,
-                              // reverseMapUint8: reverseMapUint8.current,
-                              radicals,
-                              idcs,
-                              exactRadicalFreq,
-                            }
-                            // [forwardMapUint8.current, reverseMapUint8.current]
-                          );
-                        }}
-                      >
-                        Search
-                      </Button>
+                      </DesktopExactCheckboxContainer>
                     </div>
-                  </RadicalIDSContainer>
 
-                  <DesktopOutputContainer>
-                    <DesktopOutput ref={desktopOutputRef} />
-                  </DesktopOutputContainer>
+                    <Input
+                      style={{ width: "99%", padding: "5px" }}
+                      label="IDCs"
+                      placeholder="⿺⿱"
+                      onChange={(evt) => {
+                        setIDCs(evt.target.value);
+                      }}
+                      value={idcs}
+                    />
 
-                </SearchArea>
-                <RadicalPickerArea ref={radicalPickerAreaRef}>
-                  <RadicalPicker
-                    onRadicalSelected={handleRadicalSelected}
-                    baseRadicals={baseRadicals}
-                    variantRadicals={variantRadicals}
-                    reverseMap={reverseMap}
-                    strokeCount={strokeCount}
-                    readings={readings}
-                  />
-                </RadicalPickerArea>
+                    <IDSPicker onIDSSelected={(idc) => setIDCs(idcs + idc)} />
+                  </div>
 
-                <MobileOutputContainer ref={mobileOutputContainerRef}>
-                  <MobileOutput ref={mobileOutputRef} />
-                </MobileOutputContainer>
+                  <div
+                    style={{
+                      padding: "5px",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <MobileExactCheckboxContainer>
+                      <Checkbox
+                        toggle
+                        checked={exactRadicalFreq}
+                        onChange={() => {
+                          setExactRadicalFreq(!exactRadicalFreq);
+                        }}
+                      />
+                      <Caption>部首率完全一致*</Caption>
+                    </MobileExactCheckboxContainer>
 
-                <RowFlexboxBreak />
+                    <Button
+                      disabled={!!!radicals}
+                      style={{ display: "block" }}
+                      primary
+                      onClick={() => {
+                        setLoadingText("Querying...");
+                        queryIDSWorker.postMessage(
+                          {
+                            msg: "query",
+                            forwardMap: forwardMap.current,
+                            reverseMap: reverseMap,
+                            // forwardMapUint8: forwardMapUint8.current,
+                            // reverseMapUint8: reverseMapUint8.current,
+                            radicals,
+                            idcs,
+                            exactRadicalFreq,
+                          }
+                          // [forwardMapUint8.current, reverseMapUint8.current]
+                        );
+                      }}
+                    >
+                      Search
+                      </Button>
+                  </div>
+                </RadicalIDSContainer>
 
-                <ResultsPickerArea ref={resultsPickerAreaRef}>
-                  <ResultsPicker
-                    onResultSelected={handleResultSelected}
-                    queryResults={queryResults}
-                    readings={readings}
-                  />
-                </ResultsPickerArea>
+                <DesktopOutputContainer>
+                  <DesktopOutput ref={desktopOutputRef} />
+                </DesktopOutputContainer>
+
+              </SearchArea>
+              <RadicalPickerArea ref={radicalPickerAreaRef}>
+                <RadicalPicker
+                  onRadicalSelected={handleRadicalSelected}
+                  baseRadicals={baseRadicals}
+                  variantRadicals={variantRadicals}
+                  reverseMap={reverseMap}
+                  strokeCount={strokeCount}
+                  readings={readings}
+                />
+              </RadicalPickerArea>
+
+              <MobileOutputContainer ref={mobileOutputContainerRef}>
+                <MobileOutput ref={mobileOutputRef} />
+              </MobileOutputContainer>
+
+              <RowFlexboxBreak />
+
+              <ResultsPickerArea ref={resultsPickerAreaRef}>
+                <ResultsPicker
+                  onResultSelected={handleResultSelected}
+                  queryResults={queryResults}
+                  readings={readings}
+                />
+              </ResultsPickerArea>
 
 
 
-              </SearchAndRadicalContainer>
+            </SearchAndRadicalContainer>
 
 
-              <div style={{ width: "100%", padding: "5px", display: 'flex', }}>
-                <div>Entries: {metadata.entries}</div>
-                <div>Unique Radicals: {metadata.unique_radicals}</div>
-                <div>
-                  IDS Last Modified:{" "}
-                  {metadata.date
-                    ? moment(metadata.date).format("lll")
-                    : "Never"}
-                </div>
+            <div style={{ width: "100%", padding: "5px", display: 'flex', }}>
+              <div>Entries: {metadata.entries}</div>
+              <div>Unique Radicals: {metadata.unique_radicals}</div>
+              <div>
+                IDS Last Modified:{" "}
+                {metadata.date
+                  ? moment(metadata.date).format("lll")
+                  : "Never"}
               </div>
+            </div>
 
-              {/* input, radical, output, results */}
-              <BottomNavigation
-                classes={bottomNavClasses}
-                /* value={value}
-                onChange={(event, newValue) => {
-                  setValue(newValue);
-                }} */
-                showLabels
-              // className={classes.root}
-              >
-                <BottomNavigationAction onClick={() => {
-                  radicalIDSContainerRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: 'center'
-                  });
-                }} label="Search" icon={<SearchIcon />} />
+            {/* input, radical, output, results */}
+            <BottomNavigation
+              classes={bottomNavClasses}
+              /* value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }} */
+              showLabels
+            // className={classes.root}
+            >
+              <BottomNavigationAction onClick={() => {
+                radicalIDSContainerRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: 'center'
+                });
+              }} label="Search" icon={<SearchIcon />} />
 
-                <BottomNavigationAction onClick={() => {
-                  radicalPickerAreaRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: 'center'
-                  });
-                }} label="Radicals" icon={
-                  <span style={{ fontFamily: 'var(--default-sans)', fontWeight: 'bold', fontSize: '1.2rem' }}>咅  阝</span>
-                } />
+              <BottomNavigationAction onClick={() => {
+                radicalPickerAreaRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: 'center'
+                });
+              }} label="Radicals" icon={
+                <span style={{ fontFamily: 'var(--default-sans)', fontWeight: 'bold', fontSize: '1.2rem' }}>咅  阝</span>
+              } />
 
-                <BottomNavigationAction onClick={() => {
-                  mobileOutputContainerRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: 'center'
-                  });
-                }} label="Output" icon={<ShortTextIcon />} />
+              <BottomNavigationAction onClick={() => {
+                mobileOutputContainerRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: 'center'
+                });
+              }} label="Output" icon={<ShortTextIcon />} />
 
-                {queryResults.res?.size && <BottomNavigationAction onClick={() => {
-                  resultsPickerAreaRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: 'center'
-                  });
-                }} label="Results" icon={<TranslateIcon />} />}
+              {queryResults.res?.size && <BottomNavigationAction onClick={() => {
+                resultsPickerAreaRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: 'center'
+                });
+              }} label="Results" icon={<TranslateIcon />} />}
 
-              </BottomNavigation>
+            </BottomNavigation>
 
-            </AppContainer>
-          </div>
+          </AppContainer>
         )}
       </SettingsContext.Consumer>
     </SettingsContextProvider>

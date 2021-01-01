@@ -135,6 +135,7 @@ const StrokesScrollContainer = styled(SimpleBar)`
   // overflow: scroll;
   // background-color: red;
   background-color: white;
+  max-height: 400px;
 `;
 
 const RadicalsScrollContainer = styled.div`
