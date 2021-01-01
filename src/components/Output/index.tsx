@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useImperativeHandle, useState } from "react";
 import styled, { StyledComponent } from "styled-components";
 import { Button, Icon, Form, TextArea } from 'semantic-ui-react'
-import useClippy from "use-clippy";
 
 const OutputContainer = styled.div`
   /* @media (min-width: 480px) {
@@ -46,7 +45,6 @@ const _Output: React.RefForwardingComponent<OutputHandle, OutputProps> = (props:
 
   const { ContainerComponent } = props;
   const [output, setOutput] = useState("");
-  const [clipboard, setClipboard] = useClippy();
   const [showCopied, setShowCopied] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -70,7 +68,7 @@ const _Output: React.RefForwardingComponent<OutputHandle, OutputProps> = (props:
         Clear
       </Button>
       <Button color="blue" onClick={() => {
-        setClipboard(output);
+        navigator.clipboard.writeText(output);
         setShowCopied(true);
         setTimeout(() => {
           setShowCopied(false);
