@@ -43,6 +43,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
+    "test-etl": "jest etl",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -67,8 +68,18 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@types/react-ultimate-pagination": "^1.2.0",
     "@types/react-virtualized-auto-sizer": "^1.0.0",
     "object-sizeof": "^1.6.1"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
+    }
   }
 }
