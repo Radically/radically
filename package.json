@@ -43,7 +43,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "test-etl": "jest etl",
+    "test-etl": "jest --config etl/jest.config.js etl",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -69,9 +69,13 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@types/progress": "^2.0.3",
     "@types/react-ultimate-pagination": "^1.2.0",
     "@types/react-virtualized-auto-sizer": "^1.0.0",
-    "object-sizeof": "^1.6.1"
+    "axios": "^0.21.1",
+    "object-sizeof": "^1.6.1",
+    "progress": "^2.0.3",
+    "ts-jest": "^26.4.4"
   },
   "babel": {
     "env": {
