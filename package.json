@@ -43,6 +43,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
+    "etl": "ts-node --project tsconfig.etl.json etl/driver.ts",
     "test-etl": "jest --config etl/jest.config.js etl",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -75,7 +76,8 @@
     "axios": "^0.21.1",
     "object-sizeof": "^1.6.1",
     "progress": "^2.0.3",
-    "ts-jest": "^26.4.4"
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1"
   },
   "babel": {
     "env": {

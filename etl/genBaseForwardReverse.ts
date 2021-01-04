@@ -17,6 +17,7 @@ const processIDSText = (text: string) => {
 }
 
 const main = async () => {
+  // for testing purposes only
   await getRawIRGSources();
 }
 
