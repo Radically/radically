@@ -1,14 +1,21 @@
 {
   "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      // we want to share types with the frontend!
+      "./src/types",
+      "./etl/types"
+    ],
     "module": "commonjs",
-    "rootDir": "src",
+    // "rootDir": "src",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "noImplicitAny": true
   },
   "include": [
-    "src/"
+    "src/",
+    "etl/"
   ],
   "exclude": [
     "node_modules"

@@ -14,6 +14,7 @@
     "@types/react-dom": "^16.9.10",
     "@types/react-window": "^1.8.2",
     "@types/styled-components": "^5.1.4",
+    "@types/yauzl": "^2.9.1",
     "hanamin": "0.0.5",
     "kaixinsong": "0.0.2",
     "moment": "^2.29.1",
@@ -43,7 +44,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "etl": "ts-node --project tsconfig.etl.json etl/driver.ts",
+    "etl": "ts-node --files --project tsconfig.etl.json etl/driver.ts",
     "test-etl": "jest --config etl/jest.config.js etl",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -74,10 +75,12 @@
     "@types/react-ultimate-pagination": "^1.2.0",
     "@types/react-virtualized-auto-sizer": "^1.0.0",
     "axios": "^0.21.1",
+    "crc-hash": "^0.2.2",
     "object-sizeof": "^1.6.1",
     "progress": "^2.0.3",
     "ts-jest": "^26.4.4",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "yauzl": "^2.10.0"
   },
   "babel": {
     "env": {
