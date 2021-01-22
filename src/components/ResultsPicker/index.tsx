@@ -5,7 +5,7 @@ import { useWindowDimensions } from "../../utils";
 import UltimatePagination from "../UltimatePagination";
 import CharacterResult from "./CharacterResult";
 
-import { INDIVIDUAL_RADICAL_WIDTH_PX, /* RADICALS_PER_ROW_DESKTOP, RADICALS_PER_ROW_MOBILE */ } from "./constants";
+import { INDIVIDUAL_RADICAL_WIDTH_PX, /* RADICALS_PER_ROW_DESKTOP, RADICALS_PER_ROW_MOBILE */ } from "./Constants";
 
 // results as a big long array or set..
 interface ResultsPickerProps {
