@@ -4,6 +4,7 @@ import {
   UNIHAN_ZIP_URL,
   DATA_CACHE_DIR_NAME,
   METADATA_FILE_NAME,
+  UNIHAN_IRGSOURCES_NAME,
   UNIHAN_SUBDIR_NAME,
 } from "./constants";
 import axios from "axios";
@@ -83,9 +84,9 @@ const fetchUnihanData = async () => {
     if (!fs.existsSync(UNIHAN_METADATA_FILE)) throw new Error();
     const data = JSON.parse(fs.readFileSync(UNIHAN_METADATA_FILE).toString());
     if (!isMetadata(data)) throw new Error();
-    console.log("Valid metadata file");
+    console.log("Valid UniHan metadata file");
   } catch {
-    console.error("Invalid metadata file");
+    console.error("Invalid UniHan metadata file");
     fs.writeFileSync(
       UNIHAN_METADATA_FILE,
       JSON.stringify({ files: {}, lastModified: moment(0).toLocaleString() })
@@ -200,8 +201,12 @@ const fetchUnihanData = async () => {
   console.log(metadata);
 };
 
-export const getRawIRGSources = async () => {
+export const getRawIRGSources = async (): Promise<string> => {
   // check if already downloaded
   await fetchUnihanData();
-  // download with progress bar
+  // downloaded, read from fs
+  const buf = await fs.promises.readFile(
+    path.join(UNIHAN_SUBDIR, UNIHAN_IRGSOURCES_NAME)
+  );
+  return buf.toString();
 };
