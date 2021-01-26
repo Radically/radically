@@ -112,14 +112,7 @@ export const getAvailableIDSData = async (): Promise<string[]> => {
       data
     );
 
-    for (let resolution_status of [
-      "resolved",
-      "entities_resolved",
-      "manually_resolved",
-      "manually_partially_resolved",
-      "unresolved",
-      "unresolvable",
-    ]) {
+    for (let resolution_status in ids_resolution_status) {
       if (idsDataFile.hasOwnProperty(resolution_status)) {
         ({ data } = await axios.get(
           UNICODE_IDS_DATABASE_BASE_URL +
