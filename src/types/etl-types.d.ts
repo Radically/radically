@@ -7,6 +7,7 @@ interface ReverseMap {
       ids: string;
       locales: string;
     }[];
+    charFreqs?: powerset[];
   };
 }
 

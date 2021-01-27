@@ -1,7 +1,3 @@
-export function sum(a: number, b: number) {
-  return a + b;
-}
-
 import fs from "fs";
 import path from "path";
 
@@ -120,17 +116,33 @@ export const freqPerm = (freqsArr: powerset[][]): powerset[] => {
 
 export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
   const freqsAtThisNode = [] as { [key: string]: number }[]; // it is *not* a powerset!
+
+  if (!(char in reverseMap)) {
+    return [{}];
+  }
+
   const { ids_strings } = reverseMap[char];
 
   for (let i = 0; i < ids_strings.length; i++) {
     freqsAtThisNode.push({});
     const { ids } = ids_strings[i];
-    for (let idsChar of ids) {
+
+    let idsChar: string;
+    for (let j = 0; j < utfstring.length(ids); j++) {
+      idsChar = utfstring.fromCharCode(utfstring.charCodeAt(ids, j));
+
       if (!IDCSet.has(idsChar) && idsChar !== char) {
         if (!freqsAtThisNode[i][idsChar]) freqsAtThisNode[i][idsChar] = 0;
         freqsAtThisNode[i][idsChar] += 1;
       }
     }
+
+    /* for (let idsChar of ids) {
+      if (!IDCSet.has(idsChar) && idsChar !== char) {
+        if (!freqsAtThisNode[i][idsChar]) freqsAtThisNode[i][idsChar] = 0;
+        freqsAtThisNode[i][idsChar] += 1;
+      }
+    }*/
   }
 
   let res = [] as powerset[];
@@ -145,7 +157,11 @@ export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
   return res;
 };
 
-export const finalizeReverseMap = (reverseMap: ReverseMap) => {};
+const finalizeReverseMap = (reverseMap: ReverseMap) => {
+  for (let char of Object.keys(reverseMap)) {
+    reverseMap[char].charFreqs = rec(reverseMap, char);
+  }
+};
 
 const processIDSText = (resolvedIDSData: string[][]) => {
   const forwardMap: any = {};
@@ -163,6 +179,8 @@ const processIDSText = (resolvedIDSData: string[][]) => {
     processedIDSMetadata.entries += 1;
     const utfCp = entry[0];
     const char = entry[1];
+
+    if (!char) continue;
 
     const reverseMapValue = [];
 
@@ -234,6 +252,7 @@ const processIDSText = (resolvedIDSData: string[][]) => {
   for (let radical of Object.keys(forwardMap))
     forwardMap[radical] = Array.from(forwardMap[radical]);
 
+  finalizeReverseMap(reverseMap);
   return {
     baseRadicals,
     forwardMap: forwardMap as ForwardMap,
