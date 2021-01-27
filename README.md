@@ -135,3 +135,17 @@ N.B. if there are no valid characters in the IDS string, `freqs` in the 2nd for 
 [1] AFAIK, there is a lot of human subjectivity involved in the CHISE IDS dataset.
 
 [2] "Powerset" here refers to a hash table, the keys of which are **ALL** the constituent radicals of a particular character as we traverse the tree, and the values of which are their frequencies. I refer to this concept as `freqs` in the code often.
+
+### Generated Datasets
+
+**baseRadicals.json**: `string[]`, a list of radicals which cannot be further decomposed.
+
+### Rules of thumb
+
+The IDS sequences as provided by CHISE use Kangxi radicals and their actual CJK character counterparts interchangeably.
+
+[Decomposition which uses U+2E81 (Kangxi radical)](https://gitlab.chise.org/CHISE/ids/-/blob/abb8c1ae25a9e6360e8629c35b8e3e06dd38f62d/IDS-UCS-Ext-B-2.txt#L5511)
+
+[Decomposition which uses U+20086 (CJK character)](https://gitlab.chise.org/CHISE/ids/-/blob/abb8c1ae25a9e6360e8629c35b8e3e06dd38f62d/IDS-UCS-Basic.txt#L16170)
+
+All Kangxi radicals are converted to their corresponding CJK characters as part of the ETL process.
