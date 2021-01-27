@@ -43,7 +43,7 @@ Define another function `permGen(n-tuple[])` which takes the length of each n-tu
 
 Now, the only thing left to do is to merge _the powersets of the IDS string_, with the frequencies of the _IDS string itself_.
 
-Going back to our example where the two powersets of 艹蓮 are `[ { '十': 1, '丨': 1, '辶': 1, '車': 1 }, { '十': 2, '辶': 1, '車': 1 } ]`, we need to merge each of the powersets with `{ '艹': 1, '蓮': 1 }` using `mergeTwoFreqs` to get two possible powersets for 蓮, namely,
+Going back to our example where the two powersets of 艹蓮 are `[ { '十': 1, '丨': 1, '辶': 1, '車': 1 }, { '十': 2, '辶': 1, '車': 1 } ]`, we need to merge each of the powersets with `{ '艹': 1, '連': 1 }` using `mergeTwoFreqs` to get two possible powersets for 蓮, namely,
 
 ```
 [
