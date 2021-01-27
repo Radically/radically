@@ -150,7 +150,12 @@ const processIDSText = (resolvedIDSData: string[][]) => {
   for (let radical of Object.keys(forwardMap))
     forwardMap[radical] = Array.from(forwardMap[radical]);
 
-  return { baseRadicals, forwardMap, reverseMap, processedIDSMetadata };
+  return {
+    baseRadicals,
+    forwardMap: forwardMap as ForwardMap,
+    reverseMap,
+    processedIDSMetadata,
+  };
 };
 
 const main = async () => {
