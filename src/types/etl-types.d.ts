@@ -4,14 +4,14 @@ interface ReverseMap {
   [key: string]: {
     utf_code: string;
     ids_strings: {
-    ids: string;
-    locales: string[];
+      ids: string;
+      locales: string;
     }[];
   };
 }
 
 interface ForwardMap {
-  [key: string]: string
+  [key: string]: string[];
 }
 
 type BaseRadicals = string[];
@@ -25,7 +25,7 @@ interface VariantRadicals {
 
 interface Readings {
   [key: string]: {
-      [key: string]: string;
+    [key: string]: string;
   };
 }
 

@@ -4,6 +4,7 @@ import {
   UNICODE_IDS_SUBDIR_NAME,
   UNICODE_IDS_DATABASE_BASE_URL,
   UNICODE_IDS_DATABASE_URL,
+  UNICODE_IDS_RESOLVED_PREFIXES,
 } from "./constants";
 import axios from "axios";
 import path from "path";
@@ -14,6 +15,7 @@ enum ids_resolution_status {
   original = "original",
   resolved = "resolved",
   entities_resolved = "entities_resolved",
+  partially_resolved = "partially_resolved",
   manually_resolved = "manually_resolved",
   manually_partially_resolved = "manually_partially_resolved",
   unresolved = "unresolved",
@@ -30,6 +32,7 @@ type unicode_ids_metadata_ids_data = {
   original: ids_resolution_status_fields;
   resolved?: ids_resolution_status_fields;
   entities_resolved?: ids_resolution_status_fields;
+  partially_resolved?: ids_resolution_status_fields;
   manually_resolved?: ids_resolution_status_fields;
   manually_partially_resolved?: ids_resolution_status_fields;
   unresolved?: ids_resolution_status_fields;
@@ -136,4 +139,30 @@ export const getAvailableIDSData = async (): Promise<string[]> => {
   }
 
   return Object.keys(ids_data);
+};
+
+const isResolvedFile = (filename: string) => {
+  for (let prefix of UNICODE_IDS_RESOLVED_PREFIXES) {
+    if (filename.startsWith(prefix)) return true;
+  }
+  return false;
+};
+
+export const getAllResolvedIDSData = (originalFilename: string): string[][] => {
+  const res: string[][] = [];
+  for (let filename of fs.readdirSync(UNICODE_IDS_SUBDIR)) {
+    if (filename.endsWith(originalFilename) && isResolvedFile(filename)) {
+      const text = fs.readFileSync(
+        path.join(UNICODE_IDS_SUBDIR, filename),
+        "utf8"
+      );
+
+      const split = text.split("\n");
+      for (let _entry of split) {
+        if (_entry.trim().startsWith("#")) continue;
+        res.push(_entry.split("\t").map((s) => s.trim()));
+      }
+    }
+  }
+  return res;
 };
