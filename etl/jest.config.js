@@ -6,6 +6,12 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
   },
+  "globals": {
+    "ts-jest": {
+      "babelConfig": true,
+      "tsconfig": "tsconfig.etl.json"
+    }
+  },
   coverageThreshold: {
     global: {
       branches: 80,

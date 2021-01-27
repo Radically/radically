@@ -63,6 +63,90 @@ export const kangxiToCJK = (input: string): string => {
   return output.join("");
 };
 
+type powerset = {
+  [key: string]: number;
+};
+
+export const mergeTwoFreqs = (freqsA: powerset, freqsB: powerset): powerset => {
+  const res = { ...freqsB };
+  for (let char of Object.keys(freqsA)) {
+    if (!res[char]) res[char] = 0;
+    res[char] += freqsA[char];
+  }
+  return res;
+};
+
+export const freqPerm = (freqsArr: powerset[][]): powerset[] => {
+  // freqsArr is [ [ {char: 99}, {char2, 99}, ...] ]
+
+  const lengths = freqsArr.map((arr) => arr.length);
+
+  let res = [] as number[][];
+  /*
+  [
+  [ 0, 0, 0 ], [ 0, 0, 1 ],
+  [ 0, 0, 2 ], [ 0, 1, 0 ],
+  [ 0, 1, 1 ], [ 0, 1, 2 ],
+  [ 1, 0, 0 ], [ 1, 0, 1 ],
+  [ 1, 0, 2 ], [ 1, 1, 0 ],
+  [ 1, 1, 1 ], [ 1, 1, 2 ]
+  ]*/
+  let tmp = [] as number[];
+
+  const rec = (idx: number) => {
+    if (idx === lengths.length) {
+      res.push([...tmp]);
+    } else {
+      for (let i = 0; i < lengths[idx]; i++) {
+        tmp.push(i);
+        rec(idx + 1);
+        tmp.pop();
+      }
+    }
+  };
+  rec(0);
+
+  const ans = [] as powerset[];
+  for (let permIdArr of res) {
+    let res = {};
+    const perm = permIdArr.map((elem: number, i: number) => freqsArr[i][elem]);
+    for (let item of perm) {
+      res = mergeTwoFreqs(res, item);
+    }
+    ans.push(res);
+  }
+  return ans;
+};
+
+export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
+  const freqsAtThisNode = [] as { [key: string]: number }[]; // it is *not* a powerset!
+  const { ids_strings } = reverseMap[char];
+
+  for (let i = 0; i < ids_strings.length; i++) {
+    freqsAtThisNode.push({});
+    const { ids } = ids_strings[i];
+    for (let idsChar of ids) {
+      if (!IDCSet.has(idsChar) && idsChar !== char) {
+        if (!freqsAtThisNode[i][idsChar]) freqsAtThisNode[i][idsChar] = 0;
+        freqsAtThisNode[i][idsChar] += 1;
+      }
+    }
+  }
+
+  let res = [] as powerset[];
+  for (let i = 0; i < freqsAtThisNode.length; i++) {
+    let freqs = freqPerm(
+      Object.keys(freqsAtThisNode[i]).map((key) => rec(reverseMap, key))
+    );
+    freqs = freqs.map((freq) => mergeTwoFreqs(freq, freqsAtThisNode[i]));
+    res = res.concat(freqs);
+  }
+
+  return res;
+};
+
+export const finalizeReverseMap = (reverseMap: ReverseMap) => {};
+
 const processIDSText = (resolvedIDSData: string[][]) => {
   const forwardMap: any = {};
   const reverseMap: ReverseMap = {};
