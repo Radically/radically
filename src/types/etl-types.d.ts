@@ -20,6 +20,10 @@ interface StrokeCount {
   [key: string]: number;
 }
 
+interface StrokeCountMap {
+  [key: string]: number;
+}
+
 interface VariantRadicals {
   [key: string]: Set<string>;
 }

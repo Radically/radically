@@ -5,7 +5,7 @@ import { JSON_FILE_NAMES } from "../src/constants";
 
 const main = async () => {
   const IRGSourcesString = (await getRawIRGSources()).split("\n");
-  const map = {} as { [key: string]: number };
+  const map = {} as StrokeCountMap;
   for (let entry of IRGSourcesString) {
     if (entry.startsWith("#")) continue;
     let split = entry.split("\t");
