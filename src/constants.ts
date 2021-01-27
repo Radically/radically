@@ -37,8 +37,11 @@ export const StrokePlaceholderSet = new Set([
 ]);
 
 export const JSON_FILE_NAMES = {
-  baseRadicals: 'baseRadicals.json',
-  forwardMap: 'forwardMap.json',
-  reverseMap: 'reverseMap.json',
-  processedIDSMetadata: 'processedIDSMetadata.json'
-}
+  baseRadicals: "baseRadicals.json",
+  forwardMap: "forwardMap.json",
+  reverseMap: "reverseMap.json",
+  processedIDSMetadata: "processedIDSMetadata.json",
+
+  strokeCount: "strokeCount.json",
+  readings: "readings.json",
+};

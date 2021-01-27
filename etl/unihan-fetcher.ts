@@ -5,6 +5,7 @@ import {
   DATA_CACHE_DIR_NAME,
   METADATA_FILE_NAME,
   UNIHAN_IRGSOURCES_NAME,
+  UNIHAN_READINGS_NAME,
   UNIHAN_SUBDIR_NAME,
 } from "./constants";
 import axios from "axios";
@@ -207,6 +208,14 @@ export const getRawIRGSources = async (): Promise<string> => {
   // downloaded, read from fs
   const buf = await fs.promises.readFile(
     path.join(UNIHAN_SUBDIR, UNIHAN_IRGSOURCES_NAME)
+  );
+  return buf.toString();
+};
+
+export const getRawReadings = async (): Promise<string> => {
+  await fetchUnihanData();
+  const buf = await fs.promises.readFile(
+    path.join(UNIHAN_SUBDIR, UNIHAN_READINGS_NAME)
   );
   return buf.toString();
 };

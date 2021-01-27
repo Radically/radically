@@ -7,6 +7,7 @@ export const UNIHAN_SUBDIR_NAME = "unihan";
 export const METADATA_FILE_NAME = "metadata.json";
 
 export const UNIHAN_IRGSOURCES_NAME = "Unihan_IRGSources.txt";
+export const UNIHAN_READINGS_NAME = "Unihan_Readings.txt";
 
 export const UNICODE_IDS_DATABASE_BASE_URL =
   "https://transfusion.github.io/cjkvi-ids-unicode";

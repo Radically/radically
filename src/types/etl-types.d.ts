@@ -24,6 +24,10 @@ interface StrokeCountMap {
   [key: string]: number;
 }
 
+interface ReadingsMap {
+  [key: string]: { [key: string]: string };
+}
+
 interface VariantRadicals {
   [key: string]: Set<string>;
 }
