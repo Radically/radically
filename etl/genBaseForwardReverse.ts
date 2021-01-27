@@ -149,7 +149,26 @@ const processIDSText = (resolvedIDSData: string[][]) => {
   // need to convert to an array because we can't stringify Sets apparently...
   for (let radical of Object.keys(forwardMap))
     forwardMap[radical] = Array.from(forwardMap[radical]);
-  // console.log(JSON.stringify(forwardMap));
+
+  return { baseRadicals, forwardMap, reverseMap, processedIDSMetadata };
+};
+
+const main = async () => {
+  // for testing purposes only
+  // const IRGSourcesString = await getRawIRGSources();
+  // console.log(IRGSourcesString.substring(0, 100));
+
+  let resolvedIDSData: string[][] = [];
+  for (let sourceFile of await getAvailableIDSData()) {
+    resolvedIDSData = resolvedIDSData.concat(getAllResolvedIDSData(sourceFile));
+  }
+
+  const {
+    baseRadicals,
+    forwardMap,
+    reverseMap,
+    processedIDSMetadata,
+  } = processIDSText(resolvedIDSData);
 
   // write to output
   writeJSON(
@@ -165,19 +184,6 @@ const processIDSText = (resolvedIDSData: string[][]) => {
     JSON.stringify(processedIDSMetadata),
     JSON_FILE_NAMES.processedIDSMetadata
   );
-};
-
-const main = async () => {
-  // for testing purposes only
-  // const IRGSourcesString = await getRawIRGSources();
-  // console.log(IRGSourcesString.substring(0, 100));
-
-  let resolvedIDSData: string[][] = [];
-  for (let sourceFile of await getAvailableIDSData()) {
-    resolvedIDSData = resolvedIDSData.concat(getAllResolvedIDSData(sourceFile));
-  }
-
-  processIDSText(resolvedIDSData);
 };
 
 export default main;
