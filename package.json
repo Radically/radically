@@ -16,6 +16,7 @@
     "@types/styled-components": "^5.1.4",
     "@types/yauzl": "^2.9.1",
     "hanamin": "0.0.5",
+    "ivs": "^2.0.2",
     "kaixinsong": "0.0.2",
     "moment": "^2.29.1",
     "react": "^17.0.1",

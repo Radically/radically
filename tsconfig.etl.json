@@ -6,6 +6,8 @@
       "./src/types",
       "./etl/types"
     ],
+    "downlevelIteration": true,
+    "resolveJsonModule": true,
     "module": "commonjs",
     // "rootDir": "src",
     "moduleResolution": "node",

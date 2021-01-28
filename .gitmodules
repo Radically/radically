@@ -1,0 +1,3 @@
+[submodule "etl/cjkvi-variants"]
+	path = etl/cjkvi-variants
+	url = https://github.com/cjkvi/cjkvi-variants.git
