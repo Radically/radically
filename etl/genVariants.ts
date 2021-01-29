@@ -9,7 +9,7 @@ import {
   getCommonTraditionalCharacters,
 } from "./variants-fetcher";
 
-import { Hanja as everydayHanja1800 } from './hanja-for-everyday-use-1800.json';
+import { Hanja as everydayHanja1800 } from "./hanja-for-everyday-use-1800.json";
 
 const IVS = require("ivs");
 const utfstring = require("utfstring");
@@ -71,10 +71,7 @@ const addChinese = (map: { [key: string]: Set<number> }) => {
   /* hydzd is probably a strict subset... 𫢟 is in cjkvi-simplified but not in hydzd, TODO: investigate */
 };
 
-export const addJapaneseShinKyu = (
-  ivsInstance: any,
-  map: VariantsMap
-) => {
+export const addJapaneseShinKyu = (ivsInstance: any, map: VariantsMap) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -103,11 +100,11 @@ export const addKoreanStandard = (map: VariantsMap) => {
     }
   };
 
-  for (let {Character} of everydayHanja1800) {
+  for (let { Character } of everydayHanja1800) {
     createMapEntry(Character);
     map[Character].add(CharacterVariant.korean_standard);
   }
-}
+};
 
 export const addKokuji = async (map: VariantsMap) => {
   const createMapEntry = (char: string) => {
@@ -117,19 +114,32 @@ export const addKokuji = async (map: VariantsMap) => {
   };
 
   const IRGSourcesString = await getRawIRGSources();
-  for (let entry of IRGSourcesString.split('\n')) {
-    if (entry.startsWith('#')) continue;
+  for (let entry of IRGSourcesString.split("\n")) {
+    if (entry.startsWith("#")) continue;
     if (!entry) continue;
     // U+2A708	kIRG_JSource	JK-65004
-    const split = entry.split('\t');
-    if (split[1] === 'kIRG_JSource' && split[2].startsWith('JK')) {
+    const split = entry.split("\t");
+    if (split[1] === "kIRG_JSource" && split[2].startsWith("JK")) {
       const kokuji = String.fromCodePoint(parseInt(split[0].substr(2), 16));
       createMapEntry(kokuji);
       map[kokuji].add(CharacterVariant.kokuji);
     }
   }
+};
 
-}
+const addJoyoKanji = async (map: VariantsMap) => {
+  const createMapEntry = (char: string) => {
+    if (!(char in map)) {
+      map[char] = new Set<number>();
+    }
+  };
+
+  const joyo_variants = getRawVariantsData("joyo-variants.txt");
+  for (let entry of joyo_variants) {
+    createMapEntry(entry[0]);
+    map[entry[0]].add(CharacterVariant.joyo_kanji);
+  }
+};
 
 const main = async () => {
   /* generate a list of known variants first, e.g. whether a 
@@ -138,6 +148,7 @@ const main = async () => {
   // probably more efficient to assign a list to each character instead of doing an O(number of variants) lookup in the frontend for every single character...
 
   const map = {} as VariantsMap;
+  addJoyoKanji(map);
   await addKokuji(map);
   addKoreanStandard(map);
   addChinese(map);
