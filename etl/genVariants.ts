@@ -141,6 +141,20 @@ const addJoyoKanji = async (map: VariantsMap) => {
   }
 };
 
+const addKakikae = async (map: VariantsMap) => {
+  const createMapEntry = (char: string) => {
+    if (!(char in map)) {
+      map[char] = new Set<number>();
+    }
+  };
+
+  const kakikae_variants = getRawVariantsData("jp-borrowed.txt");
+  for (let entry of kakikae_variants) {
+    createMapEntry(entry[2]);
+    map[entry[2]].add(CharacterVariant.kakikae);
+  }
+};
+
 const main = async () => {
   /* generate a list of known variants first, e.g. whether a 
   character is a known radical, joyo kanji, simplified character, gukja, etc.*/
@@ -148,6 +162,7 @@ const main = async () => {
   // probably more efficient to assign a list to each character instead of doing an O(number of variants) lookup in the frontend for every single character...
 
   const map = {} as VariantsMap;
+  addKakikae(map);
   addJoyoKanji(map);
   await addKokuji(map);
   addKoreanStandard(map);

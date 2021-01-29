@@ -22,6 +22,7 @@ export const getRawVariantsData = (
   for (let entry of split) {
     if (!entry.length) continue;
     if (entry.trim().startsWith("#")) continue;
+    if (entry.charCodeAt(0) < 127) continue;
     res.push(entry.split(","));
   }
 
