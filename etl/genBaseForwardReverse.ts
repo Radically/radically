@@ -207,6 +207,7 @@ const processIDSText = (resolvedIDSData: string[][]) => {
         if (StrokePlaceholderSet.has(radical)) continue;
         // ignore all ascii
         if (radical.charCodeAt(0) < 127) continue;
+        if (radical === "？") continue;
         // add everything 1st
         baseRadicals.add(radical);
         if (radical === char) {
