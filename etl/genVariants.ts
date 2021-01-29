@@ -7,6 +7,7 @@ import {
   getRawVariantsData,
   getJPOldStyleData,
   getCommonTraditionalCharacters,
+  getCommonSimplifiedCharacters,
 } from "./variants-fetcher";
 
 import { Hanja as everydayHanja1800 } from "./hanja-for-everyday-use-1800.json";
@@ -14,10 +15,11 @@ import { Hanja as everydayHanja1800 } from "./hanja-for-everyday-use-1800.json";
 const IVS = require("ivs");
 const utfstring = require("utfstring");
 
-const addChinese = (map: { [key: string]: Set<number> }) => {
+const addChinese = (map: VariantsMap) => {
   const cjkvi_simplified = getRawVariantsData("cjkvi-simplified.txt");
 
   const commonTraditional = getCommonTraditionalCharacters();
+  const commonSimplified = getCommonSimplifiedCharacters();
 
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
@@ -28,6 +30,11 @@ const addChinese = (map: { [key: string]: Set<number> }) => {
   for (let char of commonTraditional) {
     createMapEntry(char);
     map[char].add(CharacterVariant.chinese_traditional);
+  }
+
+  for (let char of commonSimplified) {
+    createMapEntry(char);
+    map[char].add(CharacterVariant.chinese_simplified);
   }
 
   const cjkvi_simp_to_trad = new Map<string, string>();

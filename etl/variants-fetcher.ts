@@ -85,7 +85,20 @@ export const getCommonTraditionalCharacters = (): string[] => {
     if (!entry.length) continue;
     if (entry.trim().startsWith("#")) continue;
     const splitEntry = entry.split(" ");
-    res.push(splitEntry[1]);
+    res.push(splitEntry[splitEntry.length - 1]);
+  }
+  return res;
+};
+
+export const getCommonSimplifiedCharacters = (): string[] => {
+  const filePath = path.join(__dirname, "cj5-sc-sourced.txt");
+  const res = [] as string[];
+  const split = fs.readFileSync(filePath, "utf-8").split("\n");
+  for (let entry of split) {
+    if (!entry.length) continue;
+    if (entry.trim().startsWith("#")) continue;
+    const splitEntry = entry.split(" ");
+    res.push(splitEntry[splitEntry.length - 1]);
   }
   return res;
 };
