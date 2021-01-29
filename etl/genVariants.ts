@@ -198,6 +198,14 @@ const main = async () => {
   // const IRGSourcesString = (await getRawIRGSources()).split("\n");
   // probably more efficient to assign a list to each character instead of doing an O(number of variants) lookup in the frontend for every single character...
 
+  const addJapaneseShinKyuPromise = (map: VariantsMap) =>
+    new Promise<void>((resolve, reject) => {
+      const ivs = new IVS(() => {
+        addJapaneseShinKyu(ivs, map);
+        resolve();
+      });
+    });
+
   const map = {} as VariantsMap;
   addRadicals(map);
   await addSawndip(map);
@@ -207,9 +215,14 @@ const main = async () => {
   addKoreanStandard(map);
   addChinese(map);
   // jp-old-style.txt makes use of IVS characters which I strip
-  const ivs = new IVS(() => {
-    addJapaneseShinKyu(ivs, map);
-  });
+  await addJapaneseShinKyuPromise(map);
+
+  const mapArr = {} as { [key: string]: number[] };
+  for (let char in map) {
+    mapArr[char] = Array.from(map[char]);
+  }
+
+  writeJSON(JSON.stringify(mapArr), JSON_FILE_NAMES.variantsMap);
 };
 
 export default main;

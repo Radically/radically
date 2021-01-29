@@ -44,4 +44,6 @@ export const JSON_FILE_NAMES = {
 
   strokeCount: "strokeCount.json",
   readings: "readings.json",
+
+  variantsMap: "variantsMap.json",
 };
