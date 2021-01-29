@@ -1,0 +1,18 @@
+# manual additions to cjkvi-variants/radical-variants.txt
+小,cjkvi/radical-variant,𭕄
+小,cjkvi/radical-variant,⺌
+八,cjkvi/radical-variant,丷
+刀,cjkvi/radical-variant,丷
+刀,cjkvi/radical-variant,⺈
+丿,cjkvi/radical-variant,⺄
+丿,cjkvi/radical-variant,乀
+冰,cjkvi/radical-variant,冫
+節,cjkvi/radical-variant,卩
+私,cjkvi/radical-variant,厶
+方,cjkvi/radical-variant,匚
+行,cjkvi/radical-variant,彳
+衣,cjkvi/radical-variant,亠
+舛,cjkvi/radical-variant,𫝀
+行,cjkvi/radical-variant,亍
+衣,cjkvi/radical-variant,𧘇
+舛,cjkvi/radical-variant,㐄

@@ -1,9 +1,17 @@
 import fs from "fs";
 import path from "path";
 
-import { CJKVI_VARIANTS_SUBDIR_NAME } from "./constants";
+import {
+  CJKVI_VARIANTS_SUBDIR_NAME,
+  MANUAL_CJKVI_VARIANTS_SUBDIR_NAME,
+} from "./constants";
 
 const CJKVI_VARIANTS_SUBDIR = path.join(__dirname, CJKVI_VARIANTS_SUBDIR_NAME);
+
+const MANUAL_CJKVI_VARIANTS_SUBDIR = path.join(
+  __dirname,
+  MANUAL_CJKVI_VARIANTS_SUBDIR_NAME
+);
 
 export const getAvailableVariantsData = (): string[] => {
   return fs.readdirSync(CJKVI_VARIANTS_SUBDIR);
@@ -13,6 +21,32 @@ export const getRawVariantsData = (
   originalFileName: string
 ): string[][] | null => {
   const filePath = path.join(CJKVI_VARIANTS_SUBDIR, originalFileName);
+  let res = [] as string[][];
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  const split = fs.readFileSync(filePath, "utf-8").split("\n");
+  for (let entry of split) {
+    if (!entry.length) continue;
+    if (entry.trim().startsWith("#")) continue;
+    if (entry.charCodeAt(0) < 127) continue;
+    res.push(entry.split(","));
+  }
+
+  const rawManualVariants = getRawManualVariantsData(originalFileName);
+
+  if (rawManualVariants !== null) {
+    res = res.concat(rawManualVariants);
+  }
+
+  return res;
+};
+
+const getRawManualVariantsData = (
+  originalFileName: string
+): string[][] | null => {
+  const filePath = path.join(MANUAL_CJKVI_VARIANTS_SUBDIR, originalFileName);
   const res = [] as string[][];
   if (!fs.existsSync(filePath)) {
     return null;
