@@ -155,6 +155,27 @@ const addKakikae = async (map: VariantsMap) => {
   }
 };
 
+const addSawndip = async (map: VariantsMap) => {
+  const createMapEntry = (char: string) => {
+    if (!(char in map)) {
+      map[char] = new Set<number>();
+    }
+  };
+
+  const IRGSourcesString = await getRawIRGSources();
+  for (let entry of IRGSourcesString.split("\n")) {
+    if (entry.startsWith("#")) continue;
+    if (!entry) continue;
+    // U+2A708	kIRG_JSource	JK-65004
+    const split = entry.split("\t");
+    if (split[1] === "kIRG_GSource" && split[2].startsWith("GZ")) {
+      const sawndip = String.fromCodePoint(parseInt(split[0].substr(2), 16));
+      createMapEntry(sawndip);
+      map[sawndip].add(CharacterVariant.sawndip);
+    }
+  }
+};
+
 const main = async () => {
   /* generate a list of known variants first, e.g. whether a 
   character is a known radical, joyo kanji, simplified character, gukja, etc.*/
@@ -162,6 +183,7 @@ const main = async () => {
   // probably more efficient to assign a list to each character instead of doing an O(number of variants) lookup in the frontend for every single character...
 
   const map = {} as VariantsMap;
+  await addSawndip(map);
   addKakikae(map);
   addJoyoKanji(map);
   await addKokuji(map);

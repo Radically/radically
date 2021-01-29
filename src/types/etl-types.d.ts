@@ -42,7 +42,7 @@ const enum CharacterVariant {
   chinese_simplified = 9,
   chinese_traditional = 10,
   other_simplified = 11, // such as pseudo-simplified
-  sawndip_simplified = 12,
+  sawndip_simplified = 12, // TODO
   sawndip = 13,
   radical = 14,
 }
