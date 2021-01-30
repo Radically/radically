@@ -46,4 +46,5 @@ export const JSON_FILE_NAMES = {
   readings: "readings.json",
 
   variantsMap: "variantsMap.json",
+  variantsIslandsLookup: "variantsIslandsLookup.json",
 };

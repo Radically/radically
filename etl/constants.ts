@@ -1,4 +1,4 @@
-export const UNIHAN_ZIP_URL = 'https://unicode.org/Public/UNIDATA/Unihan.zip';
+export const UNIHAN_ZIP_URL = "https://unicode.org/Public/UNIDATA/Unihan.zip";
 
 // export const UNIHAN_ZIP_URL = "http://localhost:8000/Unihan.zip";
 
@@ -30,3 +30,4 @@ export const UNICODE_IDS_RESOLVED_PREFIXES = [
 ];
 
 export const CJKVI_VARIANTS_SUBDIR_NAME = "cjkvi-variants";
+export const MANUAL_CJKVI_VARIANTS_SUBDIR_NAME = "manual-cjkvi-variants";

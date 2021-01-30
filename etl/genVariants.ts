@@ -8,6 +8,8 @@ import {
   getJPOldStyleData,
   getCommonTraditionalCharacters,
   getCommonSimplifiedCharacters,
+  getAllVariantsPerCharacter,
+  getOrthographicVariantsPerCharacter,
 } from "./variants-fetcher";
 
 import { Hanja as everydayHanja1800 } from "./hanja-for-everyday-use-1800.json";
@@ -199,11 +201,106 @@ const addRadicals = (map: VariantsMap) => {
   }
 };
 
+export const generateVariantIslands = (inputMap: {
+  [key: string]: Set<string>;
+}) => {
+  const chars = Object.keys(inputMap);
+  const visitedChars = new Set<string>();
+
+  let currentIsland = [] as string[];
+  const dfs = (depth: number, char: string) => {
+    // nothing is done with the depth thus far
+    if (visitedChars.has(char)) return;
+    visitedChars.add(char);
+    currentIsland.push(char);
+
+    for (let neighbor of inputMap[char]) {
+      dfs(depth + 1, neighbor);
+    }
+  };
+
+  const res = [] as string[][];
+  for (let char of chars) {
+    if (!visitedChars.has(char)) {
+      dfs(0, char);
+      res.push(currentIsland);
+      currentIsland = [];
+    }
+  }
+
+  return res;
+};
+
+export const expandVariantIslands = (
+  allVariants: { [key: string]: Set<string> },
+  islands: string[][]
+) => {
+  const expanded = [] as string[][];
+  for (let island of islands) {
+    const setified = new Set(island);
+    for (let character of island) {
+      for (let neighbor of allVariants[character]) {
+        setified.add(neighbor);
+      }
+    }
+    expanded.push(Array.from(setified));
+  }
+  return expanded;
+};
+
+export const islandsToObject = (islands: string[][]): VariantsIslandsLookup => {
+  const map = { islands, chars: {} } as VariantsIslandsLookup;
+
+  for (let i = 0; i < islands.length; i++) {
+    const island = islands[i];
+    for (let char of island) {
+      if (!(char in map.chars)) {
+        map.chars[char] = [];
+      }
+      map.chars[char].push(i);
+    }
+  }
+
+  return map;
+};
+
 const main = async () => {
   /* generate a list of known variants first, e.g. whether a 
   character is a known radical, joyo kanji, simplified character, gukja, etc.*/
   // const IRGSourcesString = (await getRawIRGSources()).split("\n");
   // probably more efficient to assign a list to each character instead of doing an O(number of variants) lookup in the frontend for every single character...
+
+  const getOrthographicVariantsPerCharacterPromise = () =>
+    new Promise<{
+      [key: string]: Set<string>;
+    }>((resolve, reject) => {
+      const ivs = new IVS(() => {
+        resolve(getOrthographicVariantsPerCharacter(ivs));
+      });
+    });
+
+  const getAllVariantsPerCharacterPromise = () =>
+    new Promise<{
+      [key: string]: Set<string>;
+    }>((resolve, reject) => {
+      const ivs = new IVS(() => {
+        resolve(getAllVariantsPerCharacter(ivs));
+      });
+    });
+
+  const allVariants = await getAllVariantsPerCharacterPromise();
+  const orthoVariants = await getOrthographicVariantsPerCharacterPromise();
+
+  const islands = expandVariantIslands(
+    allVariants,
+    generateVariantIslands(orthoVariants)
+  );
+
+  const islandsLookup = islandsToObject(islands);
+  writeJSON(
+    JSON.stringify(islandsLookup),
+    JSON_FILE_NAMES.variantsIslandsLookup
+  );
 
   const addJapaneseShinKyuPromise = (map: VariantsMap) =>
     new Promise<void>((resolve, reject) => {

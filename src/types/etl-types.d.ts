@@ -47,7 +47,14 @@ const enum CharacterVariant {
   radical = 14,
 }
 
-interface VariantsMap { [key: string]: Set<number> }
+interface VariantsMap {
+  [key: string]: Set<number>;
+}
+
+interface VariantsIslandsLookup {
+  islands: string[][];
+  chars: { [key: string]: number[] };
+}
 
 interface VariantRadicals {
   [key: string]: Set<string>;

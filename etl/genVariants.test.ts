@@ -1,4 +1,9 @@
-import { addJapaneseShinKyu } from "./genVariants";
+import {
+  addJapaneseShinKyu,
+  generateVariantIslands,
+  islandsToObject,
+  expandVariantIslands,
+} from "./genVariants";
 const IVS = require("ivs");
 
 test("all ivs sequences stripped", (done) => {
@@ -18,4 +23,77 @@ test("all ivs sequences stripped", (done) => {
     expect("爲" in map).toEqual(true);
     done();
   });
+});
+
+test("generate variants islands", () => {
+  const adjMap = {
+    // 1st island
+    A: new Set(["B", "D"]),
+    D: new Set(["A"]),
+    B: new Set(["A", "C"]),
+    C: new Set(["B", "E"]),
+    E: new Set(["C"]),
+    // 2nd island
+    F: new Set(["G"]),
+    G: new Set(["F", "H", "I"]),
+    H: new Set(["G"]),
+    I: new Set(["G", "J"]),
+    J: new Set(["I"]),
+  };
+
+  const islands = generateVariantIslands(adjMap);
+  expect(islands).toEqual([
+    ["A", "B", "C", "E", "D"],
+    ["F", "G", "H", "I", "J"],
+  ]);
+});
+
+test("generate variants islands lookup", () => {
+  const islands = [
+    ["A", "B", "C", "E", "D"],
+    ["F", "G", "H", "I", "J"],
+  ];
+
+  expect(islandsToObject(islands)).toEqual({
+    islands,
+    chars: {
+      A: [0],
+      B: [0],
+      C: [0],
+      D: [0],
+      E: [0],
+      F: [1],
+      G: [1],
+      H: [1],
+      I: [1],
+      J: [1],
+    },
+  });
+});
+
+test("expand variants islands", () => {
+  const adjMap = {
+    // 1st island
+    A: new Set(["B", "D"]),
+    D: new Set(["A", "Y"]),
+    B: new Set(["A", "C"]),
+    C: new Set(["B", "E"]),
+    E: new Set(["C"]),
+    // 2nd island
+    F: new Set(["G"]),
+    G: new Set(["F", "H", "I"]),
+    H: new Set(["G"]),
+    I: new Set(["G", "J"]),
+    J: new Set(["I", "Z"]),
+  };
+
+  const islands = [
+    ["A", "B", "C", "E", "D"],
+    ["F", "G", "H", "I", "J"],
+  ];
+
+  expect(expandVariantIslands(adjMap, islands)).toEqual([
+    ["A", "B", "C", "E", "D", "Y"],
+    ["F", "G", "H", "I", "J", "Z"],
+  ]);
 });
