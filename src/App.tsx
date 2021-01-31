@@ -42,8 +42,9 @@ const AppNameh1 = styled.h1`
   @media (max-width: 479px) {
     font-size: 2rem;
   }
-  font-family: Hanamin;
-  color: grey;
+  // font-family: Hanamin;
+  font-family: KaixinSong;
+  // color: grey;
   font-weight: bold;
 `;
 

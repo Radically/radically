@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "semantic-ui-css/semantic.min.css";
 import "./index.css";
 import "simplebar/dist/simplebar.min.css";
-import "hanamin";
+// import "hanamin";
 import "kaixinsong";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
