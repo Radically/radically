@@ -1,8 +1,13 @@
 import React from "react";
 
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+
 const defaultValue = {
   exactRadicalFreq: false,
   setExactRadicalFreq: (unused: boolean) => {},
+
+  darkMode: false,
+  setDarkMode: (unused: boolean) => {},
 };
 
 export const SettingsContext = React.createContext(defaultValue);
@@ -25,9 +30,14 @@ export const SettingsContextProvider = (props: { children: any }) => {
     false
   );
 
+  const [darkMode, setDarkMode] = usePersistedState(
+    "darkMode",
+    useMediaQuery("(prefers-color-scheme: dark)")
+  );
+
   const context = React.useMemo(
-    () => ({ exactRadicalFreq, setExactRadicalFreq }),
-    [exactRadicalFreq, setExactRadicalFreq]
+    () => ({ exactRadicalFreq, setExactRadicalFreq, darkMode, setDarkMode }),
+    [exactRadicalFreq, setExactRadicalFreq, darkMode, setDarkMode]
   );
 
   return <SettingsContext.Provider value={context} {...props} />;

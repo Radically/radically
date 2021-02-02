@@ -1,11 +1,12 @@
 import { IDCSet } from "../../constants";
 import styled from "styled-components";
+import { withTheme } from "@material-ui/core/styles";
 
 interface IDSPickerProps {
   onIDSSelected: (ids: string) => void;
 }
 
-const IDSPickerContainer = styled.div`
+const IDSPickerContainer = withTheme(styled("div")`
   display: flex;
   flex-wrap: wrap;
   // justify-content: space-between;
@@ -19,7 +20,9 @@ const IDSPickerContainer = styled.div`
   // font-weight: bold;
 
   margin-top: 10px;
-`;
+
+  color: ${(props) => props.theme.palette.text.primary};
+`);
 
 const IDSContainer = styled.div`
   cursor: pointer;

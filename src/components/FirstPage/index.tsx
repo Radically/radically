@@ -2,12 +2,20 @@
 // the page with the welcome name and the radical and ids text boxes
 
 import styled from "styled-components";
+import { withTheme } from "@material-ui/core/styles";
+
 import IDSPicker from "../IDSPicker";
 import Switch, { ReactSwitchProps } from "react-switch";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 
-const Input = styled.input.attrs((props) => ({
+import IconButton from "@material-ui/core/IconButton";
+import WbSunnyIcon from "@material-ui/icons/WbSunny";
+import Brightness3Icon from "@material-ui/icons/Brightness3";
+
+import teal from "@material-ui/core/colors/teal";
+
+const Input = withTheme(styled.input.attrs((props) => ({
   // we can define static props
   type: "search",
 
@@ -15,7 +23,7 @@ const Input = styled.input.attrs((props) => ({
   size: props.size || "0.5em",
 }))`
   // display: block;
-  color: black;
+  color: ${(props) => props.theme.palette.text.primary};
   font-size: 1em;
   font-family: var(--default-sans);
   font-weight: bold;
@@ -32,8 +40,9 @@ const Input = styled.input.attrs((props) => ({
   }
 
   box-sizing: border-box;
+  background-color: ${(props) => props.theme.palette.background.paper};
   width: 100%;
-`;
+`);
 
 const AppNameh1 = styled.h1`
   font-size: 1.5rem;
@@ -41,7 +50,12 @@ const AppNameh1 = styled.h1`
   // background-color: red;
 
   /* Create the gradient. */
-  background-image: linear-gradient(60deg, black, #00695c);
+  background-image: linear-gradient(
+    60deg,
+    ${(props: { darkMode?: boolean }) => (props.darkMode ? "white" : "black")},
+    ${(props: { darkMode?: boolean }) =>
+      props.darkMode ? teal[300] : teal[800]}
+  );
 
   /* Set the background size and repeat properties. */
   background-size: 100%;
@@ -55,13 +69,16 @@ const AppNameh1 = styled.h1`
   -moz-text-fill-color: transparent;
 `;
 
-const FirstPageContainer = styled.div`
+const FirstPageContainer = withTheme(styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-`;
+  background-color: ${(props) => props.theme.palette.background.default};
+  transition: background-color 0.3s;
+  position: relative;
+`);
 
 const LetterBox = styled.div`
   width: 75%;
@@ -106,17 +123,23 @@ const Button = styled.button`
   width: 100%;
   flex: 1;
 
-  color: #00695c;
+  color: ${(props: { darkMode?: boolean }) =>
+    props.darkMode ? teal[300] : teal[800]};
   font-size: 1em;
   // margin: 1em;
   padding: 0.25em 1em;
-  border: 2px solid #00695c;
+  border: 2px solid
+    ${(props: { darkMode?: boolean }) =>
+      props.darkMode ? teal[300] : teal[800]};
   display: block;
 
   &:active {
-    background-color: #00695c;
+    background-color: ${(props: { darkMode?: boolean }) =>
+      props.darkMode ? teal[300] : teal[800]};
     color: white;
   }
+
+  background-color: transparent;
 
   // in portrait mode add some margin
   @media (orientation: portrait) {
@@ -124,13 +147,16 @@ const Button = styled.button`
   }
 `;
 
-const InputLabel = styled.label`
-  fontweight: "normal";
-  display: "block";
-`;
+const InputLabel = withTheme(styled.label`
+  font-size: 10pt;
+  font-weight: normal;
+  // display: block;
+  color: ${(props) => props.theme.palette.text.primary};
+`);
 
 const FirstPageSwitch = (props: ReactSwitchProps) => {
   const { onChange, checked, className, id } = props;
+  const { darkMode } = useContext(SettingsContext);
   return (
     <Switch
       onChange={onChange}
@@ -139,12 +165,20 @@ const FirstPageSwitch = (props: ReactSwitchProps) => {
       checkedIcon={false}
       height={20}
       width={50}
-      onColor={"#00695c"}
+      onColor={darkMode ? teal[300] : teal[800]}
       className={className}
       id="radical-frequency-checkbox"
     />
   );
 };
+
+const FirstPageSwitchCaption = withTheme(styled("div")`
+  font-size 10pt;
+  text-align: justify;
+  padding-top: 5px;
+  font-weight: bold;
+  color: ${(props) => props.theme.palette.text.primary};
+`);
 
 const _SwitchLabelContainer = styled.div`
   display: flex;
@@ -164,9 +198,32 @@ const SwitchLabelContainer: FunctionComponent<{}> = (props) => {
 };
 
 function FirstPage() {
+  const {
+    exactRadicalFreq,
+    setExactRadicalFreq,
+    darkMode,
+    setDarkMode,
+  } = useContext(SettingsContext);
+
   return (
-    <FirstPageContainer>
-      <AppNameh1>部首組合式漢字檢索</AppNameh1>
+    <FirstPageContainer id={"first-page-container"}>
+      <IconButton
+        onClick={() => {
+          setDarkMode(!darkMode);
+        }}
+        style={{
+          position: "absolute",
+          right: 15,
+          top: 15,
+        }}
+        color="primary"
+        id="darkmode-toggle"
+        aria-label="toggle dark theme"
+        component="span"
+      >
+        {darkMode ? <Brightness3Icon /> : <WbSunnyIcon />}
+      </IconButton>
+      <AppNameh1 darkMode={darkMode}>部首組合式漢字檢索</AppNameh1>
       <LetterBox>
         <RadicalIDSFlex>
           <div style={{ width: "100%" }}>
@@ -182,62 +239,36 @@ function FirstPage() {
           <IDSPicker onIDSSelected={() => {}} />
         </RadicalIDSFlex>
 
-        <SettingsContext.Consumer>
-          {({
-            exactRadicalFreq,
-            setExactRadicalFreq,
-          }: {
-            exactRadicalFreq: boolean;
-            setExactRadicalFreq: (arg0: boolean) => void;
-          }) => (
-            <ToggleButtonFlex>
-              <SwitchLabelContainer>
-                <FirstPageSwitch
-                  onChange={(e) => {
-                    setExactRadicalFreq(!exactRadicalFreq);
-                  }}
-                  checked={exactRadicalFreq}
-                  className="radical-frequency-switch"
-                  id="radical-frequency-checkbox"
-                />
+        <ToggleButtonFlex>
+          <SwitchLabelContainer>
+            <FirstPageSwitch
+              onChange={(e) => {
+                setExactRadicalFreq(!exactRadicalFreq);
+              }}
+              checked={exactRadicalFreq}
+              className="radical-frequency-switch"
+              id="radical-frequency-checkbox"
+            />
 
-                <div
-                  style={{
-                    fontSize: "10pt",
-                    textAlign: "justify",
-                    paddingTop: "5px",
-                  }}
-                >
-                  部首率完全一致*
-                </div>
-              </SwitchLabelContainer>
+            <FirstPageSwitchCaption>部首率完全一致*</FirstPageSwitchCaption>
+          </SwitchLabelContainer>
 
-              <SwitchLabelContainer>
-                <FirstPageSwitch
-                  onChange={(e) => {}}
-                  checked={true}
-                  className="web-worker-switch"
-                  id="web-worker-checkbox"
-                />
+          <SwitchLabelContainer>
+            <FirstPageSwitch
+              onChange={(e) => {}}
+              checked={true}
+              className="web-worker-switch"
+              id="web-worker-checkbox"
+            />
 
-                <div
-                  style={{
-                    fontSize: "10pt",
-                    textAlign: "justify",
-                    paddingTop: "5px",
-                  }}
-                >
-                  託於副處理脈絡
-                </div>
-              </SwitchLabelContainer>
+            <FirstPageSwitchCaption>託於副處理脈絡</FirstPageSwitchCaption>
+          </SwitchLabelContainer>
 
-              {/* force flex wrap onto next line */}
-              <div style={{ flexBasis: "100%", height: 0 }} />
+          {/* force flex wrap onto next line */}
+          <div style={{ flexBasis: "100%", height: 0 }} />
 
-              <Button>檢索</Button>
-            </ToggleButtonFlex>
-          )}
-        </SettingsContext.Consumer>
+          <Button darkMode={darkMode}>檢索</Button>
+        </ToggleButtonFlex>
       </LetterBox>
     </FirstPageContainer>
   );

@@ -1,16 +1,48 @@
-import React, { useEffect, useRef, useState } from "react";
-import { SettingsContextProvider } from "./contexts/SettingsContextProvider";
+import React, { FunctionComponent } from "react";
+import {
+  SettingsContext,
+  SettingsContextProvider,
+} from "./contexts/SettingsContextProvider";
+
 import DesktopAppScreen from "./DesktopAppScreen";
 import MobileAppScreen from "./MobileAppScreen";
 
+import teal from "@material-ui/core/colors/teal";
+
+import { useContext } from "react";
+
 import "./App.css";
-// import { SettingsContext } from "./contexts/SettingsContextProvider";
+import {
+  createMuiTheme,
+  MuiThemeProvider,
+  PaletteType,
+} from "@material-ui/core";
+
+// material ui theming needed for the icons
+const AppScreenMuiThemeWrapper: FunctionComponent<{}> = (props) => {
+  const { children } = props;
+  const { darkMode } = useContext(SettingsContext);
+
+  const themeObject = {
+    palette: {
+      type: (darkMode ? "dark" : "light") as PaletteType,
+      primary: {
+        main: darkMode ? "#ffffff" : teal[800],
+      },
+    },
+  };
+  const themeConfig = createMuiTheme(themeObject);
+
+  return <MuiThemeProvider theme={themeConfig}>{children}</MuiThemeProvider>;
+};
 
 function AppScreen() {
   return (
     <SettingsContextProvider>
-      <MobileAppScreen />
-      <DesktopAppScreen />
+      <AppScreenMuiThemeWrapper>
+        <MobileAppScreen />
+        <DesktopAppScreen />
+      </AppScreenMuiThemeWrapper>
     </SettingsContextProvider>
   );
 }

@@ -28,7 +28,6 @@ function MobileAppScreen() {
       <HorizontalSnapContainer>
         <div
           style={{
-            backgroundColor: "#fbfbfb",
             scrollSnapAlign: "start",
             minWidth: "100vw",
           }}
