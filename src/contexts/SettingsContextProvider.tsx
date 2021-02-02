@@ -32,7 +32,7 @@ export const SettingsContextProvider = (props: { children: any }) => {
 
   const [darkMode, setDarkMode] = usePersistedState(
     "darkMode",
-    useMediaQuery("(prefers-color-scheme: dark)")
+    window.matchMedia("(prefers-color-scheme: dark)")
   );
 
   const context = React.useMemo(
