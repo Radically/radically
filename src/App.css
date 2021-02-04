@@ -37,6 +37,9 @@
   }
 } */
 
-html, body, #root, .App {
-  height: 100%
+/* weird bug on firefox for android */
+html,
+body,
+#root {
+  height: 100%;
 }

@@ -1,6 +1,5 @@
 import React from "react";
 
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const defaultValue = {
   exactRadicalFreq: false,

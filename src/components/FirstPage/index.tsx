@@ -3,9 +3,8 @@
 
 import styled from "styled-components";
 import { withTheme } from "@material-ui/core/styles";
-
+import Switch from "@material-ui/core/Switch";
 import IDSPicker from "../IDSPicker";
-import Switch, { ReactSwitchProps } from "react-switch";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
 import { FunctionComponent, useContext } from "react";
 
@@ -75,14 +74,15 @@ const FirstPageContainer = withTheme(styled("div")`
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-color: ${(props) => props.theme.palette.background.default};
-  transition: background-color 0.3s;
   position: relative;
+
+  scroll-snap-align: start;
+  min-width: 100vw;
 `);
 
 const LetterBox = styled.div`
   width: 75%;
-  @media (max-width: 600px) and (orientation: landscape) {
+  @media (max-width: 700px) and (orientation: landscape) {
     width: 90%;
   }
 
@@ -142,9 +142,9 @@ const Button = styled.button`
   background-color: transparent;
 
   // in portrait mode add some margin
-  @media (orientation: portrait) {
-    margin-top: 10px;
-  }
+  // @media (orientation: portrait) {
+  margin-top: 10px;
+  // }
 `;
 
 const InputLabel = withTheme(styled.label`
@@ -153,24 +153,6 @@ const InputLabel = withTheme(styled.label`
   // display: block;
   color: ${(props) => props.theme.palette.text.primary};
 `);
-
-const FirstPageSwitch = (props: ReactSwitchProps) => {
-  const { onChange, checked, className, id } = props;
-  const { darkMode } = useContext(SettingsContext);
-  return (
-    <Switch
-      onChange={onChange}
-      checked={checked}
-      uncheckedIcon={false}
-      checkedIcon={false}
-      height={20}
-      width={50}
-      onColor={darkMode ? teal[300] : teal[800]}
-      className={className}
-      id="radical-frequency-checkbox"
-    />
-  );
-};
 
 const FirstPageSwitchCaption = withTheme(styled("div")`
   font-size 10pt;
@@ -206,7 +188,7 @@ function FirstPage() {
   } = useContext(SettingsContext);
 
   return (
-    <FirstPageContainer id={"first-page-container"}>
+    <FirstPageContainer>
       <IconButton
         onClick={() => {
           setDarkMode(!darkMode);
@@ -241,24 +223,23 @@ function FirstPage() {
 
         <ToggleButtonFlex>
           <SwitchLabelContainer>
-            <FirstPageSwitch
+            <Switch
+              color="primary"
+              checked={exactRadicalFreq}
               onChange={(e) => {
                 setExactRadicalFreq(!exactRadicalFreq);
               }}
-              checked={exactRadicalFreq}
-              className="radical-frequency-switch"
-              id="radical-frequency-checkbox"
             />
 
             <FirstPageSwitchCaption>部首率完全一致*</FirstPageSwitchCaption>
           </SwitchLabelContainer>
 
           <SwitchLabelContainer>
-            <FirstPageSwitch
-              onChange={(e) => {}}
+            <Switch
+              id="radical-frequency-switch"
+              color="primary"
               checked={true}
-              className="web-worker-switch"
-              id="web-worker-checkbox"
+              onChange={() => {}}
             />
 
             <FirstPageSwitchCaption>託於副處理脈絡</FirstPageSwitchCaption>

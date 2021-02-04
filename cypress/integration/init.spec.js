@@ -6,15 +6,15 @@ describe("Cypress", () => {
   it("preferences persisted", () => {
     cy.viewport("iphone-5", "landscape");
     cy.visit("http://localhost:3000");
-    cy.get(".radical-frequency-switch").click();
+    cy.get("#radical-frequency-switch").click();
 
-    cy.get("#radical-frequency-checkbox").should("be.checked");
+    cy.get("#radical-frequency-switch").should("be.checked");
 
     // reload the page
 
     cy.reload();
 
-    cy.get("#radical-frequency-checkbox").should("be.checked");
+    cy.get("#radical-frequency-switch").should("be.checked");
   });
 
   it("dark mode working", () => {
@@ -31,7 +31,7 @@ describe("Cypress", () => {
     });
 
     cy.get("#darkmode-toggle").click();
-    cy.get("#first-page-container").should(
+    cy.get("#mobile-app-screen-container").should(
       "have.css",
       "background-color",
       "rgb(48, 48, 48)"
@@ -51,7 +51,7 @@ describe("Cypress", () => {
       },
     });
 
-    cy.get("#first-page-container").should(
+    cy.get("#mobile-app-screen-container").should(
       "have.css",
       "background-color",
       "rgb(48, 48, 48)"

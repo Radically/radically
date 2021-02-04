@@ -32,7 +32,7 @@ import ResultsPicker from "./components/ResultsPicker";
 import IDSPicker from "./components/IDSPicker";
 import { DesktopOutput, MobileOutput, Output } from "./components/Output";
 
-const IDS_URL = "/ids.txt";
+const IDS_URL = "/ids_test.txt";
 const UNICODE_IRG_URL = "/Unihan_IRGSources.txt";
 const UNICODE_VARIANTS_URL = "/Unihan_Variants.txt";
 const UNICODE_READINGS_URL = "/Unihan_Readings.txt";

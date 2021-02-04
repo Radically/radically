@@ -27,7 +27,7 @@ const AppScreenMuiThemeWrapper: FunctionComponent<{}> = (props) => {
     palette: {
       type: (darkMode ? "dark" : "light") as PaletteType,
       primary: {
-        main: darkMode ? "#ffffff" : teal[800],
+        main: darkMode ? teal[300] : teal[800],
       },
     },
   };
