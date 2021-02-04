@@ -16,10 +16,14 @@ import TranslateIcon from "@material-ui/icons/Translate";
 
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 
-const MobileAppScreenContainer = withTheme(styled.div`
+const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
     display: none;
   }
+  height: 100%;
+`;
+
+const MobileAppScreenContainer = withTheme(styled.div`
   height: 100%;
   scroll-snap-type: x mandatory;
   overflow-x: auto;
@@ -55,7 +59,7 @@ function MobileAppScreen() {
 
   const classes = useStyles();
   return (
-    <>
+    <RootMobileContainer>
       {/* <div style={{ height: "100vh", backgroundColor: "red" }}>mobile</div> */}
       <MobileAppScreenContainer id={"mobile-app-screen-container"}>
         <FirstPage />
@@ -117,7 +121,7 @@ function MobileAppScreen() {
           icon={<ShortTextIcon />}
         />
       </BottomNavigation>
-    </>
+    </RootMobileContainer>
   );
 }
 
