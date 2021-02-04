@@ -6,7 +6,7 @@ import { withTheme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
 import IDSPicker from "../IDSPicker";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
-import { FunctionComponent, useContext } from "react";
+import { FunctionComponent, useContext, useState } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
@@ -187,6 +187,9 @@ function FirstPage() {
     setDarkMode,
   } = useContext(SettingsContext);
 
+  const [radicals, setRadicals] = useState("");
+  const [idcs, setIDCs] = useState("");
+
   return (
     <FirstPageContainer>
       <IconButton
@@ -215,10 +218,16 @@ function FirstPage() {
 
           <div style={{ width: "100%", paddingTop: "10px" }}>
             <InputLabel>IDS</InputLabel>
-            <Input placeholder="食喜" />
+            <Input
+              onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+                setIDCs(evt.target.value);
+              }}
+              value={idcs}
+              placeholder="食喜"
+            />
           </div>
 
-          <IDSPicker onIDSSelected={() => {}} />
+          <IDSPicker onIDSSelected={(idc) => setIDCs(idcs + idc)} />
         </RadicalIDSFlex>
 
         <ToggleButtonFlex>
