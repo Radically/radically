@@ -4,6 +4,11 @@ import {
   SettingsContextProvider,
 } from "./contexts/SettingsContextProvider";
 
+import {
+  DataContext,
+  DataContextProvider,
+} from "./contexts/DataContextProvider";
+
 import DesktopAppScreen from "./DesktopAppScreen";
 import MobileAppScreen from "./MobileAppScreen";
 
@@ -40,8 +45,10 @@ function AppScreen() {
   return (
     <SettingsContextProvider>
       <AppScreenMuiThemeWrapper>
-        <MobileAppScreen />
-        <DesktopAppScreen />
+        <DataContextProvider>
+          <MobileAppScreen />
+          <DesktopAppScreen />
+        </DataContextProvider>
       </AppScreenMuiThemeWrapper>
     </SettingsContextProvider>
   );

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 
 import FirstPage from "./components/FirstPage";
+import RadicalsPage from "./components/RadicalsPage";
 
 import { withTheme, makeStyles } from "@material-ui/core/styles";
 
@@ -63,14 +64,7 @@ function MobileAppScreen() {
       {/* <div style={{ height: "100vh", backgroundColor: "red" }}>mobile</div> */}
       <MobileAppScreenContainer id={"mobile-app-screen-container"}>
         <FirstPage />
-        <div
-          style={{
-            scrollSnapAlign: "start",
-            backgroundColor: "pink",
-            height: "30px",
-            minWidth: "50vw",
-          }}
-        ></div>
+        <RadicalsPage />
 
         <div
           style={{

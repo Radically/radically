@@ -8,11 +8,20 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
-import { clientsClaim } from 'workbox-core';
-import { ExpirationPlugin } from 'workbox-expiration';
-import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate } from 'workbox-strategies';
+import { clientsClaim } from "workbox-core";
+import { ExpirationPlugin } from "workbox-expiration";
+import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
+import { registerRoute } from "workbox-routing";
+import { StaleWhileRevalidate } from "workbox-strategies";
+import { BroadcastUpdatePlugin } from "workbox-broadcast-update";
+
+import Dexie from "dexie";
+// import moment from "moment";
+// import pako from "pako";
+// import protobuf from "protobufjs";
+import {
+  JSON_FILE_NAMES /*REVERSE_MAP_PROTOBUF_DESCRIPTOR*/,
+} from "./constants";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -27,17 +36,17 @@ precacheAndRoute(self.__WB_MANIFEST);
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
 // https://developers.google.com/web/fundamentals/architecture/app-shell
-const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
+const fileExtensionRegexp = new RegExp("/[^/?]+\\.[^/]+$");
 registerRoute(
   // Return false to exempt requests from being fulfilled by index.html.
   ({ request, url }: { request: Request; url: URL }) => {
     // If this isn't a navigation, skip.
-    if (request.mode !== 'navigate') {
+    if (request.mode !== "navigate") {
       return false;
     }
 
     // If this is a URL that starts with /_, skip.
-    if (url.pathname.startsWith('/_')) {
+    if (url.pathname.startsWith("/_")) {
       return false;
     }
 
@@ -50,17 +59,18 @@ registerRoute(
     // Return true to signal that we want to use the handler.
     return true;
   },
-  createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+  createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html")
 );
 
 // An example runtime caching route for requests that aren't handled by the
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
   // Add in any other file extensions or routing criteria as needed.
-  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
+  ({ url }) =>
+    url.origin === self.location.origin && url.pathname.endsWith(".png"),
   // Customize this strategy as needed, e.g., by changing to CacheFirst.
   new StaleWhileRevalidate({
-    cacheName: 'images',
+    cacheName: "images",
     plugins: [
       // Ensure that once this runtime cache reaches a maximum size the
       // least-recently used images are removed.
@@ -71,16 +81,237 @@ registerRoute(
 
 // for Unicode IDS flat files
 registerRoute(
-  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.txt'),
-  new StaleWhileRevalidate(),
+  ({ url }) =>
+    url.origin === self.location.origin && url.pathname.endsWith(".txt"),
+  new StaleWhileRevalidate()
 );
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
 });
 
 // Any other custom service worker logic can go here.
+
+const JSON_CACHE_NAME = "json-cache-v1";
+
+registerRoute(
+  ({ url }) =>
+    url.origin === self.location.origin &&
+    url.pathname.endsWith(".json") &&
+    //  || url.pathname.endsWith(".pako.pbuf")
+    // waaay too large, 21 MB
+    !url.pathname.includes("reverseMap.json"),
+  new StaleWhileRevalidate({
+    cacheName: JSON_CACHE_NAME,
+    plugins: [new BroadcastUpdatePlugin({})],
+  })
+);
+
+// https://googlechrome.github.io/samples/service-worker/fallback-response/
+//  custom strategy for reverseMap.json
+
+// the serviceworker will have already been INSTALLED
+// hence the indexeddb is guaranteed to be populated
+/* self.addEventListener("fetch", (event) => {
+  if (false) {
+    console.log("reverseMapped!");
+    console.log(event.request);
+    event.respondWith(
+      (async () => {
+        try {
+          const serverMetadata: ProcessedIDSMetadata = await (
+            await fetch("/json/processedIDSMetadata.json")
+          ).json();
+
+          const db = new Dexie("db");
+          await db.open();
+          const idbMetadata = await db.table("data").get("metadata");
+
+          console.log("Comparing IDB and server metadata");
+          console.log(idbMetadata, serverMetadata);
+
+          const { date: idbDate } = idbMetadata;
+          const { date: serverDate } = serverMetadata;
+
+          // if date on the server is newer than the idbDate, fetch the latest pako
+          // and write to idb
+          if (moment(serverDate) > moment(idbDate)) {
+            const resp = await fetch("/json/reverseMap.pako.pbuf");
+
+            const reverseMap = await resp.arrayBuffer();
+
+            console.log("update reversemap start", new Date());
+
+            await db
+              .table("data")
+              .put({ name: "reverseMap", arrbuf: reverseMap });
+
+            console.log("update reversemap done", new Date());
+          }
+
+          // @ts-ignore
+          const { arrbuf } = await db.table("data").get("reverseMap");
+          console.log(arrbuf);
+
+          console.log("inflating update pako start", new Date());
+          // const inflated = pako.inflate(arrbuf, { to: "string" });
+          const inflated = pako.inflateRaw(arrbuf);
+          const root = protobuf.Root.fromJSON(REVERSE_MAP_PROTOBUF_DESCRIPTOR);
+          const ReverseMap = root.lookupType("ReverseMap");
+          const message = ReverseMap.decode(inflated);
+
+          const obj = ReverseMap.toObject(message);
+
+          console.log("inflating update pako end", new Date());
+
+          return new Response(JSON.stringify(inflated), {
+            headers: { "Content-Type": "application/json" },
+          });
+        } catch (error) {
+          console.warn(
+            "Constructing a fallback response, " +
+              "due to an error while fetching the real response:",
+            error
+          );
+
+          return new Response(JSON.stringify({}), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      })()
+    );
+  }
+});*/
+
+self.addEventListener("install", (event) => {
+  /* const g = fetch("/json/processedIDSMetadata.json")
+    .then((response) => response.json())
+    .then((values) => {
+      console.log(values);
+    }); */
+
+  event.waitUntil(
+    caches.open(JSON_CACHE_NAME).then((cache) => {
+      return cache.addAll(
+        [
+          JSON_FILE_NAMES.baseRadicals,
+          JSON_FILE_NAMES.forwardMap,
+          JSON_FILE_NAMES.reverseMapIDSOnly,
+          JSON_FILE_NAMES.reverseMapCharFreqsOnly,
+          JSON_FILE_NAMES.processedIDSMetadata,
+          JSON_FILE_NAMES.strokeCount,
+          JSON_FILE_NAMES.readings,
+          JSON_FILE_NAMES.variantsMap,
+          JSON_FILE_NAMES.variantsIslandsLookup,
+        ].map((s) => "json/" + s)
+      );
+    })
+  );
+  return;
+
+  event.waitUntil(
+    (async () => {
+      // let _oldVersion, _newVersion;
+      // const db = await openDB("db", 1, {
+      //   upgrade: (db, oldVersion, newVersion, transaction) => {
+      //     _oldVersion = oldVersion;
+      //     _newVersion = newVersion;
+      //     console.log("old db version ", oldVersion);
+      //     switch (oldVersion) {
+      //       case 1: // for future migrations
+      //       default:
+      //         db.createObjectStore("reverseMap", { keyPath: "char" });
+      //     }
+      //   },
+      // });
+
+      // if (_newVersion == 1) {
+      //   const resp = await fetch("/json/reverseMap.json");
+      //   const reverseMap = (await resp.json()) as ReverseMap;
+      //   const transaction = db.transaction(["reverseMap"], "readwrite");
+
+      //   for (let char in reverseMap) {
+      //     transaction.objectStore("reverseMap").add({
+      //       char,
+      //       ...reverseMap[char],
+      //     });
+      //   }
+      //   await transaction.done;
+      // }
+      // db.close();
+
+      // const db = new Dexie("db");
+      // db.version(1).stores({
+      //   reverseMap: "char",
+      // });
+
+      // db.on("ready", async () => {
+      //   await db.table("reverseMap").count((count) => {
+      //     console.log(count);
+      //     if (count > 0) {
+      //     } else {
+      //       const task = async () => {
+      //         const resp = await fetch("/json/reverseMap.json");
+      //         const reverseMap = (await resp.json()) as ReverseMap;
+      //         const arrayified = [];
+      //         for (let char in reverseMap) {
+      //           arrayified.push({ char, ...reverseMap[char] });
+      //         }
+      //         console.log("bulkput start", new Date());
+      //         await db.table("reverseMap").bulkPut(arrayified);
+      //         console.log("bulkput done", new Date());
+      //       };
+
+      //       return task();
+      //     }
+      //   });
+      // });
+
+      const metadata = await (
+        await fetch("json/processedIDSMetadata.json")
+      ).json();
+
+      const db = new Dexie("db");
+      db.version(1).stores({
+        data: "name",
+      });
+
+      db.on("ready", async () => {
+        await db.table("data").count((count) => {
+          console.log(count);
+          if (count > 0) {
+          } else {
+            const task = async () => {
+              const resp = await fetch("/json/reverseMap.pako");
+
+              // const reverseMap = (await resp.json()) as ReverseMap;
+
+              const reverseMap = await resp.arrayBuffer();
+
+              console.log("put start", new Date());
+
+              // await db.table("data").put({ name: "reverseMap", ...reverseMap })
+
+              await db
+                .table("data")
+                .put({ name: "reverseMap", arrbuf: reverseMap });
+
+              await db.table("data").put({ name: "metadata", ...metadata });
+
+              console.log("put done", new Date());
+            };
+
+            return task();
+          }
+        });
+      });
+
+      await db.open();
+    })()
+  );
+  // event.waitUntil(g);
+});

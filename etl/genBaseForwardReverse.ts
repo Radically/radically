@@ -1,10 +1,16 @@
 import fs from "fs";
 import path from "path";
+// import pako from "pako";
+
+import { structuredClone } from "../src/utils";
 
 import {
   IDCSet,
   StrokePlaceholderSet,
   JSON_FILE_NAMES,
+  // PAKO_FILE_NAMES,
+  // PROTOBUF_FILE_NAMES,
+  // REVERSE_MAP_PROTOBUF_DESCRIPTOR,
 } from "../src/constants";
 
 const utfstring = require("utfstring");
@@ -14,7 +20,11 @@ import {
   getAllResolvedIDSData,
 } from "./unicode-ids-fetcher";
 
-import { writeJSON } from "./writer";
+import {
+  writeJSON,
+  //  writeData, writeReverseMapProtobuf
+} from "./writer";
+// import protobuf from "protobufjs";
 // import { getRawIRGSources } from "./unihan-fetcher";
 
 /* const processIDSText = (text: string) => {
@@ -59,9 +69,9 @@ export const kangxiToCJK = (input: string): string => {
   return output.join("");
 };
 
-type powerset = {
-  [key: string]: number;
-};
+// type powerset = {
+//   [key: string]: number;
+// };
 
 export const mergeTwoFreqs = (freqsA: powerset, freqsB: powerset): powerset => {
   const res = { ...freqsB };
@@ -269,6 +279,50 @@ const processIDSText = (resolvedIDSData: string[][]) => {
   };
 };
 
+const getCharFreqs = (reverseMap: ReverseMap): ReverseMapCharOnly => {
+  function isObjectEmpty(obj: Object) {
+    return (
+      obj && // 👈 null and undefined check
+      Object.keys(obj).length === 0 &&
+      obj.constructor === Object
+    );
+  }
+
+  const res = {} as ReverseMapCharOnly;
+  for (let char in reverseMap) {
+    res[char] = reverseMap[char].charFreqs;
+
+    for (let pset of res[char]) {
+      for (let radical of Object.keys(pset)) {
+        // @ts-ignore
+        if (pset[radical] === 1) {
+          // @ts-ignore
+          delete pset[radical];
+        }
+      }
+    }
+    res[char] = res[char].filter((x) => !isObjectEmpty(x));
+  }
+  for (let char of Object.keys(res)) {
+    if (res[char].length === 0) {
+      delete res[char];
+    }
+  }
+  return res;
+};
+
+const getIDS = (reverseMap: ReverseMap): ReverseMapIDSOnly => {
+  const res = {} as ReverseMapIDSOnly;
+  for (let char in reverseMap) {
+    res[char] = reverseMap[char].ids_strings.map(({ ids, locales }) => ({
+      i: ids,
+      l: locales,
+    }));
+  }
+
+  return res;
+};
+
 const main = async () => {
   // for testing purposes only
   // const IRGSourcesString = await getRawIRGSources();
@@ -292,7 +346,45 @@ const main = async () => {
     JSON_FILE_NAMES.baseRadicals
   );
 
+  /* const pbufReverseMap = {
+    data: structuredClone(reverseMap),
+  } as any;
+
+  for (let char in pbufReverseMap.data) {
+    pbufReverseMap.data[char].charFreqs = pbufReverseMap.data[
+      char
+    ].charFreqs.map((m: powerset) => ({
+      m,
+    }));
+  }
+
+  writeData(
+    pako.deflate(JSON.stringify(reverseMap)),
+    PAKO_FILE_NAMES.reverseMap
+  ); 
+
+  const root = protobuf.Root.fromJSON(REVERSE_MAP_PROTOBUF_DESCRIPTOR);
+  const ReverseMap = root.lookupType("ReverseMap");
+  const PakoedPbufedReverseMap = pako.deflateRaw(
+    ReverseMap.encode(pbufReverseMap).finish()
+  );
+
+  writeReverseMapProtobuf(
+    PakoedPbufedReverseMap,
+    PROTOBUF_FILE_NAMES.reverseMap
+  ); */
+
+  // actually modifies reversemap, hence structuredClone
   writeJSON(JSON.stringify(reverseMap), JSON_FILE_NAMES.reverseMap);
+  writeJSON(
+    JSON.stringify(getCharFreqs(structuredClone(reverseMap))),
+    JSON_FILE_NAMES.reverseMapCharFreqsOnly
+  );
+
+  writeJSON(
+    JSON.stringify(getIDS(structuredClone(reverseMap))),
+    JSON_FILE_NAMES.reverseMapIDSOnly
+  );
 
   writeJSON(JSON.stringify(forwardMap), JSON_FILE_NAMES.forwardMap);
 
