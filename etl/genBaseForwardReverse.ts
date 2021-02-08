@@ -131,6 +131,13 @@ export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
     for (let j = 0; j < utfstring.length(ids); j++) {
       idsChar = utfstring.fromCharCode(utfstring.charCodeAt(ids, j));
 
+      // TODO: refactor this into a function
+      if (IDCSet.has(idsChar)) continue;
+      if (StrokePlaceholderSet.has(idsChar)) continue;
+      // ignore all ascii
+      if (idsChar.charCodeAt(0) < 127) continue;
+      if (idsChar === "？") continue;
+
       if (!IDCSet.has(idsChar) && idsChar !== char) {
         if (!freqsAtThisNode[i][idsChar]) freqsAtThisNode[i][idsChar] = 0;
         freqsAtThisNode[i][idsChar] += 1;
