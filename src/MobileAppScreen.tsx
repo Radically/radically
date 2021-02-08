@@ -64,16 +64,36 @@ function MobileAppScreen() {
       {/* <div style={{ height: "100vh", backgroundColor: "red" }}>mobile</div> */}
       <MobileAppScreenContainer id={"mobile-app-screen-container"}>
         <FirstPage />
-        <RadicalsPage />
 
         <div
-          style={{
-            scrollSnapAlign: "start",
-            backgroundColor: "yellow",
-            height: "30px",
-            minWidth: "50vw",
-          }}
-        ></div>
+          id={"wrapper"}
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <div style={{ display: "flex", flex: 1 }}>
+            <RadicalsPage />
+
+            <div
+              style={{
+                scrollSnapAlign: "start",
+                backgroundColor: "yellow",
+                height: "30px",
+                minWidth: "100vw",
+              }}
+            ></div>
+          </div>
+
+          {/* the results bar */}
+          <div
+            style={{
+              position: "sticky",
+              minWidth: "100vw",
+              left: "0px",
+              bottom: "56px",
+              height: "50px",
+              backgroundColor: "red",
+            }}
+          ></div>
+        </div>
       </MobileAppScreenContainer>
 
       <BottomNavigation
