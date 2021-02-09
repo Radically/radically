@@ -1,9 +1,29 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import mediaQuery from 'css-mediaquery';
 import AppScreen from "./AppScreen";
 
-test("renders learn react link", () => {
-  render(<AppScreen />);
-  const linkElement = screen.getByText(/Radicals/i);
-  expect(linkElement).toBeInTheDocument();
+function createMatchMedia(width: number) {
+  return (query: string) => ({
+    matches: mediaQuery.match(query, { width }),
+    addListener: () => { },
+    removeListener: () => { },
+  });
+}
+
+
+
+describe('Smoke Tests', () => {
+  beforeAll(() => {
+    // @ts-ignore
+    window.matchMedia = createMatchMedia(window.innerWidth);
+  });
+
+  test("renders learn react link", () => {
+    render(<AppScreen />);
+    const linkElement = screen.getByText(/IDS/i);
+    expect(linkElement).toBeInTheDocument();
+  });
+
 });
+
