@@ -17,6 +17,8 @@ import TranslateIcon from "@material-ui/icons/Translate";
 
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 
+import OutputBar, { heightPx } from "./components/OutputBar";
+
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
     display: none;
@@ -35,6 +37,39 @@ const MobileAppScreenContainer = withTheme(styled.div`
   background-color: ${(props) => props.theme.palette.background.default};
 `);
 
+const StickyOutputBarWrapper = styled.div`
+  height: 100%;
+  @media (orientation: landscape) {
+    display: flex;
+    flex-direction: column;
+  }
+`;
+
+const RadicalResultsPageWrapper = styled.div`
+  display: flex;
+  @media (orientation: landscape) {
+    flex: 1;
+  }
+
+  // mobile safari's definition of 100% when there
+  // is a sticky element on the screen is different from
+  // ff android and chrome android's definition
+  @supports (-webkit-touch-callout: none) {
+    @media (orientation: portrait) {
+      height: 100%;
+    }
+  }
+
+  @supports (not (-webkit-touch-callout: none)) {
+    @media (orientation: portrait) {
+      // height instead of min-height
+      // because i want it the contents to be scrollable
+      // and not mess with the tab navigation
+      height: calc(100% - ${heightPx}px);
+    }
+  }
+`;
+
 function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
 
@@ -42,6 +77,7 @@ function MobileAppScreen() {
     stickToBottom: {
       width: "100%",
       // sticky only in mobile portrait mode
+      // fixed is finicky especially with ff android
       "@media (orientation: portrait)": {
         position: "sticky",
       },
@@ -65,11 +101,10 @@ function MobileAppScreen() {
       <MobileAppScreenContainer id={"mobile-app-screen-container"}>
         <FirstPage />
 
-        <div
-          id={"wrapper"}
-          style={{ display: "flex", flexDirection: "column" }}
-        >
-          <div style={{ display: "flex", flex: 1 }}>
+        <StickyOutputBarWrapper id={"stickyoutputbarwrapper"}>
+          {/* the results bar */}
+          <OutputBar />
+          <RadicalResultsPageWrapper id={"radicalresultspagewrapper"}>
             <RadicalsPage />
 
             <div
@@ -80,20 +115,8 @@ function MobileAppScreen() {
                 minWidth: "100vw",
               }}
             ></div>
-          </div>
-
-          {/* the results bar */}
-          <div
-            style={{
-              position: "sticky",
-              minWidth: "100vw",
-              left: "0px",
-              bottom: "56px",
-              height: "50px",
-              backgroundColor: "red",
-            }}
-          ></div>
-        </div>
+          </RadicalResultsPageWrapper>
+        </StickyOutputBarWrapper>
       </MobileAppScreenContainer>
 
       <BottomNavigation
