@@ -79,7 +79,13 @@ function MobileAppScreen() {
       // sticky only in mobile portrait mode
       // fixed is finicky especially with ff android
       "@media (orientation: portrait)": {
-        position: "sticky",
+        "@supports (-moz-appearance:none)": {
+          position: "sticky",
+        },
+
+        "@supports not (-moz-appearance:none)": {
+          position: "fixed",
+        },
       },
       bottom: 0,
       left: 0,
