@@ -35,8 +35,9 @@ const IDSPicker = (props: IDSPickerProps) => {
   const IDSArray = Array.from(IDCSet);
   return (
     <IDSPickerContainer>
-      {IDSArray.map((ids) => (
+      {IDSArray.map((ids, idx) => (
         <IDSContainer
+          key={"ids-" + idx}
           onClick={() => {
             onIDSSelected(ids);
           }}
