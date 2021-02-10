@@ -28,6 +28,10 @@ const RootMobileContainer = styled.div`
 
 const MobileAppScreenContainer = withTheme(styled.div`
   height: 100%;
+
+  // important for iOS !!!
+  -webkit-overflow-scrolling: touch;
+  -webkit-scroll-snap-type: mandatory;
   scroll-snap-type: x mandatory;
   overflow-x: auto;
   overflow-y: hidden;
