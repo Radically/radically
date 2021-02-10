@@ -7,9 +7,22 @@ import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Split from "react-split";
 
+// for the radicals scroll container
+import {
+  FixedSizeList,
+  FixedSizeList as List,
+  ListChildComponentProps,
+} from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { outerElementType, RadicalPickerRow } from "./RadicalsScrollComponents";
+
 import { heightPx } from "../OutputBar";
 
+import CharacterResultReadings from "../CharacterResultReadings";
+
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
+import { DataContext } from "../../contexts/DataContextProvider";
+import { arrayifyForReactWindow, strokeCountToRadicals } from "./utils";
 
 const RadicalsPageContainer = styled("div")`
   display: flex;
@@ -63,18 +76,18 @@ const SearchInput = withTheme(
 );
 
 const StrokesRadicalsContainer = styled.div`
-  @media (orientation: portrait) {
-    border-bottom: 1px solid #909090;
-  }
+  // @media (orientation: portrait) {
+  border-bottom: 1px solid #909090;
+  // }
   // flex-grow: 1;
 `;
 
-const StrokesScrollContainer = styled.div`
+const StrokesScrollContainer = withTheme(styled.div`
   // flex: 0.1;
   width: 50px;
   float: left;
 
-  background-color: green;
+  // background-color: green;
   border-right: 1px solid #909090;
 
   // do i really have to set a height here??
@@ -84,14 +97,16 @@ const StrokesScrollContainer = styled.div`
 
   display: flex;
   flex-direction: column;
-`;
+
+  color: ${(props) => props.theme.palette.text.primary};
+`);
 
 const RadicalsScrollContainer = styled.div`
   // flex: 0.1;
-  width: calc(100% - 51px);
+  width: calc(100% - 51px - 10px - 10px);
   float: right;
 
-  background-color: purple;
+  // background-color: purple;
 
   // do i really have to set a height here??
   min-height: 100%;
@@ -100,14 +115,39 @@ const RadicalsScrollContainer = styled.div`
 
   display: flex;
   flex-direction: column;
+
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 
-const ReadingsScrollContainer = styled.div`
-  background-color: blue;
+const ReadingsScrollContainer = withTheme(styled.div`
+  // background-color: blue;
   flex-grow: 1;
+  overflow-y: scroll;
 
   border-top: 1px solid #909090;
-`;
+  color: ${(props) => props.theme.palette.text.primary};
+`);
+
+const LoadingTextContainer = withTheme(styled.div`
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--default-sans);
+  font-size: 1.5em;
+  color: ${(props) => props.theme.palette.text.primary};
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  }
+
+  animation: fadeIn 1s infinite alternate;
+`);
+
 const ls = [] as number[];
 {
   for (let i = 1; i < 30; i++) {
@@ -115,13 +155,59 @@ const ls = [] as number[];
   }
 }
 
+interface SelectedInfo {
+  index: number;
+  col: number;
+  radical: string;
+}
+
 function RadicalsPage() {
   const [input, setInput] = useState("");
 
   const { darkMode } = useContext(SettingsContext);
 
+  const {
+    baseRadicals,
+    baseRadicalsLoading,
+    strokeCount,
+    strokeCountLoading,
+
+    readings,
+    readingsLoading,
+  } = useContext(DataContext);
+
+  const strokeCountToRadicalsMap = strokeCountToRadicals(
+    baseRadicals,
+    strokeCount
+  );
+
+  const { arrayified, strokeCountToStart } = arrayifyForReactWindow(
+    strokeCountToRadicalsMap
+  );
+
   const isLandscape = useMediaQuery("(orientation: landscape)");
   const isSafari = navigator.vendor.includes("Apple");
+
+  // radicals list handlers and methods begin here
+  const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
+
+  const radicalSelected = "index" in selectedInfo && "col" in selectedInfo;
+
+  const handleRadicalClick = (
+    event: React.MouseEvent<HTMLElement>,
+    index: number,
+    col: number,
+    radical: string
+  ) => {
+    // arrowKeyPressed.current = false;
+    // if (selectedInfo.index === index && selectedInfo.col === col)
+    //   onRadicalSelected(radical);
+    setSelectedInfo({ index, col, radical });
+    event.stopPropagation();
+    event.preventDefault();
+    // pickerContainerRef.current?.focus();
+  };
+  // end here
 
   return (
     <RadicalsPageContainer id="radicals-page-container">
@@ -156,8 +242,9 @@ function RadicalsPage() {
       >
         <StrokesRadicalsContainer id={"strokes-radicals-container"}>
           <StrokesScrollContainer id={"strokes-scroll-container"}>
-            {ls.map((count) => (
+            {ls.map((count, idx) => (
               <div
+                key={idx}
                 style={{
                   fontWeight: "bold",
                   textAlign: "center",
@@ -171,10 +258,52 @@ function RadicalsPage() {
             ))}
           </StrokesScrollContainer>
 
-          <RadicalsScrollContainer id="radicals-scroll-container" />
+          <RadicalsScrollContainer id="radicals-scroll-container">
+            {baseRadicalsLoading && (
+              <LoadingTextContainer darkMode={darkMode}>
+                Loading...
+              </LoadingTextContainer>
+            )}
+
+            <AutoSizer>
+              {({ height, width }) => (
+                <List
+                  style={{
+                    color: darkMode ? "white" : "black",
+                    fontWeight: "bold",
+                  }}
+                  outerElementType={outerElementType}
+                  // outerRef={listOuterRef}
+                  // ref={radicalListRef}
+                  height={height}
+                  itemData={{ arrayified, selectedInfo, handleRadicalClick }}
+                  itemCount={arrayified.length}
+                  itemSize={40}
+                  width={width}
+                >
+                  {RadicalPickerRow}
+                </List>
+              )}
+            </AutoSizer>
+          </RadicalsScrollContainer>
         </StrokesRadicalsContainer>
 
-        <ReadingsScrollContainer>blah32</ReadingsScrollContainer>
+        <ReadingsScrollContainer>
+          {readingsLoading && (
+            <LoadingTextContainer darkMode={darkMode}>
+              Loading...
+            </LoadingTextContainer>
+          )}
+          {!radicalSelected && "No radical selected"}
+
+          {radicalSelected && !readingsLoading && (
+            <CharacterResultReadings
+              key={selectedInfo.radical}
+              char={selectedInfo.radical}
+              readings={readings}
+            />
+          )}
+        </ReadingsScrollContainer>
       </Split>
     </RadicalsPageContainer>
   );

@@ -43,9 +43,7 @@ interface StrokeCount {
   [key: string]: number;
 }
 
-interface StrokeCountMap {
-  [key: string]: number;
-}
+type StrokeCountMap = StrokeCount;
 
 interface ReadingsMap {
   [key: string]: { [key: string]: string };
