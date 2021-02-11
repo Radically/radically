@@ -1,12 +1,14 @@
 import React from "react";
 
-
 const defaultValue = {
   exactRadicalFreq: false,
   setExactRadicalFreq: (unused: boolean) => {},
 
   darkMode: false,
   setDarkMode: (unused: boolean) => {},
+
+  locale: "en",
+  setLocale: (unused: string) => {},
 };
 
 export const SettingsContext = React.createContext(defaultValue);
@@ -34,9 +36,26 @@ export const SettingsContextProvider = (props: { children: any }) => {
     window.matchMedia("(prefers-color-scheme: dark)")
   );
 
+  // for "internationalization"
+  const [locale, setLocale] = usePersistedState("locale", "en");
+
   const context = React.useMemo(
-    () => ({ exactRadicalFreq, setExactRadicalFreq, darkMode, setDarkMode }),
-    [exactRadicalFreq, setExactRadicalFreq, darkMode, setDarkMode]
+    () => ({
+      exactRadicalFreq,
+      setExactRadicalFreq,
+      darkMode,
+      setDarkMode,
+      locale,
+      setLocale,
+    }),
+    [
+      exactRadicalFreq,
+      setExactRadicalFreq,
+      darkMode,
+      setDarkMode,
+      locale,
+      setLocale,
+    ]
   );
 
   return <SettingsContext.Provider value={context} {...props} />;

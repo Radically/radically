@@ -23,6 +23,8 @@ import {
   PaletteType,
 } from "@material-ui/core";
 
+import { IntlProvider } from "react-intl";
+
 // material ui theming needed for the icons
 const AppScreenMuiThemeWrapper: FunctionComponent<{}> = (props) => {
   const { children } = props;
@@ -41,13 +43,38 @@ const AppScreenMuiThemeWrapper: FunctionComponent<{}> = (props) => {
   return <MuiThemeProvider theme={themeConfig}>{children}</MuiThemeProvider>;
 };
 
+/* how preposterous would it be for such a useful 
+hanzi-related tool to not have a *han* translation?
+
+漢字之利器，如無漢譯，不亦謬乎？ */
+const i18n = {
+  en: {
+    "radicalspage.search_bar_placeholder": "Find decompositions or variants",
+  },
+  cc: {
+    "radicalspage.search_bar_placeholder": "檢索分解亦或異體",
+  },
+} as { [key: string]: any };
+
+const ReactIntlWrapper: FunctionComponent<{}> = (props) => {
+  const { children } = props;
+  const { locale } = useContext(SettingsContext);
+  return (
+    <IntlProvider locale={locale} messages={i18n[locale]}>
+      {children}
+    </IntlProvider>
+  );
+};
+
 function AppScreen() {
   return (
     <SettingsContextProvider>
       <AppScreenMuiThemeWrapper>
         <DataContextProvider>
-          <MobileAppScreen />
-          <DesktopAppScreen />
+          <ReactIntlWrapper>
+            <MobileAppScreen />
+            <DesktopAppScreen />
+          </ReactIntlWrapper>
         </DataContextProvider>
       </AppScreenMuiThemeWrapper>
     </SettingsContextProvider>

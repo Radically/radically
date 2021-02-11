@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Split from "react-split";
 
+import { useIntl, FormattedDate } from "react-intl";
 // for the radicals scroll container
 import {
   FixedSizeList,
@@ -162,6 +163,7 @@ interface SelectedInfo {
 }
 
 function RadicalsPage() {
+  const intl = useIntl();
   const [input, setInput] = useState("");
 
   const { darkMode } = useContext(SettingsContext);
@@ -212,7 +214,11 @@ function RadicalsPage() {
   return (
     <RadicalsPageContainer id="radicals-page-container">
       <SearchContainer>
-        <SearchInput placeholder="Find decompositions or variants" />
+        <SearchInput
+          placeholder={intl.formatMessage({
+            id: "radicalspage.search_bar_placeholder",
+          })}
+        />
 
         <IconButton
           onClick={() => {

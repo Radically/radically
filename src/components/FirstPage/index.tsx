@@ -185,6 +185,9 @@ function FirstPage() {
     setExactRadicalFreq,
     darkMode,
     setDarkMode,
+
+    locale,
+    setLocale,
   } = useContext(SettingsContext);
 
   const [radicals, setRadicals] = useState("");
@@ -208,6 +211,26 @@ function FirstPage() {
       >
         {darkMode ? <Brightness3Icon /> : <WbSunnyIcon />}
       </IconButton>
+
+      <IconButton
+        onClick={() => {
+          setLocale(locale === "en" ? "cc" : "en");
+        }}
+        style={{
+          fontFamily: "var(--default-sans)",
+          fontWeight: "bold",
+          position: "absolute",
+          right: 60,
+          top: 15,
+        }}
+        color="primary"
+        id="darkmode-toggle"
+        aria-label="toggle dark theme"
+        component="span"
+      >
+        {locale === "en" ? "EN" : "漢"}
+      </IconButton>
+
       <AppNameh1 darkMode={darkMode}>部首組合式漢字檢索</AppNameh1>
       <LetterBox>
         <RadicalIDSFlex>
