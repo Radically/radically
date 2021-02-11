@@ -184,7 +184,8 @@ function RadicalsPage() {
   );
 
   const { arrayified, strokeCountToStart } = arrayifyForReactWindow(
-    strokeCountToRadicalsMap
+    strokeCountToRadicalsMap,
+    intl
   );
 
   const isLandscape = useMediaQuery("(orientation: landscape)");

@@ -1,3 +1,5 @@
+import { IntlShape } from "react-intl";
+
 export const RADICALS_PER_ROW = 10;
 export const UNKNOWN_STROKE_COUNT = 999;
 
@@ -15,9 +17,12 @@ export const strokeCountToRadicals = (
   return res;
 };
 
-export const arrayifyForReactWindow = (strokeCountToRadicals: {
-  [key: number]: string[];
-}): {
+export const arrayifyForReactWindow = (
+  strokeCountToRadicals: {
+    [key: number]: string[];
+  },
+  intl: IntlShape
+): {
   arrayified: {
     header: boolean;
     name?: string;
@@ -36,8 +41,21 @@ export const arrayifyForReactWindow = (strokeCountToRadicals: {
     strokeCountToStart[strokeCount] = arrayified.length;
     arrayified.push({
       header: true,
-      name: `${strokeCount === "999" ? "" : strokeCount}筆畫${
-        strokeCount === "999" ? "不詳" : ""
+      name: `${
+        strokeCount === "999"
+          ? ""
+          : intl.formatMessage(
+              {
+                id: "strokes",
+              },
+              { count: strokeCount }
+            )
+      }${
+        strokeCount === "999"
+          ? intl.formatMessage({
+              id: "unclear",
+            })
+          : ""
       }`,
     });
 

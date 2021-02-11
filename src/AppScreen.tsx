@@ -49,9 +49,13 @@ hanzi-related tool to not have a *han* translation?
 漢字之利器，如無漢譯，不亦謬乎？ */
 const i18n = {
   en: {
+    strokes: "{count, plural, one {# stroke} other {# strokes}}",
+    unclear: "Unclear",
     "radicalspage.search_bar_placeholder": "Find decompositions or variants",
   },
   cc: {
+    strokes: "{count, plural, other {# 筆畫}}",
+    unclear: "不詳",
     "radicalspage.search_bar_placeholder": "檢索分解亦或異體",
   },
 } as { [key: string]: any };
