@@ -68,8 +68,25 @@ const enum CharacterVariant {
   radical = 14,
 }
 
+// nothing to do with any existing standards, self-defined
+const enum CharacterVariantLocale {
+  chinese_traditional = "T",
+  chinese_simplified = "S",
+  japanese = "J",
+  korean = "K",
+  zhuang = "Z",
+  vietnamese = "V", // unused
+}
+
 interface VariantsMap {
   [key: string]: number[];
+}
+
+interface VariantsLocalesMap {
+  [key: string]: {
+    v: number[];
+    l: string; // string should only be composed of CharacterVariantLocale
+  };
 }
 
 interface VariantsIslandsLookup {

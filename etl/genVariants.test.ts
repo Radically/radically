@@ -3,6 +3,7 @@ import {
   generateVariantIslands,
   islandsToObject,
   expandVariantIslands,
+  variantsToLocalesString,
 } from "./genVariants";
 const IVS = require("ivs");
 
@@ -96,4 +97,15 @@ test("expand variants islands", () => {
     ["A", "B", "C", "E", "D", "Y"],
     ["F", "G", "H", "I", "J", "Z"],
   ]);
+});
+
+test("variantsToLocalesString", () => {
+  const variantsList = [
+    CharacterVariant.kokuji,
+    CharacterVariant.joyo_kanji,
+    CharacterVariant.chinese_simplified,
+    CharacterVariant.sawndip_simplified,
+  ];
+
+  expect(variantsToLocalesString(variantsList)).toEqual("JSZ");
 });

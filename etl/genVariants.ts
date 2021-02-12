@@ -3,6 +3,8 @@ import { writeJSON } from "./writer";
 
 import { JSON_FILE_NAMES } from "../src/constants";
 
+import { structuredClone } from "../src/utils";
+
 import {
   getRawVariantsData,
   getJPOldStyleData,
@@ -268,6 +270,66 @@ export const islandsToObject = (islands: string[][]): VariantsIslandsLookup => {
   return map;
 };
 
+export const variantsToLocalesString = (variants: number[]): string => {
+  let res = "";
+
+  const s = new Set<string>();
+  for (let variant of variants) {
+    switch (variant) {
+      case CharacterVariant.gukja:
+      case CharacterVariant.korean_standard:
+        s.add(CharacterVariantLocale.korean);
+        break;
+
+      case CharacterVariant.kokuji:
+      case CharacterVariant.japanese_shinjitai:
+      case CharacterVariant.japanese_kyujitai:
+      case CharacterVariant.joyo_kanji:
+      case CharacterVariant.kakikae:
+      case CharacterVariant.other_japanese:
+        s.add(CharacterVariantLocale.japanese);
+        break;
+
+      case CharacterVariant.chinese_simplified:
+        s.add(CharacterVariantLocale.chinese_simplified);
+        break;
+
+      case CharacterVariant.chinese_traditional:
+        s.add(CharacterVariantLocale.chinese_traditional);
+        break;
+
+      case CharacterVariant.sawndip_simplified:
+      case CharacterVariant.sawndip:
+        s.add(CharacterVariantLocale.zhuang);
+        break;
+    }
+  }
+
+  for (let char of s) {
+    res += char;
+  }
+
+  res = res.split("").sort().join("");
+
+  return res;
+};
+
+export const variantsMapToVariantsLocalesMap = (
+  map: VariantsMap
+): VariantsLocalesMap => {
+  const clonedMap = structuredClone(map);
+  const vlm = {} as VariantsLocalesMap;
+
+  for (let char in clonedMap) {
+    vlm[char] = {
+      v: clonedMap[char],
+      l: variantsToLocalesString(clonedMap[char]),
+    };
+  }
+
+  return vlm;
+};
+
 const main = async () => {
   /* generate a list of known variants first, e.g. whether a 
   character is a known radical, joyo kanji, simplified character, gukja, etc.*/
@@ -331,6 +393,11 @@ const main = async () => {
   }
 
   writeJSON(JSON.stringify(mapArr), JSON_FILE_NAMES.variantsMap);
+
+  writeJSON(
+    JSON.stringify(variantsMapToVariantsLocalesMap(mapArr)),
+    JSON_FILE_NAMES.variantsLocalesMap
+  );
 };
 
 export default main;
