@@ -17,7 +17,11 @@ import { Hanja as everydayHanja1800 } from "./hanja-for-everyday-use-1800.json";
 const IVS = require("ivs");
 const utfstring = require("utfstring");
 
-const addChinese = (map: VariantsMap) => {
+type VariantsSet = {
+  [key: string]: Set<number>;
+};
+
+const addChinese = (map: VariantsSet) => {
   const cjkvi_simplified = getRawVariantsData("cjkvi-simplified.txt");
 
   const commonTraditional = getCommonTraditionalCharacters();
@@ -80,7 +84,7 @@ const addChinese = (map: VariantsMap) => {
   /* hydzd is probably a strict subset... 𫢟 is in cjkvi-simplified but not in hydzd, TODO: investigate */
 };
 
-export const addJapaneseShinKyu = (ivsInstance: any, map: VariantsMap) => {
+export const addJapaneseShinKyu = (ivsInstance: any, map: VariantsSet) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -102,7 +106,7 @@ export const addJapaneseShinKyu = (ivsInstance: any, map: VariantsMap) => {
   }
 };
 
-export const addKoreanStandard = (map: VariantsMap) => {
+export const addKoreanStandard = (map: VariantsSet) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -115,7 +119,7 @@ export const addKoreanStandard = (map: VariantsMap) => {
   }
 };
 
-export const addKokuji = async (map: VariantsMap) => {
+export const addKokuji = async (map: VariantsSet) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -136,7 +140,7 @@ export const addKokuji = async (map: VariantsMap) => {
   }
 };
 
-const addJoyoKanji = async (map: VariantsMap) => {
+const addJoyoKanji = async (map: VariantsSet) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -150,7 +154,7 @@ const addJoyoKanji = async (map: VariantsMap) => {
   }
 };
 
-const addKakikae = async (map: VariantsMap) => {
+const addKakikae = async (map: VariantsSet) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -164,7 +168,7 @@ const addKakikae = async (map: VariantsMap) => {
   }
 };
 
-const addSawndip = async (map: VariantsMap) => {
+const addSawndip = async (map: VariantsSet) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -185,7 +189,7 @@ const addSawndip = async (map: VariantsMap) => {
   }
 };
 
-const addRadicals = (map: VariantsMap) => {
+const addRadicals = (map: VariantsSet) => {
   const createMapEntry = (char: string) => {
     if (!(char in map)) {
       map[char] = new Set<number>();
@@ -302,7 +306,7 @@ const main = async () => {
     JSON_FILE_NAMES.variantsIslandsLookup
   );
 
-  const addJapaneseShinKyuPromise = (map: VariantsMap) =>
+  const addJapaneseShinKyuPromise = (map: VariantsSet) =>
     new Promise<void>((resolve, reject) => {
       const ivs = new IVS(() => {
         addJapaneseShinKyu(ivs, map);
@@ -310,7 +314,7 @@ const main = async () => {
       });
     });
 
-  const map = {} as VariantsMap;
+  const map = {} as VariantsSet;
   addRadicals(map);
   await addSawndip(map);
   addKakikae(map);

@@ -69,7 +69,7 @@ const enum CharacterVariant {
 }
 
 interface VariantsMap {
-  [key: string]: Set<number>;
+  [key: string]: number[];
 }
 
 interface VariantsIslandsLookup {
