@@ -205,7 +205,8 @@ self.addEventListener("install", (event) => {
           JSON_FILE_NAMES.processedIDSMetadata,
           JSON_FILE_NAMES.strokeCount,
           JSON_FILE_NAMES.readings,
-          JSON_FILE_NAMES.variantsMap,
+          // JSON_FILE_NAMES.variantsMap,
+          JSON_FILE_NAMES.variantsLocalesMap,
           JSON_FILE_NAMES.variantsIslandsLookup,
         ].map((s) => "json/" + s)
       );
