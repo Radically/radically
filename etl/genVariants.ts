@@ -3,7 +3,7 @@ import { writeJSON } from "./writer";
 
 import { JSON_FILE_NAMES } from "../src/constants";
 
-import { structuredClone } from "../src/utils";
+import { structuredClone } from "./utils";
 
 import {
   getRawVariantsData,

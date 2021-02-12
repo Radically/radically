@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 // import pako from "pako";
 
-import { structuredClone } from "../src/utils";
+import { structuredClone } from "./utils";
 
 import {
   IDCSet,
