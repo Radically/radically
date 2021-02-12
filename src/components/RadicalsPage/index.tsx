@@ -250,7 +250,7 @@ function RadicalsPage() {
       >
         <StrokesRadicalsContainer id={"strokes-radicals-container"}>
           <StrokesScrollContainer id={"strokes-scroll-container"}>
-            {ls.map((count, idx) => (
+            {Object.keys(strokeCountToRadicalsMap).map((count, idx) => (
               <div
                 key={idx}
                 style={{
@@ -259,9 +259,14 @@ function RadicalsPage() {
                   paddingTop: "10px",
                   paddingBottom: "10px",
                   cursor: "pointer",
+                  fontSize: count === "999" ? "0.8rem" : "1rem",
                 }}
               >
-                {count}
+                {count === "999"
+                  ? intl.formatMessage({
+                      id: "unclear",
+                    })
+                  : count}
               </div>
             ))}
           </StrokesScrollContainer>

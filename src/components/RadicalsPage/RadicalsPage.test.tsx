@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { getByText, render, screen } from "@testing-library/react";
 
 import RadicalsPage from "./index";
 import { IntlProvider } from "react-intl";
@@ -51,6 +51,24 @@ describe("Radicals Page Tests", () => {
       expect(
         screen.getByText(`${cnt} stroke${cnt === 1 ? "" : "s"}`)
       ).toBeInTheDocument();
+    }
+  });
+
+  test("test stroke count appear in the left scrolling pane", () => {
+    render(
+      <DataContext.Provider value={mockDataContext}>
+        <IntlProvider locale="en" messages={i18n["en"]}>
+          <RadicalsPage />
+        </IntlProvider>
+      </DataContext.Provider>
+    );
+
+    const container = document.querySelector(
+      "#strokes-scroll-container"
+    ) as HTMLElement;
+
+    for (let cnt of Object.values(mockDataContext.strokeCount)) {
+      expect(getByText(container, cnt));
     }
   });
 });
