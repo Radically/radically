@@ -7,6 +7,8 @@ import {
 } from "./genVariants";
 const IVS = require("ivs");
 
+import { CharacterVariant, CharacterVariantLocale } from '../src/types/common';
+
 test("all ivs sequences stripped", (done) => {
   const ivs = new IVS(() => {
     const map = {} as { [key: string]: Set<number> };

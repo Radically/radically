@@ -5,6 +5,8 @@ import { JSON_FILE_NAMES } from "../src/constants";
 
 import { structuredClone } from "./utils";
 
+import { CharacterVariant, CharacterVariantLocale } from '../src/types/common';
+
 import {
   getRawVariantsData,
   getJPOldStyleData,
