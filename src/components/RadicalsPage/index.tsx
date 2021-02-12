@@ -7,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Split from "react-split";
 
-import { useIntl, FormattedDate } from "react-intl";
+import { useIntl, FormattedDate, FormattedMessage } from "react-intl";
 // for the radicals scroll container
 import {
   FixedSizeList,
@@ -138,6 +138,7 @@ const LoadingTextContainer = withTheme(styled.div`
   justify-content: center;
   font-family: var(--default-sans);
   font-size: 1.5em;
+  font-weight: bold;
   color: ${(props) => props.theme.palette.text.primary};
 
   @keyframes fadeIn {
@@ -268,7 +269,7 @@ function RadicalsPage() {
           <RadicalsScrollContainer id="radicals-scroll-container">
             {baseRadicalsLoading && (
               <LoadingTextContainer darkMode={darkMode}>
-                Loading...
+                <FormattedMessage id="loading" defaultMessage="Loading..." />
               </LoadingTextContainer>
             )}
 
@@ -298,7 +299,7 @@ function RadicalsPage() {
         <ReadingsScrollContainer>
           {readingsLoading && (
             <LoadingTextContainer darkMode={darkMode}>
-              Loading...
+              <FormattedMessage id="loading" defaultMessage="Loading..." />
             </LoadingTextContainer>
           )}
           {!radicalSelected && "No radical selected"}

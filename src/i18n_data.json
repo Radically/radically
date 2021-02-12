@@ -2,11 +2,13 @@
   "en": {
     "strokes": "{count, plural, one {# stroke} other {# strokes}}",
     "unclear": "Unclear",
-    "radicalspage.search_bar_placeholder": "Find decompositions or variants"
+    "radicalspage.search_bar_placeholder": "Find decompositions or variants",
+    "loading": "Loading..."
   },
   "cc": {
     "strokes": "{count, plural, other {# 筆畫}}",
     "unclear": "不詳",
-    "radicalspage.search_bar_placeholder": "檢索分解亦或異體"
+    "radicalspage.search_bar_placeholder": "檢索分解亦或異體",
+    "loading": "充填中..."
   }
 }
