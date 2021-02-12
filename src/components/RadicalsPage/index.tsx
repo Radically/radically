@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import styled from "styled-components";
 import { withTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -213,6 +213,8 @@ function RadicalsPage() {
   };
   // end here
 
+  const radicalListRef = useRef<FixedSizeList>(null);
+
   return (
     <RadicalsPageContainer id="radicals-page-container">
       <SearchContainer>
@@ -253,6 +255,12 @@ function RadicalsPage() {
             {Object.keys(strokeCountToRadicalsMap).map((count, idx) => (
               <div
                 key={idx}
+                onClick={() => {
+                  radicalListRef?.current?.scrollToItem(
+                    strokeCountToStart[count],
+                    "center"
+                  );
+                }}
                 style={{
                   fontWeight: "bold",
                   textAlign: "center",
@@ -287,7 +295,7 @@ function RadicalsPage() {
                   }}
                   outerElementType={outerElementType}
                   // outerRef={listOuterRef}
-                  // ref={radicalListRef}
+                  ref={radicalListRef}
                   height={height}
                   itemData={{ arrayified, selectedInfo, handleRadicalClick }}
                   itemCount={arrayified.length}
