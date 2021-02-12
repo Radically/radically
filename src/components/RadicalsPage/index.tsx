@@ -23,7 +23,12 @@ import CharacterResultReadings from "../CharacterResultReadings";
 
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
 import { DataContext } from "../../contexts/DataContextProvider";
-import { arrayifyForReactWindow, strokeCountToRadicals } from "./utils";
+import {
+  arrayifyForReactWindow,
+  getRadicalsPerRow,
+  strokeCountToRadicals,
+} from "./utils";
+import { useWindowDimensions } from "../../utils";
 
 const RadicalsPageContainer = styled("div")`
   display: flex;
@@ -168,6 +173,8 @@ function RadicalsPage() {
   const [input, setInput] = useState("");
 
   const { darkMode } = useContext(SettingsContext);
+  const { width, height } = useWindowDimensions();
+  const radicalsPerRow = getRadicalsPerRow(width || 320);
 
   const {
     baseRadicals,
@@ -186,7 +193,8 @@ function RadicalsPage() {
 
   const { arrayified, strokeCountToStart } = arrayifyForReactWindow(
     strokeCountToRadicalsMap,
-    intl
+    intl,
+    radicalsPerRow
   );
 
   const isLandscape = useMediaQuery("(orientation: landscape)");
@@ -297,7 +305,12 @@ function RadicalsPage() {
                   // outerRef={listOuterRef}
                   ref={radicalListRef}
                   height={height}
-                  itemData={{ arrayified, selectedInfo, handleRadicalClick }}
+                  itemData={{
+                    radicalsPerRow,
+                    arrayified,
+                    selectedInfo,
+                    handleRadicalClick,
+                  }}
                   itemCount={arrayified.length}
                   itemSize={40}
                   width={width}

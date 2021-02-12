@@ -10,8 +10,6 @@ import styled from "styled-components";
 import { withTheme } from "@material-ui/core/styles";
 // import { SettingsContext } from "../../contexts/SettingsContextProvider";
 
-import { RADICALS_PER_ROW } from "./utils";
-
 export const outerElementType = forwardRef((props, ref: any) => (
   <div
     onKeyDown={(e) => {
@@ -26,8 +24,8 @@ export const outerElementType = forwardRef((props, ref: any) => (
 const IndividualRadicalCell = withTheme(styled("div")<{
   selected: boolean;
 }>`
-  width: 25px;
-  height: 25px;
+  width: 27px;
+  height: 27px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,7 +56,7 @@ const NormalRow = styled.div`
 export const RadicalPickerRow = (props: ListChildComponentProps) => {
   // const { darkMode } = useContext(SettingsContext);
   const { index, style, data } = props;
-  const { arrayified, handleRadicalClick, selectedInfo } = data;
+  const { radicalsPerRow, arrayified, handleRadicalClick, selectedInfo } = data;
   if (arrayified[index].header) {
     return <HeaderRow style={style}>{arrayified[index].name}</HeaderRow>;
   }
@@ -81,7 +79,7 @@ export const RadicalPickerRow = (props: ListChildComponentProps) => {
         </IndividualRadicalCell>
       ))}
 
-      {new Array(RADICALS_PER_ROW - arrayified[index].radicals.length)
+      {new Array(radicalsPerRow - arrayified[index].radicals.length)
         .fill(undefined)
         .map((x, col: number) => (
           <IndividualRadicalCell

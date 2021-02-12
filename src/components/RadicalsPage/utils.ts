@@ -1,6 +1,6 @@
 import { IntlShape } from "react-intl";
 
-export const RADICALS_PER_ROW = 10;
+export const DEFAULT_RADICALS_PER_ROW = 10;
 export const UNKNOWN_STROKE_COUNT = 999;
 
 export const strokeCountToRadicals = (
@@ -21,7 +21,8 @@ export const arrayifyForReactWindow = (
   strokeCountToRadicals: {
     [key: number]: string[];
   },
-  intl: IntlShape
+  intl: IntlShape,
+  radicalsPerRow = DEFAULT_RADICALS_PER_ROW
 ): {
   arrayified: {
     header: boolean;
@@ -63,11 +64,11 @@ export const arrayifyForReactWindow = (
     for (
       let i = 0, j = strokeCountToRadicals[strokeCount].length;
       i < j;
-      i += RADICALS_PER_ROW
+      i += radicalsPerRow
     ) {
       tempArray = strokeCountToRadicals[strokeCount].slice(
         i,
-        i + RADICALS_PER_ROW
+        i + radicalsPerRow
       );
       arrayified.push({
         header: false,
@@ -76,4 +77,8 @@ export const arrayifyForReactWindow = (
     }
   }
   return { arrayified, strokeCountToStart };
+};
+
+export const getRadicalsPerRow = (windowWidth: number): number => {
+  return Math.trunc(windowWidth / 40);
 };
