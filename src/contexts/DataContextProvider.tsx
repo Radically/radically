@@ -18,6 +18,10 @@ const defaultValue = {
 
   strokeCount: {},
   strokeCountLoading: false,
+
+  variantsLocales: {},
+  variantsLocalesLoading: false,
+
   metadataLoading: false,
 
   // loading: false,
@@ -29,6 +33,10 @@ const defaultValue = {
 
   strokeCount: StrokeCount;
   strokeCountLoading: boolean;
+
+  variantsLocales: VariantsLocalesMap;
+  variantsLocalesLoading: boolean;
+
   metadata?: ProcessedIDSMetadata;
   metadataLoading: boolean;
   // loading: boolean;
@@ -47,12 +55,16 @@ export const DataContextProvider = (props: { children: any }) => {
   const [strokeCount, setStrokeCount] = useState({} as StrokeCount);
   const [readings, setReadings] = useState({} as ReadingsMap);
 
+  const [variantsLocales, setVariantsLocales] = useState(
+    {} as VariantsLocalesMap
+  );
+
   const [loading, setLoading] = useState({
     baseRadicalsLoading: false,
     metadataLoading: false,
     strokeCountLoading: false,
     readingsLoading: false,
-
+    variantsLocalesLoading: false,
     // not exposed
     triggerFetchAll: false,
   });
@@ -69,6 +81,9 @@ export const DataContextProvider = (props: { children: any }) => {
     readings,
 
     readingsLoading: loading.readingsLoading,
+
+    variantsLocales,
+    variantsLocalesLoading: loading.variantsLocalesLoading,
     // setExactRadicalFreq,
     // setMetadata,
     // setReadings,
@@ -129,6 +144,11 @@ export const DataContextProvider = (props: { children: any }) => {
           loadingKey: "readingsLoading",
           jsonFileName: JSON_FILE_NAMES.readings,
         },
+        {
+          setData: setVariantsLocales,
+          loadingKey: "variantsLocalesLoading",
+          jsonFileName: JSON_FILE_NAMES.variantsLocalesMap,
+        },
       ].map(async ({ setData, loadingKey, jsonFileName }) => {
         let data = await fetch("json/" + jsonFileName);
         setData(await data.json());
@@ -155,6 +175,7 @@ export const DataContextProvider = (props: { children: any }) => {
       baseRadicalsLoading: true,
       metadataLoading: true,
       readingsLoading: true,
+      variantsLocalesLoading: true,
       triggerFetchAll: true,
     });
   }, []);
