@@ -31,6 +31,13 @@ const mockDataContext = {
   },
 
   readingsLoading: false,
+
+  variantsLocales: {
+    a: { v: [14, 6, 2, 10, 9], l: "JKST" },
+    b: { v: [14, 9], l: "S" },
+  },
+
+  variantsLocalesLoading: false,
   // setExactRadicalFreq,
   // setMetadata,
   // setReadings,
