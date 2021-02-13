@@ -5,7 +5,7 @@ import { JSON_FILE_NAMES } from "../src/constants";
 
 import { structuredClone } from "./utils";
 
-import { CharacterVariant, CharacterVariantLocale } from '../src/types/common';
+import { CharacterVariant, CharacterVariantLocale } from "../src/types/common";
 
 import {
   getRawVariantsData,
@@ -14,6 +14,7 @@ import {
   getCommonSimplifiedCharacters,
   getAllVariantsPerCharacter,
   getOrthographicVariantsPerCharacter,
+  getKawabataJoyoKanji,
 } from "./variants-fetcher";
 
 import { Hanja as everydayHanja1800 } from "./hanja-for-everyday-use-1800.json";
@@ -155,6 +156,12 @@ const addJoyoKanji = async (map: VariantsSet) => {
   for (let entry of joyo_variants) {
     createMapEntry(entry[0]);
     map[entry[0]].add(CharacterVariant.joyo_kanji);
+  }
+
+  const kawabata_joyo_table = getKawabataJoyoKanji();
+  for (let char of kawabata_joyo_table) {
+    createMapEntry(char);
+    map[char].add(CharacterVariant.joyo_kanji);
   }
 };
 

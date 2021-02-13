@@ -31,3 +31,5 @@ export const UNICODE_IDS_RESOLVED_PREFIXES = [
 
 export const CJKVI_VARIANTS_SUBDIR_NAME = "cjkvi-variants";
 export const MANUAL_CJKVI_VARIANTS_SUBDIR_NAME = "manual-cjkvi-variants";
+
+export const CJKVI_TABLES_SUBDIR_NAME = "cjkvi-tables";

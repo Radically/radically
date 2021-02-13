@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import {
+  CJKVI_TABLES_SUBDIR_NAME,
   CJKVI_VARIANTS_SUBDIR_NAME,
   MANUAL_CJKVI_VARIANTS_SUBDIR_NAME,
 } from "./constants";
@@ -9,6 +10,7 @@ import {
 const utfstring = require("utfstring");
 
 const CJKVI_VARIANTS_SUBDIR = path.join(__dirname, CJKVI_VARIANTS_SUBDIR_NAME);
+const CJKVI_TABLES_SUBDIR = path.join(__dirname, CJKVI_TABLES_SUBDIR_NAME);
 
 const MANUAL_CJKVI_VARIANTS_SUBDIR = path.join(
   __dirname,
@@ -102,6 +104,19 @@ export const getCommonSimplifiedCharacters = (): string[] => {
     if (entry.trim().startsWith("#")) continue;
     const splitEntry = entry.split(" ");
     res.push(splitEntry[splitEntry.length - 1]);
+  }
+  return res;
+};
+
+export const getKawabataJoyoKanji = (): string[] => {
+  const filePath = path.join(CJKVI_TABLES_SUBDIR, "joyo2010.txt");
+  const res = [] as string[];
+  const split = fs.readFileSync(filePath, "utf-8").split("\n");
+  for (let entry of split) {
+    if (!entry.length) continue;
+    if (entry.trim().startsWith("#")) continue;
+    const splitEntry = entry.split("\t");
+    res.push(splitEntry[0]);
   }
   return res;
 };
