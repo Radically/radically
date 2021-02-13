@@ -1,3 +1,14 @@
+import {
+  green,
+  indigo,
+  cyan,
+  purple,
+  yellow,
+  amber,
+  teal,
+  blue,
+} from "@material-ui/core/colors";
+
 export const IDCSet = new Set([
   "⿰",
   "⿱",
@@ -51,6 +62,15 @@ export const JSON_FILE_NAMES = {
   variantsMap: "variantsMap.json",
   variantsLocalesMap: "variantsLocalesMap.json",
   variantsIslandsLookup: "variantsIslandsLookup.json",
+};
+
+export const CharacterVariantLocaleColors = {
+  chinese_traditional: {dark: cyan[800], light: teal[200]},
+  chinese_simplified: {dark: amber[900], light: amber[600]},
+  japanese: {dark: purple[300], light: purple[200]},
+  korean: {dark: indigo[700], light: indigo['A100']},
+  zhuang: {dark: indigo["A700"], light: blue[400]},
+  vietnamese: {dark: green[800], light: green[200]},
 };
 
 /* export const PAKO_FILE_NAMES = {

@@ -7,7 +7,11 @@ import React, {
 } from "react";
 import { ListChildComponentProps } from "react-window";
 import styled from "styled-components";
-import { withTheme } from "@material-ui/core/styles";
+import { DataContext } from "../../contexts/DataContextProvider";
+import { SettingsContext } from "../../contexts/SettingsContextProvider";
+import IndividualRadicalCell from "../IndividualRadicalCell";
+
+// import { withTheme } from "@material-ui/core/styles";
 // import { SettingsContext } from "../../contexts/SettingsContextProvider";
 
 export const outerElementType = forwardRef((props, ref: any) => (
@@ -20,21 +24,6 @@ export const outerElementType = forwardRef((props, ref: any) => (
     {...props}
   />
 ));
-
-const IndividualRadicalCell = withTheme(styled("div")<{
-  selected: boolean;
-}>`
-  width: 27px;
-  height: 27px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => (props.selected ? "#2185d0" : "none")};
-  color: ${(props) =>
-    props.selected ? "white" : props.theme.palette.text.primary};
-  border-radius: 5px;
-  cursor: pointer;
-`);
 
 const HeaderRow = styled.div`
   font-size: 12pt;
@@ -57,6 +46,10 @@ export const RadicalPickerRow = (props: ListChildComponentProps) => {
   // const { darkMode } = useContext(SettingsContext);
   const { index, style, data } = props;
   const { radicalsPerRow, arrayified, handleRadicalClick, selectedInfo } = data;
+
+  const { darkMode } = useContext(SettingsContext);
+  const { variantsLocales } = useContext(DataContext);
+
   if (arrayified[index].header) {
     return <HeaderRow style={style}>{arrayified[index].name}</HeaderRow>;
   }
@@ -70,7 +63,9 @@ export const RadicalPickerRow = (props: ListChildComponentProps) => {
       {arrayified[index].radicals.map((radical: string, col: number) => (
         <IndividualRadicalCell
           key={`radical-${index}-${col}`}
+          darkMode={darkMode}
           selected={selectedInfo.index === index && selectedInfo.col === col}
+          characterVariantLocales={variantsLocales[radical]?.l}
           onClick={(event: React.MouseEvent<HTMLElement>) => {
             handleRadicalClick(event, index, col, radical);
           }}
@@ -83,6 +78,7 @@ export const RadicalPickerRow = (props: ListChildComponentProps) => {
         .fill(undefined)
         .map((x, col: number) => (
           <IndividualRadicalCell
+            filler={true}
             key={`filler-${index}-${col}`}
             selected={false}
           />

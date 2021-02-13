@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useIntl } from "react-intl";
 import styled from "styled-components";
+import { DataContext } from "../../contexts/DataContextProvider";
+import { getStringForCharacterVariants } from "../RadicalsPage/utils";
 // import SimpleBar from "simplebar-react";
 
 // the result block, max width should be the width of individual radical * number of radicals in a row
@@ -30,9 +33,18 @@ const Container = styled.div`
   padding-right: 10px;
 `;
 
+const VariantsStringContainer = styled.div`
+  padding-bottom: 10px;
+  font-weight: bold;
+`;
+
 const CharacterResultReadings = React.memo(
   (props: { char: string; readings: Readings }) => {
     const { char, readings } = props;
+    const intl = useIntl();
+    const { variantsLocales } = useContext(DataContext);
+
+    const variantsString = getStringForCharacterVariants(variantsLocales[char]?.v, intl);
     return (
       <Container>
         <div
@@ -51,6 +63,9 @@ const CharacterResultReadings = React.memo(
         {/* <SimpleBar style={{ flex: 1, paddingTop: "5px", height: "100px" }}> */}
         {/* <div> */}
         <div style={{ fontSize: "0.9rem" }}>
+          { variantsString && <VariantsStringContainer>
+            {variantsString}
+          </VariantsStringContainer> }
           {char in readings
             ? Object.entries(readings[char]).map((entry) => (
                 <div>

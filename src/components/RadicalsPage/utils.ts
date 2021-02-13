@@ -1,4 +1,5 @@
 import { IntlShape } from "react-intl";
+import { CharacterVariant } from "../../types/common";
 
 export const DEFAULT_RADICALS_PER_ROW = 10;
 export const UNKNOWN_STROKE_COUNT = 999;
@@ -81,4 +82,82 @@ export const arrayifyForReactWindow = (
 
 export const getRadicalsPerRow = (windowWidth: number): number => {
   return Math.trunc(windowWidth / 40);
+};
+
+export const getStringForCharacterVariants = (
+  variants: number[],
+  intl: IntlShape
+): string | undefined => {
+  if (!variants || variants.length === 0) return undefined;
+  return variants
+    .map((variant) => {
+      switch (variant) {
+        case CharacterVariant.gukja:
+          return intl.formatMessage({
+            id: "variant.gukja",
+          });
+        case CharacterVariant.korean_standard:
+          return intl.formatMessage({
+            id: "variant.korean_standard",
+          });
+        case CharacterVariant.kokuji:
+          return intl.formatMessage({
+            id: "variant.kokuji",
+          });
+        case CharacterVariant.japanese_shinjitai:
+          return intl.formatMessage({
+            id: "variant.japanese_shinjitai",
+          });
+        case CharacterVariant.japanese_kyujitai:
+          return intl.formatMessage({
+            id: "variant.japanese_kyujitai",
+          });
+
+        case CharacterVariant.joyo_kanji:
+          return intl.formatMessage({
+            id: "variant.joyo_kanji",
+          });
+
+        case CharacterVariant.kakikae:
+          return intl.formatMessage({
+            id: "variant.kakikae",
+          });
+
+        case CharacterVariant.other_japanese:
+          return intl.formatMessage({
+            id: "variant.other_japanese",
+          });
+
+        case CharacterVariant.chinese_simplified:
+          return intl.formatMessage({
+            id: "variant.chinese_simplified",
+          });
+
+        case CharacterVariant.chinese_traditional:
+          return intl.formatMessage({
+            id: "variant.chinese_traditional",
+          });
+
+        case CharacterVariant.other_simplified:
+          return intl.formatMessage({
+            id: "variant.other_simplified",
+          });
+
+        case CharacterVariant.sawndip_simplified:
+          return intl.formatMessage({
+            id: "variant.sawndip_simplified",
+          });
+
+        case CharacterVariant.sawndip:
+          return intl.formatMessage({
+            id: "variant.sawndip",
+          });
+
+        case CharacterVariant.radical:
+          return intl.formatMessage({
+            id: "variant.radical",
+          });
+      }
+    })
+    .join(" • ");
 };
