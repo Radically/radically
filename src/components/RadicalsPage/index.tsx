@@ -25,10 +25,12 @@ import { SettingsContext } from "../../contexts/SettingsContextProvider";
 import { DataContext } from "../../contexts/DataContextProvider";
 import {
   arrayifyForReactWindow,
+  arrayifySearchResultsForReactWindow,
+  getDecompositionAndVariants,
   getRadicalsPerRow,
   strokeCountToRadicals,
 } from "./utils";
-import { useWindowDimensions } from "../../utils";
+import { isCJK, useWindowDimensions } from "../../utils";
 
 const RadicalsPageContainer = styled("div")`
   display: flex;
@@ -135,6 +137,18 @@ const ReadingsScrollContainer = withTheme(styled.div`
   color: ${(props) => props.theme.palette.text.primary};
 `);
 
+const CenterTextContainer = withTheme(styled.div`
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--default-sans);
+  font-size: 1.5em;
+  // font-weight: bold;
+  color: ${(props) => props.theme.palette.text.primary};
+`);
+
 const LoadingTextContainer = withTheme(styled.div`
   text-align: center;
   height: 100%;
@@ -154,13 +168,6 @@ const LoadingTextContainer = withTheme(styled.div`
 
   animation: fadeIn 1s infinite alternate;
 `);
-
-const ls = [] as number[];
-{
-  for (let i = 1; i < 30; i++) {
-    ls.push(i);
-  }
-}
 
 interface SelectedInfo {
   index: number;
@@ -184,17 +191,14 @@ function RadicalsPage() {
 
     readings,
     readingsLoading,
+
+    reverseMapIDSOnly,
+    variantsIslands,
   } = useContext(DataContext);
 
   const strokeCountToRadicalsMap = strokeCountToRadicals(
     baseRadicals,
     strokeCount
-  );
-
-  const { arrayified, strokeCountToStart } = arrayifyForReactWindow(
-    strokeCountToRadicalsMap,
-    intl,
-    radicalsPerRow
   );
 
   const isLandscape = useMediaQuery("(orientation: landscape)");
@@ -223,19 +227,68 @@ function RadicalsPage() {
 
   const radicalListRef = useRef<FixedSizeList>(null);
 
+  // search data structures & algos begin here
+  // simple map of search input to results
+  const [searchResults, setSearchResults] = useState(
+    null as { [key: string]: string[] } | null
+  );
+
+  let arrayified: {
+    header: boolean;
+    name?: string;
+    radicals?: string[];
+  }[];
+  let sideBarToStart: { [key: string]: number };
+  if (!!searchResults) {
+    ({
+      arrayified,
+      radicalToStart: sideBarToStart,
+    } = arrayifySearchResultsForReactWindow(searchResults, radicalsPerRow));
+  } else {
+    ({
+      arrayified,
+      strokeCountToStart: sideBarToStart,
+    } = arrayifyForReactWindow(strokeCountToRadicalsMap, intl, radicalsPerRow));
+  }
+
+  const performSearch = () => {
+    setSelectedInfo({} as SelectedInfo); // unset the selected info
+    const res = {} as { [key: string]: string[] };
+    for (let char of input) {
+      if (isCJK(char)) {
+        const dv = getDecompositionAndVariants(
+          char,
+          reverseMapIDSOnly,
+          variantsIslands
+        );
+        if (dv.length > 0) res[char] = dv;
+      }
+    }
+    if (Object.entries(res).length > 0) {
+      setSearchResults(res);
+    }
+  };
+
   return (
     <RadicalsPageContainer id="radicals-page-container">
       <SearchContainer>
         <SearchInput
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            // clear the search results
+            if (!e.target.value) {
+              setSelectedInfo({} as SelectedInfo);
+              setSearchResults(null);
+            }
+            setInput(e.target.value);
+          }}
           placeholder={intl.formatMessage({
             id: "radicalspage.search_bar_placeholder",
           })}
         />
 
         <IconButton
-          onClick={() => {
-            // setDarkMode(!darkMode);
-          }}
+          disabled={!input}
+          onClick={performSearch}
           color="primary"
           id="radical-search"
           aria-label="search and decompose the input characters"
@@ -260,12 +313,15 @@ function RadicalsPage() {
       >
         <StrokesRadicalsContainer id={"strokes-radicals-container"}>
           <StrokesScrollContainer id={"strokes-scroll-container"}>
-            {Object.keys(strokeCountToRadicalsMap).map((count, idx) => (
+            {(!!searchResults
+              ? Object.keys(searchResults)
+              : Object.keys(strokeCountToRadicalsMap)
+            ).map((count, idx) => (
               <div
                 key={idx}
                 onClick={() => {
                   radicalListRef?.current?.scrollToItem(
-                    strokeCountToStart[count],
+                    sideBarToStart[count],
                     "center"
                   );
                 }}
@@ -328,7 +384,14 @@ function RadicalsPage() {
               <FormattedMessage id="loading" defaultMessage="Loading..." />
             </LoadingTextContainer>
           )}
-          {!radicalSelected && "No radical selected"}
+          {!radicalSelected && (
+            <CenterTextContainer darkMode={darkMode}>
+              <FormattedMessage
+                id="radicalspage.no_radical_selected"
+                defaultMessage="No radical selected"
+              />
+            </CenterTextContainer>
+          )}
 
           {radicalSelected && !readingsLoading && (
             <CharacterResultReadings

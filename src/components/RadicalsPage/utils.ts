@@ -1,5 +1,6 @@
 import { IntlShape } from "react-intl";
 import { CharacterVariant } from "../../types/common";
+import { isCJK } from "../../utils";
 
 export const DEFAULT_RADICALS_PER_ROW = 10;
 export const UNKNOWN_STROKE_COUNT = 999;
@@ -78,6 +79,50 @@ export const arrayifyForReactWindow = (
     }
   }
   return { arrayified, strokeCountToStart };
+};
+
+export const arrayifySearchResultsForReactWindow = (
+  searchResults: { [key: string]: string[] },
+  radicalsPerRow = DEFAULT_RADICALS_PER_ROW
+): {
+  arrayified: {
+    header: boolean;
+    name?: string;
+    radicals?: string[];
+  }[];
+  // the index of the header for that particular stroke count group
+  radicalToStart: { [key: string]: number };
+} => {
+  // technically order doesn't matter
+  const arrayified: {
+    header: boolean;
+    name?: string;
+    radicals?: string[];
+  }[] = [];
+
+  const radicalToStart: { [key: string]: number } = {};
+  for (let result in searchResults) {
+    radicalToStart[result] = arrayified.length;
+
+    arrayified.push({
+      header: true,
+      name: result,
+    });
+
+    let tempArray;
+    for (
+      let i = 0, j = searchResults[result].length;
+      i < j;
+      i += radicalsPerRow
+    ) {
+      tempArray = searchResults[result].slice(i, i + radicalsPerRow);
+      arrayified.push({
+        header: false,
+        radicals: tempArray,
+      });
+    }
+  }
+  return { arrayified, radicalToStart };
 };
 
 export const getRadicalsPerRow = (windowWidth: number): number => {
@@ -160,4 +205,32 @@ export const getStringForCharacterVariants = (
       }
     })
     .join(" • ");
+};
+
+export const getDecompositionAndVariants = (
+  char: string,
+  reverseMapIDSOnly: ReverseMapIDSOnly,
+  variantsIslands: VariantsIslandsLookup
+): string[] => {
+  const set = new Set<string>();
+  if (char in reverseMapIDSOnly) {
+    for (let { i, l } of reverseMapIDSOnly[char]) {
+      for (let char of i) {
+        if (isCJK(char)) {
+          set.add(char);
+        }
+      }
+    }
+  }
+
+  if (char in variantsIslands.chars) {
+    const islands = variantsIslands.chars[char];
+    for (let island of islands) {
+      for (let variant of variantsIslands.islands[island]) {
+        set.add(variant);
+      }
+    }
+  }
+
+  return Array.from(set);
 };

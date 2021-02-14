@@ -3,6 +3,7 @@
     "strokes": "{count, plural, one {# stroke} other {# strokes}}",
     "unclear": "Unclear",
     "radicalspage.search_bar_placeholder": "Find decompositions or variants",
+    "radicalspage.no_radical_selected": "No radical selected",
     "loading": "Loading...",
 
     "variant.gukja": "KO-Gukja",
@@ -24,6 +25,7 @@
     "strokes": "{count, plural, other {# 筆畫}}",
     "unclear": "不詳",
     "radicalspage.search_bar_placeholder": "檢索分解亦或異體",
+    "radicalspage.no_radical_selected": "未擇部首",
     "loading": "充填中...",
 
     "variant.gukja": "韓國國字",

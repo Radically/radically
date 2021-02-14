@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { IDCSet, StrokePlaceholderSet } from "./constants";
 export function usePrevious(value: any) {
   const ref = useRef();
   useEffect(() => {
@@ -35,4 +36,13 @@ export function useWindowDimensions() {
   }, [hasWindow]);
 
   return windowDimensions;
+}
+
+export function isCJK(idsChar: string) {
+  if (IDCSet.has(idsChar)) return false;
+  if (StrokePlaceholderSet.has(idsChar)) return false;
+  // ignore all ascii
+  if (idsChar.charCodeAt(0) < 127) return false;
+  if (idsChar === "？") return false;
+  return true;
 }
