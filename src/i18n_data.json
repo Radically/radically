@@ -3,12 +3,42 @@
     "strokes": "{count, plural, one {# stroke} other {# strokes}}",
     "unclear": "Unclear",
     "radicalspage.search_bar_placeholder": "Find decompositions or variants",
-    "loading": "Loading..."
+    "loading": "Loading...",
+
+    "variant.gukja": "KO-Gukja",
+    "variant.korean_standard": "KO-Basic",
+    "variant.kokuji": "JA-Kokuji",
+    "variant.japanese_shinjitai": "JA-Shinjitai",
+    "variant.japanese_kyujitai": "JA-Kyujitai",
+    "variant.joyo_kanji": "JA-Joyo",
+    "variant.kakikae": "JA-Kakikae",
+    "variant.other_japanese": "JA-Other",
+    "variant.chinese_simplified": "ZH-Simplified",
+    "variant.chinese_traditional": "ZH-Traditional",
+    "variant.other_simplified": "Other-Simplified",
+    "variant.sawndip_simplified": "ZA-Simplified",
+    "variant.zhuang": "ZA",
+    "variant.radical": "Radical"
   },
   "cc": {
     "strokes": "{count, plural, other {# 筆畫}}",
     "unclear": "不詳",
     "radicalspage.search_bar_placeholder": "檢索分解亦或異體",
-    "loading": "充填中..."
+    "loading": "充填中...",
+
+    "variant.gukja": "韓國國字",
+    "variant.korean_standard": "韓國基礎漢字",
+    "variant.kokuji": "和製漢字",
+    "variant.japanese_shinjitai": "日本新字体",
+    "variant.japanese_kyujitai": "日本旧字体",
+    "variant.joyo_kanji": "日本常用漢字",
+    "variant.kakikae": "日本書き換え",
+    "variant.other_japanese": "其余日本文字",
+    "variant.chinese_simplified": "简体中文",
+    "variant.chinese_traditional": "傳統中文",
+    "variant.other_simplified": "其餘簡化文字",
+    "variant.sawndip_simplified": "簡化壯字",
+    "variant.zhuang": "壯字",
+    "variant.radical": "部首"
   }
 }
