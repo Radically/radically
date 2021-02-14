@@ -17,7 +17,7 @@
     "variant.chinese_traditional": "ZH-Traditional",
     "variant.other_simplified": "Other-Simplified",
     "variant.sawndip_simplified": "ZA-Simplified",
-    "variant.zhuang": "ZA",
+    "variant.sawndip": "ZA",
     "variant.radical": "Radical"
   },
   "cc": {
@@ -30,7 +30,7 @@
     "variant.korean_standard": "韓國基礎漢字",
     "variant.kokuji": "和製漢字",
     "variant.japanese_shinjitai": "日本新字体",
-    "variant.japanese_kyujitai": "日本旧字体",
+    "variant.japanese_kyujitai": "日本舊字體",
     "variant.joyo_kanji": "日本常用漢字",
     "variant.kakikae": "日本書き換え",
     "variant.other_japanese": "其余日本文字",
@@ -38,7 +38,7 @@
     "variant.chinese_traditional": "傳統中文",
     "variant.other_simplified": "其餘簡化文字",
     "variant.sawndip_simplified": "簡化壯字",
-    "variant.zhuang": "壯字",
+    "variant.sawndip": "壯字",
     "variant.radical": "部首"
   }
 }
