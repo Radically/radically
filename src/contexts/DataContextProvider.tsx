@@ -25,6 +25,9 @@ const defaultValue = {
   variantsIslands: { islands: [] as string[][], chars: {} },
   variantsIslandsLoading: false,
 
+  reverseMapIDSOnly: {},
+  reverseMapIDSOnlyLoading: false,
+
   metadataLoading: false,
 
   // loading: false,
@@ -42,6 +45,9 @@ const defaultValue = {
 
   variantsIslands: VariantsIslandsLookup;
   variantsIslandsLoading: boolean;
+
+  reverseMapIDSOnly: ReverseMapIDSOnly;
+  reverseMapIDSOnlyLoading: boolean;
 
   metadata?: ProcessedIDSMetadata;
   metadataLoading: boolean;
@@ -70,6 +76,10 @@ export const DataContextProvider = (props: { children: any }) => {
     chars: {},
   } as VariantsIslandsLookup);
 
+  const [reverseMapIDSOnly, setReverseMapIDSOnly] = useState(
+    {} as ReverseMapIDSOnly
+  );
+
   const [loading, setLoading] = useState({
     baseRadicalsLoading: false,
     metadataLoading: false,
@@ -77,6 +87,7 @@ export const DataContextProvider = (props: { children: any }) => {
     readingsLoading: false,
     variantsLocalesLoading: false,
     variantsIslandsLoading: false,
+    reverseMapIDSOnlyLoading: false,
     // not exposed
     triggerFetchAll: false,
   });
@@ -99,6 +110,9 @@ export const DataContextProvider = (props: { children: any }) => {
 
     variantsIslands,
     variantsIslandsLoading: loading.variantsIslandsLoading,
+
+    reverseMapIDSOnly,
+    reverseMapIDSOnlyLoading: loading.reverseMapIDSOnlyLoading,
     // setExactRadicalFreq,
     // setMetadata,
     // setReadings,
@@ -169,6 +183,11 @@ export const DataContextProvider = (props: { children: any }) => {
           loadingKey: "variantsIslandsLoading",
           jsonFileName: JSON_FILE_NAMES.variantsIslandsLookup,
         },
+        {
+          setData: setReverseMapIDSOnly,
+          loadingKey: "reverseMapIDSOnlyLoading",
+          jsonFileName: JSON_FILE_NAMES.reverseMapIDSOnly,
+        },
       ].map(async ({ setData, loadingKey, jsonFileName }) => {
         let data = await fetch("json/" + jsonFileName);
         setData(await data.json());
@@ -197,6 +216,7 @@ export const DataContextProvider = (props: { children: any }) => {
       readingsLoading: true,
       variantsLocalesLoading: true,
       variantsIslandsLoading: true,
+      reverseMapIDSOnlyLoading: true,
       triggerFetchAll: true,
     });
   }, []);
