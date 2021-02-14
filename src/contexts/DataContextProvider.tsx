@@ -22,6 +22,9 @@ const defaultValue = {
   variantsLocales: {},
   variantsLocalesLoading: false,
 
+  variantsIslands: { islands: [] as string[][], chars: {} },
+  variantsIslandsLoading: false,
+
   metadataLoading: false,
 
   // loading: false,
@@ -36,6 +39,9 @@ const defaultValue = {
 
   variantsLocales: VariantsLocalesMap;
   variantsLocalesLoading: boolean;
+
+  variantsIslands: VariantsIslandsLookup;
+  variantsIslandsLoading: boolean;
 
   metadata?: ProcessedIDSMetadata;
   metadataLoading: boolean;
@@ -59,12 +65,18 @@ export const DataContextProvider = (props: { children: any }) => {
     {} as VariantsLocalesMap
   );
 
+  const [variantsIslands, setVariantsIslands] = useState({
+    islands: [] as string[][],
+    chars: {},
+  } as VariantsIslandsLookup);
+
   const [loading, setLoading] = useState({
     baseRadicalsLoading: false,
     metadataLoading: false,
     strokeCountLoading: false,
     readingsLoading: false,
     variantsLocalesLoading: false,
+    variantsIslandsLoading: false,
     // not exposed
     triggerFetchAll: false,
   });
@@ -84,6 +96,9 @@ export const DataContextProvider = (props: { children: any }) => {
 
     variantsLocales,
     variantsLocalesLoading: loading.variantsLocalesLoading,
+
+    variantsIslands,
+    variantsIslandsLoading: loading.variantsIslandsLoading,
     // setExactRadicalFreq,
     // setMetadata,
     // setReadings,
@@ -149,6 +164,11 @@ export const DataContextProvider = (props: { children: any }) => {
           loadingKey: "variantsLocalesLoading",
           jsonFileName: JSON_FILE_NAMES.variantsLocalesMap,
         },
+        {
+          setData: setVariantsIslands,
+          loadingKey: "variantsIslandsLoading",
+          jsonFileName: JSON_FILE_NAMES.variantsIslandsLookup,
+        },
       ].map(async ({ setData, loadingKey, jsonFileName }) => {
         let data = await fetch("json/" + jsonFileName);
         setData(await data.json());
@@ -176,6 +196,7 @@ export const DataContextProvider = (props: { children: any }) => {
       metadataLoading: true,
       readingsLoading: true,
       variantsLocalesLoading: true,
+      variantsIslandsLoading: true,
       triggerFetchAll: true,
     });
   }, []);
