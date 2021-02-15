@@ -8,14 +8,17 @@ import SearchIcon from "@material-ui/icons/Search";
 import Split from "react-split";
 
 import { useIntl, FormattedDate, FormattedMessage } from "react-intl";
-// for the radicals scroll container
+// for the components scroll container
 import {
   FixedSizeList,
   FixedSizeList as List,
   ListChildComponentProps,
 } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { outerElementType, RadicalPickerRow } from "./RadicalsScrollComponents";
+import {
+  outerElementType,
+  ComponentPickerRow,
+} from "./ComponentsScrollComponents";
 
 import { heightPx } from "../OutputBar";
 
@@ -32,7 +35,7 @@ import {
 } from "./utils";
 import { isCJK, useWindowDimensions } from "../../utils";
 
-const RadicalsPageContainer = styled("div")`
+const ComponentsPageContainer = styled("div")`
   display: flex;
   flex-direction: column;
   // align-items: center;
@@ -83,7 +86,7 @@ const SearchInput = withTheme(
   `
 );
 
-const StrokesRadicalsContainer = styled.div`
+const StrokesComponentsContainer = styled.div`
   // @media (orientation: portrait) {
   border-bottom: 1px solid #909090;
   // }
@@ -175,7 +178,7 @@ interface SelectedInfo {
   radical: string;
 }
 
-function RadicalsPage() {
+function ComponentsPage() {
   const intl = useIntl();
   const [input, setInput] = useState("");
 
@@ -207,7 +210,7 @@ function RadicalsPage() {
   // radicals list handlers and methods begin here
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
 
-  const radicalSelected = "index" in selectedInfo && "col" in selectedInfo;
+  const componentSelected = "index" in selectedInfo && "col" in selectedInfo;
 
   const handleRadicalClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -225,7 +228,7 @@ function RadicalsPage() {
   };
   // end here
 
-  const radicalListRef = useRef<FixedSizeList>(null);
+  const componentListRef = useRef<FixedSizeList>(null);
 
   // search data structures & algos begin here
   // simple map of search input to results
@@ -270,7 +273,7 @@ function RadicalsPage() {
   };
 
   return (
-    <RadicalsPageContainer id="radicals-page-container">
+    <ComponentsPageContainer id="components-page-container">
       <SearchContainer>
         <SearchInput
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,7 +285,7 @@ function RadicalsPage() {
             setInput(e.target.value);
           }}
           placeholder={intl.formatMessage({
-            id: "radicalspage.search_bar_placeholder",
+            id: "componentspage.search_bar_placeholder",
           })}
         />
 
@@ -290,7 +293,7 @@ function RadicalsPage() {
           disabled={!input}
           onClick={performSearch}
           color="primary"
-          id="radical-search"
+          id="components-search"
           aria-label="search and decompose the input characters"
           component="span"
         >
@@ -300,10 +303,10 @@ function RadicalsPage() {
 
       <Split
         style={{ flex: 1 }}
-        id="radicals-split-container"
-        sizes={[75, 25]}
+        id="components-split-container"
+        sizes={[60, 40]}
         minSize={isLandscape || isSafari ? 10 : 60} // 56px + 4
-        expandToMin={false}
+        expandToMin={true}
         gutterSize={10}
         gutterAlign="center"
         snapOffset={0}
@@ -311,7 +314,7 @@ function RadicalsPage() {
         direction={"vertical"}
         cursor="col-resize"
       >
-        <StrokesRadicalsContainer id={"strokes-radicals-container"}>
+        <StrokesComponentsContainer id={"strokes-components-container"}>
           <StrokesScrollContainer id={"strokes-scroll-container"}>
             {(!!searchResults
               ? Object.keys(searchResults)
@@ -320,7 +323,7 @@ function RadicalsPage() {
               <div
                 key={idx}
                 onClick={() => {
-                  radicalListRef?.current?.scrollToItem(
+                  componentListRef?.current?.scrollToItem(
                     sideBarToStart[count],
                     "center"
                   );
@@ -343,7 +346,7 @@ function RadicalsPage() {
             ))}
           </StrokesScrollContainer>
 
-          <RadicalsScrollContainer id="radicals-scroll-container">
+          <RadicalsScrollContainer id="components-scroll-container">
             {baseRadicalsLoading && (
               <LoadingTextContainer darkMode={darkMode}>
                 <FormattedMessage id="loading" defaultMessage="Loading..." />
@@ -359,7 +362,7 @@ function RadicalsPage() {
                   }}
                   outerElementType={outerElementType}
                   // outerRef={listOuterRef}
-                  ref={radicalListRef}
+                  ref={componentListRef}
                   height={height}
                   itemData={{
                     radicalsPerRow,
@@ -371,12 +374,12 @@ function RadicalsPage() {
                   itemSize={40}
                   width={width}
                 >
-                  {RadicalPickerRow}
+                  {ComponentPickerRow}
                 </List>
               )}
             </AutoSizer>
           </RadicalsScrollContainer>
-        </StrokesRadicalsContainer>
+        </StrokesComponentsContainer>
 
         <ReadingsScrollContainer>
           {readingsLoading && (
@@ -384,16 +387,16 @@ function RadicalsPage() {
               <FormattedMessage id="loading" defaultMessage="Loading..." />
             </LoadingTextContainer>
           )}
-          {!radicalSelected && (
+          {!componentSelected && (
             <CenterTextContainer darkMode={darkMode}>
               <FormattedMessage
-                id="radicalspage.no_radical_selected"
+                id="componentspage.no_radical_selected"
                 defaultMessage="No radical selected"
               />
             </CenterTextContainer>
           )}
 
-          {radicalSelected && !readingsLoading && (
+          {componentSelected && !readingsLoading && (
             <CharacterResultReadings
               key={selectedInfo.radical}
               char={selectedInfo.radical}
@@ -402,8 +405,8 @@ function RadicalsPage() {
           )}
         </ReadingsScrollContainer>
       </Split>
-    </RadicalsPageContainer>
+    </ComponentsPageContainer>
   );
 }
 
-export default RadicalsPage;
+export default ComponentsPage;

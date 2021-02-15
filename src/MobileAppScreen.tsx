@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 
 import FirstPage from "./components/FirstPage";
-import RadicalsPage from "./components/RadicalsPage";
+import ComponentsPage from "./components/ComponentsPage";
 
 import { withTheme, makeStyles } from "@material-ui/core/styles";
 
@@ -49,7 +49,7 @@ const StickyOutputBarWrapper = styled.div`
   }
 `;
 
-const RadicalResultsPageWrapper = styled.div`
+const ComponentResultsPageWrapper = styled.div`
   display: flex;
   @media (orientation: landscape) {
     flex: 1;
@@ -114,8 +114,8 @@ function MobileAppScreen() {
         <StickyOutputBarWrapper id={"stickyoutputbarwrapper"}>
           {/* the results bar */}
           <OutputBar />
-          <RadicalResultsPageWrapper id={"radicalresultspagewrapper"}>
-            <RadicalsPage />
+          <ComponentResultsPageWrapper id={"componentresultspagewrapper"}>
+            <ComponentsPage />
 
             <div
               style={{
@@ -125,7 +125,7 @@ function MobileAppScreen() {
                 minWidth: "100vw",
               }}
             ></div>
-          </RadicalResultsPageWrapper>
+          </ComponentResultsPageWrapper>
         </StickyOutputBarWrapper>
       </MobileAppScreenContainer>
 
@@ -147,7 +147,7 @@ function MobileAppScreen() {
         <BottomNavigationAction
           className={classes.bottomNavigationAction}
           onClick={() => {}}
-          label="Radicals"
+          label="Components"
           icon={
             <span
               style={{

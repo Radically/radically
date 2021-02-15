@@ -51,7 +51,7 @@ const variantLocalesToLinearGradient = (locales: string, darkMode?: boolean): st
   return `linear-gradient(0deg, ${linearGradientString.join(", ")});`;
 };
 
-const IndividualRadicalCell = withTheme(styled("div") <{
+const IndividualComponentCell = withTheme(styled("div") <{
   selected: boolean;
   filler?: boolean;
   darkMode?: boolean;
@@ -73,4 +73,4 @@ const IndividualRadicalCell = withTheme(styled("div") <{
   cursor: pointer;
 `);
 
-export default IndividualRadicalCell;
+export default IndividualComponentCell;

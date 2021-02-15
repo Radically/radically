@@ -26,6 +26,8 @@ import {
 
 import { IntlProvider } from "react-intl";
 import i18n_data from "./i18n_data.json";
+import { QuickToastContextProvider } from "./contexts/QuickToastContextProvider";
+import QuickToast from "./components/QuickToast";
 
 const i18n = i18n_data as { [key: string]: any };
 
@@ -66,14 +68,17 @@ function AppScreen() {
   return (
     <SettingsContextProvider>
       <AppScreenMuiThemeWrapper>
-        <DataContextProvider>
-          <OutputContextProvider>
-            <ReactIntlWrapper>
-              <MobileAppScreen />
-              <DesktopAppScreen />
-            </ReactIntlWrapper>
-          </OutputContextProvider>
-        </DataContextProvider>
+        <QuickToastContextProvider>
+          <QuickToast />
+          <DataContextProvider>
+            <OutputContextProvider>
+              <ReactIntlWrapper>
+                <MobileAppScreen />
+                <DesktopAppScreen />
+              </ReactIntlWrapper>
+            </OutputContextProvider>
+          </DataContextProvider>
+        </QuickToastContextProvider>
       </AppScreenMuiThemeWrapper>
     </SettingsContextProvider>
   );

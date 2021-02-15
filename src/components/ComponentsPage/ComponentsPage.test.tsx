@@ -1,7 +1,7 @@
 import React from "react";
 import { getByText, render, screen } from "@testing-library/react";
 
-import RadicalsPage from "./index";
+import ComponentsPage from "./index";
 import { IntlProvider } from "react-intl";
 
 import i18n_data from "../../i18n_data.json";
@@ -44,12 +44,12 @@ const mockDataContext = {
   // loading,
 };
 
-describe("Radicals Page Tests", () => {
+describe("Components Page Tests", () => {
   test("test stroke count appear", () => {
     render(
       <DataContext.Provider value={mockDataContext}>
         <IntlProvider locale="en" messages={i18n["en"]}>
-          <RadicalsPage />
+          <ComponentsPage />
         </IntlProvider>
       </DataContext.Provider>
     );
@@ -65,7 +65,7 @@ describe("Radicals Page Tests", () => {
     render(
       <DataContext.Provider value={mockDataContext}>
         <IntlProvider locale="en" messages={i18n["en"]}>
-          <RadicalsPage />
+          <ComponentsPage />
         </IntlProvider>
       </DataContext.Provider>
     );
@@ -175,7 +175,7 @@ describe("Radicals Page Tests", () => {
         }}
       >
         <IntlProvider locale="en" messages={i18n["en"]}>
-          <RadicalsPage />
+          <ComponentsPage />
         </IntlProvider>
       </DataContext.Provider>
     );

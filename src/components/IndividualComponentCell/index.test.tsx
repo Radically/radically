@@ -1,22 +1,22 @@
 import red from "@material-ui/core/colors/red";
 import "jest-styled-components";
 import renderer from "react-test-renderer";
-import IndividualRadicalCell from ".";
+import IndividualComponentCell from ".";
 import { CharacterVariantLocaleColors } from "../../constants";
 
 describe("Radicals Page Tests", () => {
   test("linear-gradient dark background of individual radical cell", () => {
     const tree = renderer
       .create(
-        <IndividualRadicalCell
-          id="radical-test-test"
+        <IndividualComponentCell
+          id="component-test-test"
           filler={false}
           selected={false}
           darkMode={true}
           characterVariantLocales={"JSTV"}
         >
           A
-        </IndividualRadicalCell>
+        </IndividualComponentCell>
       )
       .toJSON();
 
@@ -29,15 +29,15 @@ describe("Radicals Page Tests", () => {
   test("linear-gradient light background of individual radical cell", () => {
     const tree = renderer
       .create(
-        <IndividualRadicalCell
-          id="radical-test-test"
+        <IndividualComponentCell
+          id="component-test-test"
           filler={false}
           selected={false}
           darkMode={false}
           characterVariantLocales={"JSKV"}
         >
           A
-        </IndividualRadicalCell>
+        </IndividualComponentCell>
       )
       .toJSON();
 
@@ -50,15 +50,15 @@ describe("Radicals Page Tests", () => {
   test("selected background", () => {
     const tree = renderer
       .create(
-        <IndividualRadicalCell
-          id="radical-test-test"
+        <IndividualComponentCell
+          id="component-test-test"
           filler={false}
           selected={true}
           darkMode={false}
           characterVariantLocales={"JSKV"}
         >
           A
-        </IndividualRadicalCell>
+        </IndividualComponentCell>
       )
       .toJSON();
 

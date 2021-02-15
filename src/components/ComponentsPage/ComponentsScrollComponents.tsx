@@ -9,7 +9,7 @@ import { ListChildComponentProps } from "react-window";
 import styled from "styled-components";
 import { DataContext } from "../../contexts/DataContextProvider";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
-import IndividualRadicalCell from "../IndividualRadicalCell";
+import IndividualComponentCell from "../IndividualComponentCell";
 
 // import { withTheme } from "@material-ui/core/styles";
 // import { SettingsContext } from "../../contexts/SettingsContextProvider";
@@ -42,7 +42,7 @@ const NormalRow = styled.div`
   align-items: center;
 `;
 
-export const RadicalPickerRow = (props: ListChildComponentProps) => {
+export const ComponentPickerRow = (props: ListChildComponentProps) => {
   // const { darkMode } = useContext(SettingsContext);
   const { index, style, data } = props;
   const { radicalsPerRow, arrayified, handleRadicalClick, selectedInfo } = data;
@@ -61,8 +61,8 @@ export const RadicalPickerRow = (props: ListChildComponentProps) => {
       }}
     >
       {arrayified[index].radicals.map((radical: string, col: number) => (
-        <IndividualRadicalCell
-          key={`radical-${index}-${col}`}
+        <IndividualComponentCell
+          key={`component-${index}-${col}`}
           darkMode={darkMode}
           selected={selectedInfo.index === index && selectedInfo.col === col}
           characterVariantLocales={variantsLocales[radical]?.l}
@@ -71,13 +71,13 @@ export const RadicalPickerRow = (props: ListChildComponentProps) => {
           }}
         >
           {radical}
-        </IndividualRadicalCell>
+        </IndividualComponentCell>
       ))}
 
       {new Array(radicalsPerRow - arrayified[index].radicals.length)
         .fill(undefined)
         .map((x, col: number) => (
-          <IndividualRadicalCell
+          <IndividualComponentCell
             filler={true}
             key={`filler-${index}-${col}`}
             selected={false}

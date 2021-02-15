@@ -1,14 +1,18 @@
 import React, { useContext, useState } from "react";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import styled from "styled-components";
 import { DataContext } from "../../contexts/DataContextProvider";
-import { getStringForCharacterVariants } from "../RadicalsPage/utils";
+import { getStringForCharacterVariants } from "../ComponentsPage/utils";
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { makeStyles } from "@material-ui/core/styles";
+import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
+
 // import SimpleBar from "simplebar-react";
 
-// the result block, max width should be the width of individual radical * number of radicals in a row
 const Container = styled.div`
   //   min-height: 300px;
-  display: flex;
+
   //   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
   // border-radius: 5px;
   //   align-items: center;
@@ -38,10 +42,41 @@ const VariantsStringContainer = styled.div`
   font-weight: bold;
 `;
 
+const useButtonGroupStyles = makeStyles((theme) => ({
+  root: {
+    paddingBottom: "10px",
+    width: "100%",
+  },
+}));
+
+const useButtonStyles = makeStyles((theme) => ({
+  root: {
+    fontSize: "9pt",
+    borderRadius: 0,
+    // fontFamily: "var(--default-sans);",
+    // fontWeight: "bold",
+    border: `2px solid ${theme.palette.primary.main}`,
+    color: theme.palette.primary.main,
+    lineHeight: "1.2em",
+    "&:hover": {
+      border: `2px solid ${theme.palette.primary.main}`,
+    },
+    "&:active": {
+      border: `2px solid ${theme.palette.primary.main}`,
+      backgroundColor: theme.palette.primary.main,
+      color: "white",
+    },
+    width: "100%",
+  },
+}));
+
 const CharacterResultReadings = React.memo(
   (props: { char: string; readings: Readings }) => {
     const { char, readings } = props;
     const intl = useIntl();
+    const { showText } = useContext(QuickToastContext);
+    const buttonStyles = useButtonStyles();
+    const buttonGroupStyles = useButtonGroupStyles();
     const { variantsLocales } = useContext(DataContext);
 
     const variantsString = getStringForCharacterVariants(
@@ -50,35 +85,97 @@ const CharacterResultReadings = React.memo(
     );
     return (
       <Container>
-        <div
-          style={{
-            position: "relative",
-            fontSize: "45pt",
-            lineHeight: 1,
-            paddingRight: "10px",
-          }}
+        <ButtonGroup
+          size="small"
+          color="primary"
+          aria-label="outlined primary button group"
+          classes={buttonGroupStyles}
         >
-          <div style={{ position: "sticky", top: "10px", textAlign: "center" }}>
-            {char}
-          </div>
-        </div>
+          <Button onClick={() => {}} classes={buttonStyles}>
+            <FormattedMessage
+              id="componentspage.add_to_search"
+              defaultMessage="Add to search"
+            />
+          </Button>
+          <Button onClick={() => {}} classes={buttonStyles}>
+            <FormattedMessage
+              id="componentspage.get_related"
+              defaultMessage="Get related"
+            />
+          </Button>
+        </ButtonGroup>
 
-        {/* <SimpleBar style={{ flex: 1, paddingTop: "5px", height: "100px" }}> */}
-        {/* <div> */}
-        <div style={{ fontSize: "0.9rem" }}>
-          {variantsString && (
-            <VariantsStringContainer>{variantsString}</VariantsStringContainer>
+        <ButtonGroup
+          size="small"
+          color="primary"
+          aria-label="outlined primary button group"
+          classes={buttonGroupStyles}
+        >
+          {navigator.clipboard && window.isSecureContext && (
+            <Button onClick={() => {}} classes={buttonStyles}>
+              <FormattedMessage id="copy" defaultMessage="Copy" />
+            </Button>
           )}
-          {char in readings
-            ? Object.entries(readings[char]).map((entry) => (
+          <Button onClick={() => {}} classes={buttonStyles}>
+            <FormattedMessage id="output" defaultMessage="Output" />
+          </Button>
+        </ButtonGroup>
+
+        <div style={{ display: "flex" }}>
+          <div
+            style={{
+              position: "relative",
+              fontSize: "35pt",
+              lineHeight: 1,
+              paddingRight: "10px",
+            }}
+          >
+            <div
+              style={{
+                position: "sticky",
+                top: "10px",
+                textAlign: "center",
+              }}
+            >
+              {char}
+
+              {/* <ButtonGroup
+              size="small"
+              orientation="vertical"
+              color="primary"
+              aria-label="vertical contained primary button group"
+              variant="text"
+              classes={buttonGroupStyles}
+            >
+              <Button classes={buttonStyles}>Copy</Button>
+              <Button classes={buttonStyles}>Output</Button>
+            </ButtonGroup> */}
+            </div>
+          </div>
+
+          {/* <SimpleBar style={{ flex: 1, paddingTop: "5px", height: "100px" }}> */}
+          {/* <div> */}
+          <div style={{ fontSize: "0.9rem" }}>
+            {variantsString && (
+              <VariantsStringContainer>
+                {variantsString}
+              </VariantsStringContainer>
+            )}
+            {char in readings ? (
+              Object.entries(readings[char]).map((entry) => (
                 <div>
                   <span style={{ fontWeight: "bold" }}>{entry[0]}:</span>{" "}
                   {entry[1]}
                 </div>
               ))
-            : intl.formatMessage({
-                id: "no_info",
-              })}
+            ) : (
+              <div>
+                {intl.formatMessage({
+                  id: "no_info",
+                })}
+              </div>
+            )}
+          </div>
         </div>
         {/* </div> */}
         {/* </SimpleBar> */}
