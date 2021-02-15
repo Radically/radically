@@ -5,6 +5,8 @@
     "radicalspage.search_bar_placeholder": "Find decompositions or variants",
     "radicalspage.no_radical_selected": "No radical selected",
     "loading": "Loading...",
+    "output": "Output",
+    "copied_to_clipboard": "Copied to clipboard",
 
     "variant.gukja": "KO-Gukja",
     "variant.korean_standard": "KO-Basic",
@@ -27,6 +29,8 @@
     "radicalspage.search_bar_placeholder": "檢索分解亦或異體",
     "radicalspage.no_radical_selected": "未擇部首",
     "loading": "充填中...",
+    "output": "輸出",
+    "copied_to_clipboard": "已複製至切取粘貼板",
 
     "variant.gukja": "韓國國字",
     "variant.korean_standard": "韓國基礎漢字",

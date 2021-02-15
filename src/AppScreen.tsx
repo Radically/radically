@@ -8,6 +8,7 @@ import {
   DataContext,
   DataContextProvider,
 } from "./contexts/DataContextProvider";
+import { OutputContextProvider } from "./contexts/OutputContextProvider";
 
 import DesktopAppScreen from "./DesktopAppScreen";
 import MobileAppScreen from "./MobileAppScreen";
@@ -66,10 +67,12 @@ function AppScreen() {
     <SettingsContextProvider>
       <AppScreenMuiThemeWrapper>
         <DataContextProvider>
-          <ReactIntlWrapper>
-            <MobileAppScreen />
-            <DesktopAppScreen />
-          </ReactIntlWrapper>
+          <OutputContextProvider>
+            <ReactIntlWrapper>
+              <MobileAppScreen />
+              <DesktopAppScreen />
+            </ReactIntlWrapper>
+          </OutputContextProvider>
         </DataContextProvider>
       </AppScreenMuiThemeWrapper>
     </SettingsContextProvider>
