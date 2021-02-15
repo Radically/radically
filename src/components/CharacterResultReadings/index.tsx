@@ -44,7 +44,10 @@ const CharacterResultReadings = React.memo(
     const intl = useIntl();
     const { variantsLocales } = useContext(DataContext);
 
-    const variantsString = getStringForCharacterVariants(variantsLocales[char]?.v, intl);
+    const variantsString = getStringForCharacterVariants(
+      variantsLocales[char]?.v,
+      intl
+    );
     return (
       <Container>
         <div
@@ -63,9 +66,9 @@ const CharacterResultReadings = React.memo(
         {/* <SimpleBar style={{ flex: 1, paddingTop: "5px", height: "100px" }}> */}
         {/* <div> */}
         <div style={{ fontSize: "0.9rem" }}>
-          { variantsString && <VariantsStringContainer>
-            {variantsString}
-          </VariantsStringContainer> }
+          {variantsString && (
+            <VariantsStringContainer>{variantsString}</VariantsStringContainer>
+          )}
           {char in readings
             ? Object.entries(readings[char]).map((entry) => (
                 <div>
@@ -73,7 +76,9 @@ const CharacterResultReadings = React.memo(
                   {entry[1]}
                 </div>
               ))
-            : "No info available."}
+            : intl.formatMessage({
+                id: "no_info",
+              })}
         </div>
         {/* </div> */}
         {/* </SimpleBar> */}

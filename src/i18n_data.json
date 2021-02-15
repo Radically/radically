@@ -7,6 +7,7 @@
     "loading": "Loading...",
     "output": "Output",
     "copied_to_clipboard": "Copied to clipboard",
+    "no_info": "No information",
 
     "variant.gukja": "KO-Gukja",
     "variant.korean_standard": "KO-Basic",
@@ -31,6 +32,7 @@
     "loading": "充填中...",
     "output": "輸出",
     "copied_to_clipboard": "已複製至切取粘貼板",
+    "no_info": "無資料",
 
     "variant.gukja": "韓國國字",
     "variant.korean_standard": "韓國基礎漢字",
