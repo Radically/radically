@@ -28,6 +28,9 @@ const defaultValue = {
   reverseMapIDSOnly: {},
   reverseMapIDSOnlyLoading: false,
 
+  forwardMap: {},
+  forwardMapLoading: false,
+
   metadataLoading: false,
 
   // loading: false,
@@ -48,6 +51,9 @@ const defaultValue = {
 
   reverseMapIDSOnly: ReverseMapIDSOnly;
   reverseMapIDSOnlyLoading: boolean;
+
+  forwardMap: ForwardMap;
+  forwardMapLoading: boolean;
 
   metadata?: ProcessedIDSMetadata;
   metadataLoading: boolean;
@@ -80,6 +86,9 @@ export const DataContextProvider = (props: { children: any }) => {
     {} as ReverseMapIDSOnly
   );
 
+  // important!
+  const [forwardMap, setForwardMap] = useState({} as ForwardMap);
+
   const [loading, setLoading] = useState({
     baseRadicalsLoading: false,
     metadataLoading: false,
@@ -88,6 +97,7 @@ export const DataContextProvider = (props: { children: any }) => {
     variantsLocalesLoading: false,
     variantsIslandsLoading: false,
     reverseMapIDSOnlyLoading: false,
+    forwardMapLoading: false,
     // not exposed
     triggerFetchAll: false,
   });
@@ -113,6 +123,9 @@ export const DataContextProvider = (props: { children: any }) => {
 
     reverseMapIDSOnly,
     reverseMapIDSOnlyLoading: loading.reverseMapIDSOnlyLoading,
+
+    forwardMap,
+    forwardMapLoading: loading.forwardMapLoading,
     // setExactRadicalFreq,
     // setMetadata,
     // setReadings,
@@ -188,6 +201,11 @@ export const DataContextProvider = (props: { children: any }) => {
           loadingKey: "reverseMapIDSOnlyLoading",
           jsonFileName: JSON_FILE_NAMES.reverseMapIDSOnly,
         },
+        {
+          setData: setForwardMap,
+          loadingKey: "forwardMapLoading",
+          jsonFileName: JSON_FILE_NAMES.forwardMap,
+        },
       ].map(async ({ setData, loadingKey, jsonFileName }) => {
         let data = await fetch("json/" + jsonFileName);
         setData(await data.json());
@@ -217,6 +235,7 @@ export const DataContextProvider = (props: { children: any }) => {
       variantsLocalesLoading: true,
       variantsIslandsLoading: true,
       reverseMapIDSOnlyLoading: true,
+      forwardMapLoading: true,
       triggerFetchAll: true,
     });
   }, []);

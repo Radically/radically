@@ -3,7 +3,8 @@
 
 import teal from "@material-ui/core/colors/teal";
 import IconButton from "@material-ui/core/IconButton";
-import { withTheme } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import { makeStyles, withTheme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
@@ -117,36 +118,6 @@ const ToggleButtonFlex = styled.div`
   }
 `;
 
-const Button = styled.button`
-  // display: inline-block;
-
-  width: 100%;
-  flex: 1;
-
-  color: ${(props: { darkMode?: boolean }) =>
-    props.darkMode ? teal[300] : teal[800]};
-  font-size: 1em;
-  // margin: 1em;
-  padding: 0.25em 1em;
-  border: 2px solid
-    ${(props: { darkMode?: boolean }) =>
-      props.darkMode ? teal[300] : teal[800]};
-  display: block;
-
-  &:active {
-    background-color: ${(props: { darkMode?: boolean }) =>
-      props.darkMode ? teal[300] : teal[800]};
-    color: white;
-  }
-
-  background-color: transparent;
-
-  // in portrait mode add some margin
-  // @media (orientation: portrait) {
-  margin-top: 10px;
-  // }
-`;
-
 const InputLabel = withTheme(styled.label`
   font-size: 10pt;
   font-weight: bold;
@@ -179,6 +150,28 @@ const SwitchLabelContainer: FunctionComponent<{}> = (props) => {
   return <_SwitchLabelContainer>{children}</_SwitchLabelContainer>;
 };
 
+const useButtonStyles = makeStyles((theme) => ({
+  root: {
+    fontSize: "12pt",
+    borderRadius: 0,
+    // fontFamily: "var(--default-sans);",
+    // fontWeight: "bold",
+    border: `2px solid ${theme.palette.primary.main}`,
+    color: theme.palette.primary.main,
+    lineHeight: "1.2em",
+    "&:hover": {
+      border: `2px solid ${theme.palette.primary.main}`,
+    },
+    "&:active": {
+      border: `2px solid ${theme.palette.primary.main}`,
+      backgroundColor: theme.palette.primary.main,
+      color: "white",
+    },
+    width: "100%",
+    marginTop: "10px",
+  },
+}));
+
 function FirstPage() {
   const {
     exactRadicalFreq,
@@ -193,6 +186,8 @@ function FirstPage() {
   const { componentsInput, setComponentsInput } = useContext(
     SharedTextboxContext
   );
+
+  const buttonStyles = useButtonStyles();
 
   const [idcs, setIDCs] = useState("");
 
@@ -293,7 +288,9 @@ function FirstPage() {
           {/* force flex wrap onto next line */}
           <div style={{ flexBasis: "100%", height: 0 }} />
 
-          <Button darkMode={darkMode}>檢索</Button>
+          <Button onClick={() => {}} classes={buttonStyles}>
+            <FormattedMessage id="search" defaultMessage="Search" />
+          </Button>
         </ToggleButtonFlex>
       </LetterBox>
     </FirstPageContainer>

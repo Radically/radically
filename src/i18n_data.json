@@ -8,7 +8,7 @@
     "componentspage.no_radical_selected": "No component selected",
     "componentspage.add_to_search": "Add to search",
     "componentspage.get_related": "Get related",
-
+    "search": "Search",
     "copy": "Copy",
     "added": "Added",
     "loading": "Loading...",
@@ -40,7 +40,7 @@
     "componentspage.no_radical_selected": "未擇部品",
     "componentspage.add_to_search": "追加於檢索條件",
     "componentspage.get_related": "再取關聯字",
-
+    "search": "檢索",
     "copy": "複製",
     "added": "以追加",
     "loading": "充填中...",
