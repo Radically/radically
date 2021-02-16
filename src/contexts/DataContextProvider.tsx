@@ -28,6 +28,9 @@ const defaultValue = {
   reverseMapIDSOnly: {},
   reverseMapIDSOnlyLoading: false,
 
+  reverseMapCharFreqsOnly: {},
+  reverseMapCharFreqsOnlyLoading: false,
+
   forwardMap: {},
   forwardMapLoading: false,
 
@@ -51,6 +54,8 @@ const defaultValue = {
 
   reverseMapIDSOnly: ReverseMapIDSOnly;
   reverseMapIDSOnlyLoading: boolean;
+  reverseMapCharFreqsOnly: ReverseMapCharOnly;
+  reverseMapCharFreqsOnlyLoading: boolean;
 
   forwardMap: ForwardMap;
   forwardMapLoading: boolean;
@@ -86,6 +91,10 @@ export const DataContextProvider = (props: { children: any }) => {
     {} as ReverseMapIDSOnly
   );
 
+  const [reverseMapCharFreqsOnly, setreverseMapCharFreqsOnly] = useState(
+    {} as ReverseMapCharOnly
+  );
+
   // important!
   const [forwardMap, setForwardMap] = useState({} as ForwardMap);
 
@@ -97,6 +106,7 @@ export const DataContextProvider = (props: { children: any }) => {
     variantsLocalesLoading: false,
     variantsIslandsLoading: false,
     reverseMapIDSOnlyLoading: false,
+    reverseMapCharFreqsOnlyLoading: false,
     forwardMapLoading: false,
     // not exposed
     triggerFetchAll: false,
@@ -123,6 +133,9 @@ export const DataContextProvider = (props: { children: any }) => {
 
     reverseMapIDSOnly,
     reverseMapIDSOnlyLoading: loading.reverseMapIDSOnlyLoading,
+
+    reverseMapCharFreqsOnly,
+    reverseMapCharFreqsOnlyLoading: loading.reverseMapCharFreqsOnlyLoading,
 
     forwardMap,
     forwardMapLoading: loading.forwardMapLoading,
@@ -206,6 +219,11 @@ export const DataContextProvider = (props: { children: any }) => {
           loadingKey: "forwardMapLoading",
           jsonFileName: JSON_FILE_NAMES.forwardMap,
         },
+        {
+          setData: setreverseMapCharFreqsOnly,
+          loadingKey: "reverseMapCharFreqsOnlyLoading",
+          jsonFileName: JSON_FILE_NAMES.reverseMapCharFreqsOnly,
+        },
       ].map(async ({ setData, loadingKey, jsonFileName }) => {
         let data = await fetch("json/" + jsonFileName);
         setData(await data.json());
@@ -235,6 +253,7 @@ export const DataContextProvider = (props: { children: any }) => {
       variantsLocalesLoading: true,
       variantsIslandsLoading: true,
       reverseMapIDSOnlyLoading: true,
+      reverseMapCharFreqsOnlyLoading: true,
       forwardMapLoading: true,
       triggerFetchAll: true,
     });
