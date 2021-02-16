@@ -1,18 +1,18 @@
 // yep, i'm not very imaginative
 // the page with the welcome name and the radical and ids text boxes
 
-import styled from "styled-components";
+import teal from "@material-ui/core/colors/teal";
+import IconButton from "@material-ui/core/IconButton";
 import { withTheme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
-import IDSPicker from "../IDSPicker";
-import { SettingsContext } from "../../contexts/SettingsContextProvider";
-import { FunctionComponent, useContext, useState } from "react";
-
-import IconButton from "@material-ui/core/IconButton";
-import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
-
-import teal from "@material-ui/core/colors/teal";
+import WbSunnyIcon from "@material-ui/icons/WbSunny";
+import { FunctionComponent, useContext, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import styled from "styled-components";
+import { SettingsContext } from "../../contexts/SettingsContextProvider";
+import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
+import IDSPicker from "../IDSPicker";
 
 const Input = withTheme(styled.input.attrs((props) => ({
   // we can define static props
@@ -149,7 +149,7 @@ const Button = styled.button`
 
 const InputLabel = withTheme(styled.label`
   font-size: 10pt;
-  font-weight: normal;
+  font-weight: bold;
   // display: block;
   color: ${(props) => props.theme.palette.text.primary};
 `);
@@ -190,7 +190,10 @@ function FirstPage() {
     setLocale,
   } = useContext(SettingsContext);
 
-  const [radicals, setRadicals] = useState("");
+  const { componentsInput, setComponentsInput } = useContext(
+    SharedTextboxContext
+  );
+
   const [idcs, setIDCs] = useState("");
 
   return (
@@ -214,7 +217,7 @@ function FirstPage() {
 
       <IconButton
         onClick={() => {
-          setLocale(locale === "en" ? "cc" : "en");
+          setLocale(locale === "en" ? "lzh" : "en");
         }}
         style={{
           fontFamily: "var(--default-sans)",
@@ -235,18 +238,28 @@ function FirstPage() {
       <LetterBox>
         <RadicalIDSFlex>
           <div style={{ width: "100%" }}>
-            <InputLabel>Radicals</InputLabel>
-            <Input placeholder="食喜" />
+            <InputLabel>
+              <FormattedMessage id="components" defaultMessage="Components" />
+            </InputLabel>
+            <Input
+              value={componentsInput}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setComponentsInput(e.target.value);
+              }}
+              placeholder="食喜"
+            />
           </div>
 
           <div style={{ width: "100%", paddingTop: "10px" }}>
-            <InputLabel>IDS</InputLabel>
+            <InputLabel>
+              <FormattedMessage id="idcs" defaultMessage="IDCs" />
+            </InputLabel>
             <Input
               onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
                 setIDCs(evt.target.value);
               }}
               value={idcs}
-              placeholder="食喜"
+              placeholder="⿰⿱"
             />
           </div>
 

@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
+import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 
 // import SimpleBar from "simplebar-react";
 
@@ -78,7 +79,14 @@ const CharacterResultReadings = React.memo(
     const buttonStyles = useButtonStyles();
     const buttonGroupStyles = useButtonGroupStyles();
     const { variantsLocales } = useContext(DataContext);
-
+    const {
+      output,
+      setOutput,
+      relatedComponentsInput,
+      setRelatedComponentsInput,
+      componentsInput,
+      setComponentsInput,
+    } = useContext(SharedTextboxContext);
     const variantsString = getStringForCharacterVariants(
       variantsLocales[char]?.v,
       intl
@@ -91,13 +99,28 @@ const CharacterResultReadings = React.memo(
           aria-label="outlined primary button group"
           classes={buttonGroupStyles}
         >
-          <Button onClick={() => {}} classes={buttonStyles}>
+          <Button
+            onClick={() => {
+              setComponentsInput(componentsInput + char);
+              showText(
+                intl.formatMessage({
+                  id: "added",
+                })
+              );
+            }}
+            classes={buttonStyles}
+          >
             <FormattedMessage
               id="componentspage.add_to_search"
               defaultMessage="Add to search"
             />
           </Button>
-          <Button onClick={() => {}} classes={buttonStyles}>
+          <Button
+            onClick={() => {
+              setRelatedComponentsInput(relatedComponentsInput + char);
+            }}
+            classes={buttonStyles}
+          >
             <FormattedMessage
               id="componentspage.get_related"
               defaultMessage="Get related"
@@ -112,11 +135,26 @@ const CharacterResultReadings = React.memo(
           classes={buttonGroupStyles}
         >
           {navigator.clipboard && window.isSecureContext && (
-            <Button onClick={() => {}} classes={buttonStyles}>
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(char);
+                showText(
+                  intl.formatMessage({
+                    id: "copied_to_clipboard",
+                  })
+                );
+              }}
+              classes={buttonStyles}
+            >
               <FormattedMessage id="copy" defaultMessage="Copy" />
             </Button>
           )}
-          <Button onClick={() => {}} classes={buttonStyles}>
+          <Button
+            onClick={() => {
+              setOutput(output + char);
+            }}
+            classes={buttonStyles}
+          >
             <FormattedMessage id="output" defaultMessage="Output" />
           </Button>
         </ButtonGroup>

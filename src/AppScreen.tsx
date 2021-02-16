@@ -8,7 +8,7 @@ import {
   DataContext,
   DataContextProvider,
 } from "./contexts/DataContextProvider";
-import { OutputContextProvider } from "./contexts/OutputContextProvider";
+import { SharedTextboxContextProvider } from "./contexts/SharedTextboxContextProvider";
 
 import DesktopAppScreen from "./DesktopAppScreen";
 import MobileAppScreen from "./MobileAppScreen";
@@ -71,12 +71,12 @@ function AppScreen() {
         <QuickToastContextProvider>
           <QuickToast />
           <DataContextProvider>
-            <OutputContextProvider>
+            <SharedTextboxContextProvider>
               <ReactIntlWrapper>
                 <MobileAppScreen />
                 <DesktopAppScreen />
               </ReactIntlWrapper>
-            </OutputContextProvider>
+            </SharedTextboxContextProvider>
           </DataContextProvider>
         </QuickToastContextProvider>
       </AppScreenMuiThemeWrapper>

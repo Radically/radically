@@ -5,7 +5,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import React, { useContext } from "react";
 import { useIntl } from "react-intl";
 import styled from "styled-components";
-import { OutputContext } from "../../contexts/OutputContextProvider";
+import { SharedTextboxContext, SharedTextboxContextProvider } from "../../contexts/SharedTextboxContextProvider";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 
 export const heightPx = 30;
@@ -47,7 +47,7 @@ const Output = withTheme(
 
 function OutputBar() {
   const intl = useIntl();
-  const { output, setOutput } = useContext(OutputContext);
+  const { output, setOutput } = useContext(SharedTextboxContext);
 
   const { showText } = useContext(QuickToastContext);
 

@@ -2,13 +2,15 @@
   "en": {
     "strokes": "{count, plural, one {# stroke} other {# strokes}}",
     "unclear": "Unclear",
+    "components": "Components",
+    "idcs": "IDCs",
     "componentspage.search_bar_placeholder": "Decompose and find variants",
     "componentspage.no_radical_selected": "No component selected",
     "componentspage.add_to_search": "Add to search",
     "componentspage.get_related": "Get related",
 
     "copy": "Copy",
-
+    "added": "Added",
     "loading": "Loading...",
     "output": "Output",
     "copied_to_clipboard": "Copied to clipboard",
@@ -29,16 +31,18 @@
     "variant.sawndip": "ZA",
     "variant.radical": "Radical"
   },
-  "cc": {
+  "lzh": {
     "strokes": "{count, plural, other {# 筆畫}}",
     "unclear": "不詳",
+    "components": "部品",
+    "idcs": "表意文字構成符號",
     "componentspage.search_bar_placeholder": "分解與異體",
     "componentspage.no_radical_selected": "未擇部品",
     "componentspage.add_to_search": "追加於檢索條件",
     "componentspage.get_related": "再取關聯字",
 
     "copy": "複製",
-
+    "added": "以追加",
     "loading": "充填中...",
     "output": "輸出",
     "copied_to_clipboard": "已複製至切取粘貼板",

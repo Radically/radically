@@ -34,6 +34,7 @@ import {
   strokeCountToRadicals,
 } from "./utils";
 import { isCJK, useWindowDimensions } from "../../utils";
+import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 
 const ComponentsPageContainer = styled("div")`
   display: flex;
@@ -180,7 +181,11 @@ interface SelectedInfo {
 
 function ComponentsPage() {
   const intl = useIntl();
-  const [input, setInput] = useState("");
+  // const [input, setInput] = useState("");
+  const {
+    relatedComponentsInput: input,
+    setRelatedComponentsInput: setInput,
+  } = useContext(SharedTextboxContext);
 
   const { darkMode } = useContext(SettingsContext);
   const { width, height } = useWindowDimensions();
@@ -276,6 +281,7 @@ function ComponentsPage() {
     <ComponentsPageContainer id="components-page-container">
       <SearchContainer>
         <SearchInput
+          value={input}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             // clear the search results
             if (!e.target.value) {

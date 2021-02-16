@@ -21,7 +21,7 @@ describe('Smoke Tests', () => {
 
   test("renders learn react link", () => {
     render(<AppScreen />);
-    const linkElement = screen.getByText(/IDS/i);
+    const linkElement = screen.getByText(/IDC/i);
     expect(linkElement).toBeInTheDocument();
   });
 

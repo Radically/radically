@@ -20,12 +20,12 @@
 
   src: local("Helvetica Neue"),
     /* url(./fonts/HelveticaNeueRegular.eot), */
-      url(./fonts/HelveticaNeueRegular.woff2) format("woff2"),
-    url(./fonts/HelveticaNeueRegular.woff) format("woff"),
-    url(./fonts/HelveticaNeueRegular.ttf) format("truetype"),
+      url(./fonts/HelveticaNeueMedium.woff2) format("woff2"),
+    url(./fonts/HelveticaNeueMedium.woff) format("woff"),
+    url(./fonts/HelveticaNeueMedium.ttf) format("truetype"),
     local(--default-sans);
 
-  font-weight: 100;
+  font-weight: bold;
   font-style: normal;
 
   unicode-range: U+0, U+0080 - U+00FF, U+0100 - U+017F, U+8-9, U+d, U+1d,
