@@ -1,3 +1,4 @@
+import { IDCSet } from "../constants";
 import { Queue } from "../utils";
 
 export const performComponentQuery = (
@@ -85,4 +86,22 @@ export const performComponentQuery = (
     if (valid) res.add(resultChar);
   }
   return res;
+};
+
+export const filterUsingIDCs = (
+  reverseMapIDSOnly: ReverseMapIDSOnly,
+  results: string[],
+  _idcs: string
+) => {
+  const idcs = _idcs.split("").filter((idc) => IDCSet.has(idc));
+  if (!idcs) return results;
+  const pattern = RegExp(idcs.join(".*"), "g");
+  return results.filter((result) => {
+    for (let { i } of reverseMapIDSOnly[result]) {
+      if (pattern.test(i)) {
+        return true;
+      }
+    }
+    return false;
+  });
 };

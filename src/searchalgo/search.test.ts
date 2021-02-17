@@ -1,4 +1,4 @@
-import { performComponentQuery } from ".";
+import { filterUsingIDCs, performComponentQuery } from ".";
 
 const forwardMap1 = {
   人: ["从"],
@@ -39,4 +39,38 @@ test("query with atLeastComponentFreq == false", () => {
   );
   const expectedResults1 = new Set(["从", "𡚅", "𠚕", "众", "齒", "𪙹", "𪙧"]);
   expect(results).toEqual(expectedResults1);
+});
+
+const reverseMapCharIDSOnly = {
+  與: [{ i: "⿶舁与", l: null }],
+  义: [{ i: "⿶乂丶", l: null }],
+  凶: [{ i: "⿶凵㐅", l: null }],
+  出: [{ i: "⿱屮凵", l: null }],
+  函: [
+    { i: "⿶凵⿻了⿱丷八", l: "[GTV]" },
+    { i: "⿶凵⿻丂⿱丷八", l: "[JK]" },
+  ],
+  半: [
+    { i: "⿱丷⿻二丨", l: "[GTJV]" },
+    { i: "⿱八⿻二丨", l: "[K]" },
+  ],
+};
+
+test("filterUsingIDCs", () => {
+  const results = ["與", "义", "凶", "出", "函", "半"];
+  expect(filterUsingIDCs(reverseMapCharIDSOnly, results, "⿶")).toEqual([
+    "與",
+    "凶",
+    "函",
+  ]);
+
+  expect(filterUsingIDCs(reverseMapCharIDSOnly, results, "⿱")).toEqual([
+    "出",
+    "函",
+    "半",
+  ]);
+
+  expect(filterUsingIDCs(reverseMapCharIDSOnly, results, "⿶⿻")).toEqual([
+    "函",
+  ]);
 });
