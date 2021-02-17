@@ -165,7 +165,15 @@ export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
   let res = [] as powerset[];
   for (let i = 0; i < freqsAtThisNode.length; i++) {
     let freqs = freqPerm(
-      Object.keys(freqsAtThisNode[i]).map((key) => rec(reverseMap, key))
+      Object.keys(freqsAtThisNode[i]).map((key) => {
+        const powersets = rec(reverseMap, key) as powerset[];
+        for (let powerset of powersets) {
+          for (let component in powerset) {
+            powerset[component] *= freqsAtThisNode[i][key];
+          }
+        }
+        return powersets;
+      })
     );
     freqs = freqs.map((freq) => mergeTwoFreqs(freq, freqsAtThisNode[i]));
     res = res.concat(freqs);
@@ -288,11 +296,13 @@ const getCharFreqs = (reverseMap: ReverseMap): ReverseMapCharOnly => {
     );
   }
 
-  const res = {} as ReverseMapCharOnly;
+  const withoutSingleOccurrences = {} as {
+    [key: string]: { [key: string]: number }[];
+  };
   for (let char in reverseMap) {
-    res[char] = reverseMap[char].charFreqs;
+    withoutSingleOccurrences[char] = reverseMap[char].charFreqs;
 
-    for (let pset of res[char]) {
+    for (let pset of withoutSingleOccurrences[char]) {
       for (let radical of Object.keys(pset)) {
         // @ts-ignore
         if (pset[radical] === 1) {
@@ -301,13 +311,34 @@ const getCharFreqs = (reverseMap: ReverseMap): ReverseMapCharOnly => {
         }
       }
     }
-    res[char] = res[char].filter((x) => !isObjectEmpty(x));
+    withoutSingleOccurrences[char] = withoutSingleOccurrences[char].filter(
+      (x) => !isObjectEmpty(x)
+    );
   }
-  for (let char of Object.keys(res)) {
-    if (res[char].length === 0) {
-      delete res[char];
+
+  for (let char of Object.keys(withoutSingleOccurrences)) {
+    if (withoutSingleOccurrences[char].length === 0) {
+      delete withoutSingleOccurrences[char];
     }
   }
+
+  const res = {} as ReverseMapCharOnly;
+  for (let char of Object.keys(withoutSingleOccurrences)) {
+    const unified = {} as { [key: string]: number };
+
+    for (let strippedPset of withoutSingleOccurrences[char]) {
+      for (let comp in strippedPset) {
+        if (!(comp in unified)) {
+          unified[comp] = strippedPset[comp];
+        } else {
+          unified[comp] = Math.max(unified[comp], strippedPset[comp]);
+        }
+      }
+    }
+
+    res[char] = unified;
+  }
+
   return res;
 };
 

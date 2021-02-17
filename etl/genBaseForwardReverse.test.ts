@@ -166,4 +166,58 @@ test("powerset generation", () => {
     { 丨: 1, 十: 1, 木: 1, 艹: 1, 莗: 1, 蓮: 1, 車: 1, 辶: 1 },
     { 十: 2, 木: 1, 艹: 1, 莗: 1, 蓮: 1, 車: 1, 辶: 1 },
   ]);
+
+  const dummyReverseMap2 = {
+    从: {
+      utf_code: "U+4ECE",
+      ids_strings: [{ ids: "⿰人人", locales: null }],
+    },
+
+    人: {
+      utf_code: "U+4EBA",
+      ids_strings: [{ ids: "人", locales: null }],
+    },
+  } as ReverseMap;
+
+  expect(rec(dummyReverseMap2, "从")).toEqual([
+    {
+      人: 2,
+    },
+  ]);
+
+  const dummyReverseMap3 = {
+    "𠚕": {
+      utf_code: "U+20695",
+      ids_strings: [{ ids: "⿶凵⿳从一从", locales: null }],
+    },
+
+    凵: {
+      utf_code: "U+51F5",
+      ids_strings: [{ ids: "凵", locales: null }],
+    },
+
+    从: {
+      utf_code: "U+4ECE",
+      ids_strings: [{ ids: "⿰人人", locales: null }],
+    },
+
+    人: {
+      utf_code: "U+4EBA",
+      ids_strings: [{ ids: "人", locales: null }],
+    },
+
+    一: {
+      utf_code: "U+4E00",
+      ids_strings: [{ ids: "一", locales: null }],
+    },
+  } as ReverseMap;
+
+  expect(rec(dummyReverseMap3, "𠚕")).toEqual([
+    {
+      一: 1,
+      人: 4, // there are 2 instances of 从 !!!
+      从: 2,
+      凵: 1,
+    },
+  ]);
 });
