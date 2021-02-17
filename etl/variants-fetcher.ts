@@ -254,6 +254,19 @@ export const getOrthographicVariantsPerCharacter = (
   }
 
   {
+    const data = getRawManualVariantsData("selected-twedu-variants.txt");
+    for (let entry of data) {
+      // just in case
+      if (entry[0] === entry[2]) continue;
+      if (utfstring.length(entry[2]) !== 1) continue;
+      createMapEntry(entry[0]);
+      createMapEntry(entry[2]);
+      map[entry[0]].add(entry[2]);
+      map[entry[2]].add(entry[0]);
+    }
+  }
+
+  {
     const data = getJPOldStyleData();
     for (let entry of data) {
       entry = entry.map((s) => ivsInstance.strip(s));
