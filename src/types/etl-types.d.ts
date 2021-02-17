@@ -30,7 +30,13 @@ interface ReverseMap {
   }
 } */
 
-type ReverseMapCharOnly = { [key: string]: { [key: string]: number }[] };
+// type ReverseMapCharOnly = { [key: string]: { [key: string]: number }[] };
+
+// map of character to component in THE UNION OF ALL POWERSETS 
+// to the LARGEST NUMBER OF OCCURRENCES ACROSS ALL POWERSETS
+// WITHOUT ALL COMPONENTS WITH OCCURRENCE 1
+// weird frontend-specific data structure
+type ReverseMapCharOnly = { [key: string]: { [key: string]: number } };
 
 type ReverseMapIDSOnly = { [key: string]: { i: string; l: string | null }[] };
 
