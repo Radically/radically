@@ -38,6 +38,10 @@ export function useWindowDimensions() {
   return windowDimensions;
 }
 
+export const getRadicalsPerRow = (windowWidth: number): number => {
+  return Math.trunc(windowWidth / 40);
+};
+
 export function isCJK(idsChar: string) {
   if (IDCSet.has(idsChar)) return false;
   if (StrokePlaceholderSet.has(idsChar)) return false;

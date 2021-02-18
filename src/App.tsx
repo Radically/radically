@@ -13,13 +13,13 @@ import {
 import styled from "styled-components";
 
 // for the bottom tabbar
-import { makeStyles } from '@material-ui/core/styles';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import { makeStyles } from "@material-ui/core/styles";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 // material icons
-import ShortTextIcon from '@material-ui/icons/ShortText';
-import SearchIcon from '@material-ui/icons/Search';
-import TranslateIcon from '@material-ui/icons/Translate';
+import ShortTextIcon from "@material-ui/icons/ShortText";
+import SearchIcon from "@material-ui/icons/Search";
+import TranslateIcon from "@material-ui/icons/Translate";
 
 import moment from "moment";
 
@@ -49,12 +49,12 @@ const AppNameh1 = styled.h1`
 `;
 
 const AppContainer = styled.div`
-  padding-top: calc(.25 * 100vh);
+  padding-top: calc(0.25 * 100vh);
   min-height: 100%;
   max-width: 1127px;
   // horizontally center
-  marginLeft: auto;
-  marginRight: auto;
+  marginleft: auto;
+  marginright: auto;
   @media (max-width: 991px) {
     padding-bottom: 80px;
   }
@@ -152,7 +152,7 @@ const OutputContainer = styled.div`
 `;
 
 const DesktopOutputContainer = styled.div`
-  max-width: 400px; 
+  max-width: 400px;
   width: 100%;
 `;
 
@@ -200,16 +200,16 @@ const RowFlexboxBreak = styled.div`
   height: 0;
 `;
 
-const useBottomNavStyles = makeStyles(theme => ({
+const useBottomNavStyles = makeStyles((theme) => ({
   root: {
-    position: 'fixed',
+    position: "fixed",
     bottom: 0,
-    width: '100%',
-    background: 'linear-gradient(45deg, #6da2c9 30%, #2185d0 90%)',
+    width: "100%",
+    background: "linear-gradient(45deg, #6da2c9 30%, #2185d0 90%)",
 
     [theme.breakpoints.up(992)]: {
-      display: 'none',
-    }
+      display: "none",
+    },
     // fontSize: '2rem'
     // border: 0,
     // borderRadius: 3,
@@ -218,7 +218,6 @@ const useBottomNavStyles = makeStyles(theme => ({
     // height: 48,
     // padding: '0 30px',
   },
-
 }));
 
 const loadIDSWorker: Worker = new Worker("./workers/loadIDS.js");
@@ -367,7 +366,6 @@ function App() {
 
   const bottomNavClasses = useBottomNavStyles();
 
-
   // refs used for scrolling in mobile mode
   const radicalIDSContainerRef = useRef<HTMLDivElement | null>(null);
   const radicalPickerAreaRef = useRef<HTMLDivElement | null>(null);
@@ -378,11 +376,11 @@ function App() {
     <SettingsContextProvider>
       <SettingsContext.Consumer>
         {({
-          exactRadicalFreq,
-          setExactRadicalFreq,
+          atLeastComponentFreq,
+          setAtLeastComponentFreq,
         }: {
-          exactRadicalFreq: boolean;
-          setExactRadicalFreq: (arg0: boolean) => void;
+          atLeastComponentFreq: boolean;
+          setAtLeastComponentFreq: (arg0: boolean) => void;
         }) => (
           <AppContainer>
             <SearchAndRadicalContainer>
@@ -390,18 +388,20 @@ function App() {
                 <AppNameh1>部首組合式漢字檢索</AppNameh1>
 
                 <RadicalIDSContainer>
-
                   <Dimmer active={!!loadingText}>
                     <Loader>{loadingText}</Loader>
                   </Dimmer>
                   {/* put the ref to scrollto here because it doesn't matter anyways... */}
-                  <div ref={radicalIDSContainerRef} style={{ maxWidth: "1000px" }}>
+                  <div
+                    ref={radicalIDSContainerRef}
+                    style={{ maxWidth: "1000px" }}
+                  >
                     <div style={{ display: "flex", width: "100%" }}>
                       <Input
                         fluid
                         style={{
                           // width: "320px",
-                          // to handle chromium... 
+                          // to handle chromium...
                           width: "99%",
                           padding: "5px",
                           // display: "inline-block",
@@ -433,9 +433,9 @@ function App() {
                       <DesktopExactCheckboxContainer>
                         <Checkbox
                           toggle
-                          checked={exactRadicalFreq}
+                          checked={atLeastComponentFreq}
                           onChange={() => {
-                            setExactRadicalFreq(!exactRadicalFreq);
+                            setAtLeastComponentFreq(!atLeastComponentFreq);
                           }}
                         />
                         <Caption>部首率完全一致*</Caption>
@@ -465,9 +465,9 @@ function App() {
                     <MobileExactCheckboxContainer>
                       <Checkbox
                         toggle
-                        checked={exactRadicalFreq}
+                        checked={atLeastComponentFreq}
                         onChange={() => {
-                          setExactRadicalFreq(!exactRadicalFreq);
+                          setAtLeastComponentFreq(!atLeastComponentFreq);
                         }}
                       />
                       <Caption>部首率完全一致*</Caption>
@@ -488,21 +488,20 @@ function App() {
                             // reverseMapUint8: reverseMapUint8.current,
                             radicals,
                             idcs,
-                            exactRadicalFreq,
+                            atLeastComponentFreq,
                           }
                           // [forwardMapUint8.current, reverseMapUint8.current]
                         );
                       }}
                     >
                       Search
-                      </Button>
+                    </Button>
                   </div>
                 </RadicalIDSContainer>
 
                 <DesktopOutputContainer>
                   <DesktopOutput ref={desktopOutputRef} />
                 </DesktopOutputContainer>
-
               </SearchArea>
               <RadicalPickerArea ref={radicalPickerAreaRef}>
                 <RadicalPicker
@@ -528,20 +527,14 @@ function App() {
                   readings={readings}
                 />
               </ResultsPickerArea>
-
-
-
             </SearchAndRadicalContainer>
 
-
-            <div style={{ width: "100%", padding: "5px", display: 'flex', }}>
+            <div style={{ width: "100%", padding: "5px", display: "flex" }}>
               <div>Entries: {metadata.entries}</div>
               <div>Unique Radicals: {metadata.unique_radicals}</div>
               <div>
                 IDS Last Modified:{" "}
-                {metadata.date
-                  ? moment(metadata.date).format("lll")
-                  : "Never"}
+                {metadata.date ? moment(metadata.date).format("lll") : "Never"}
               </div>
             </div>
 
@@ -553,40 +546,64 @@ function App() {
                 setValue(newValue);
               }} */
               showLabels
-            // className={classes.root}
+              // className={classes.root}
             >
-              <BottomNavigationAction onClick={() => {
-                radicalIDSContainerRef.current?.scrollIntoView({
-                  behavior: "smooth",
-                  block: 'center'
-                });
-              }} label="Search" icon={<SearchIcon />} />
+              <BottomNavigationAction
+                onClick={() => {
+                  radicalIDSContainerRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
+                }}
+                label="Search"
+                icon={<SearchIcon />}
+              />
 
-              <BottomNavigationAction onClick={() => {
-                radicalPickerAreaRef.current?.scrollIntoView({
-                  behavior: "smooth",
-                  block: 'center'
-                });
-              }} label="Radicals" icon={
-                <span style={{ fontFamily: 'var(--default-sans)', fontWeight: 'bold', fontSize: '1.2rem' }}>咅  阝</span>
-              } />
+              <BottomNavigationAction
+                onClick={() => {
+                  radicalPickerAreaRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
+                }}
+                label="Radicals"
+                icon={
+                  <span
+                    style={{
+                      fontFamily: "var(--default-sans)",
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    咅 阝
+                  </span>
+                }
+              />
 
-              <BottomNavigationAction onClick={() => {
-                mobileOutputContainerRef.current?.scrollIntoView({
-                  behavior: "smooth",
-                  block: 'center'
-                });
-              }} label="Output" icon={<ShortTextIcon />} />
+              <BottomNavigationAction
+                onClick={() => {
+                  mobileOutputContainerRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
+                }}
+                label="Output"
+                icon={<ShortTextIcon />}
+              />
 
-              {queryResults.res?.size && <BottomNavigationAction onClick={() => {
-                resultsPickerAreaRef.current?.scrollIntoView({
-                  behavior: "smooth",
-                  block: 'center'
-                });
-              }} label="Results" icon={<TranslateIcon />} />}
-
+              {queryResults.res?.size && (
+                <BottomNavigationAction
+                  onClick={() => {
+                    resultsPickerAreaRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
+                  }}
+                  label="Results"
+                  icon={<TranslateIcon />}
+                />
+              )}
             </BottomNavigation>
-
           </AppContainer>
         )}
       </SettingsContext.Consumer>

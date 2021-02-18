@@ -1,13 +1,23 @@
-import { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import styled from "styled-components";
 import { withTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
-import Split from "react-split";
+// import Split from "react-split";
+import ComponentsReadingsSplit from "../ComponentsReadingsSplit";
 
-import { useIntl, FormattedDate, FormattedMessage } from "react-intl";
+import {
+  StrokesScrollContainer,
+  StrokesComponentsContainer,
+  RadicalsScrollContainer,
+  LoadingTextContainer,
+  ReadingsScrollContainer,
+  CenterTextContainer,
+} from "../ComponentsBrowser";
+
+import { useIntl, FormattedMessage } from "react-intl";
 // for the components scroll container
 import {
   FixedSizeList,
@@ -18,7 +28,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import {
   outerElementType,
   ComponentPickerRow,
-} from "./ComponentsScrollComponents";
+} from "../ComponentsScrollComponents";
 
 import { heightPx } from "../OutputBar";
 
@@ -30,10 +40,10 @@ import {
   arrayifyForReactWindow,
   arrayifySearchResultsForReactWindow,
   getDecompositionAndVariants,
-  getRadicalsPerRow,
   strokeCountToRadicals,
-} from "./utils";
-import { isCJK, useWindowDimensions } from "../../utils";
+} from "../ComponentsScrollComponents/utils";
+
+import { getRadicalsPerRow, isCJK, useWindowDimensions } from "../../utils";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 
 const ComponentsPageContainer = styled("div")`
@@ -87,92 +97,6 @@ const SearchInput = withTheme(
   `
 );
 
-const StrokesComponentsContainer = styled.div`
-  // @media (orientation: portrait) {
-  border-bottom: 1px solid #909090;
-  // }
-  // flex-grow: 1;
-`;
-
-const StrokesScrollContainer = withTheme(styled.div`
-  // flex: 0.1;
-  width: 50px;
-  float: left;
-
-  // background-color: green;
-  border-right: 1px solid #909090;
-
-  // do i really have to set a height here??
-  min-height: 100%;
-  height: 0px;
-  overflow-y: scroll;
-
-  display: flex;
-  flex-direction: column;
-
-  color: ${(props) => props.theme.palette.text.primary};
-`);
-
-const RadicalsScrollContainer = styled.div`
-  // flex: 0.1;
-  width: calc(100% - 51px - 10px - 10px);
-  float: right;
-
-  // background-color: purple;
-
-  // do i really have to set a height here??
-  min-height: 100%;
-  height: 0px;
-  overflow-y: scroll;
-
-  display: flex;
-  flex-direction: column;
-
-  padding-left: 10px;
-  padding-right: 10px;
-`;
-
-const ReadingsScrollContainer = withTheme(styled.div`
-  // background-color: blue;
-  flex-grow: 1;
-  overflow-y: scroll;
-
-  border-top: 1px solid #909090;
-  color: ${(props) => props.theme.palette.text.primary};
-`);
-
-const CenterTextContainer = withTheme(styled.div`
-  text-align: center;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--default-sans);
-  font-size: 1.5em;
-  // font-weight: bold;
-  color: ${(props) => props.theme.palette.text.primary};
-`);
-
-const LoadingTextContainer = withTheme(styled.div`
-  text-align: center;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--default-sans);
-  font-size: 1.5em;
-  font-weight: bold;
-  color: ${(props) => props.theme.palette.text.primary};
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-  }
-
-  animation: fadeIn 1s infinite alternate;
-`);
-
 interface SelectedInfo {
   index: number;
   col: number;
@@ -208,9 +132,6 @@ function ComponentsPage() {
     baseRadicals,
     strokeCount
   );
-
-  const isLandscape = useMediaQuery("(orientation: landscape)");
-  const isSafari = navigator.vendor.includes("Apple");
 
   // radicals list handlers and methods begin here
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
@@ -307,21 +228,13 @@ function ComponentsPage() {
         </IconButton>
       </SearchContainer>
 
-      <Split
-        style={{ flex: 1 }}
-        id="components-split-container"
-        sizes={[60, 40]}
-        minSize={isLandscape || isSafari ? 10 : 60} // 56px + 4
-        expandToMin={true}
-        gutterSize={10}
-        gutterAlign="center"
-        snapOffset={0}
-        dragInterval={1}
-        direction={"vertical"}
-        cursor="col-resize"
-      >
-        <StrokesComponentsContainer id={"strokes-components-container"}>
-          <StrokesScrollContainer id={"strokes-scroll-container"}>
+      <ComponentsReadingsSplit id="components-page-split-container">
+        <StrokesComponentsContainer
+          id={"components-page-strokes-components-container"}
+        >
+          <StrokesScrollContainer
+            id={"components-page-strokes-scroll-container"}
+          >
             {(!!searchResults
               ? Object.keys(searchResults)
               : Object.keys(strokeCountToRadicalsMap)
@@ -352,7 +265,7 @@ function ComponentsPage() {
             ))}
           </StrokesScrollContainer>
 
-          <RadicalsScrollContainer id="components-scroll-container">
+          <RadicalsScrollContainer id="components-page-components-scroll-container">
             {baseRadicalsLoading && (
               <LoadingTextContainer darkMode={darkMode}>
                 <FormattedMessage id="loading" defaultMessage="Loading..." />
@@ -396,7 +309,7 @@ function ComponentsPage() {
           {!componentSelected && (
             <CenterTextContainer darkMode={darkMode}>
               <FormattedMessage
-                id="componentspage.no_radical_selected"
+                id="no_radical_selected"
                 defaultMessage="No radical selected"
               />
             </CenterTextContainer>
@@ -410,7 +323,7 @@ function ComponentsPage() {
             />
           )}
         </ReadingsScrollContainer>
-      </Split>
+      </ComponentsReadingsSplit>
     </ComponentsPageContainer>
   );
 }

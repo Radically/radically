@@ -1,23 +1,82 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { filterUsingIDCs, performComponentQuery } from "../searchalgo";
+import { DataContext } from "./DataContextProvider";
+import SearchWorker from "../searchworker";
 
 const defaultValue = {
   searching: false,
-  searchResults: null,
-  performSearch: (unused: string, unused2: string) => {},
+  searchResults: [],
+  performSearch: async (
+    components: string,
+    idcs: string,
+    atLeastComponentFreq: boolean,
+    useWebWorker: boolean
+  ) => false,
 } as {
   searching: boolean;
-  searchResults: string[] | null;
-  performSearch: (unused: string, unused2: string) => void;
+  searchResults: string[];
+  performSearch: (
+    components: string,
+    idcs: string,
+    atLeastComponentFreq: boolean,
+    useWebWorker: boolean
+  ) => Promise<boolean>;
 };
 
 export const SearchContext = React.createContext(defaultValue);
 
+const searchWorkerInstance = new SearchWorker();
+
 export const SearchContextProvider = (props: { children: any }) => {
   const [searching, setSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState(null);
+  const [searchResults, setSearchResults] = useState([] as string[]);
 
-  const performSearch = (components: string, ids: string) => {
-    
+  const {
+    forwardMap,
+    forwardMapLoading,
+
+    reverseMapCharFreqsOnly,
+    reverseMapCharFreqsOnlyLoading,
+
+    reverseMapIDSOnly,
+    reverseMapIDSOnlyLoading,
+  } = useContext(DataContext);
+
+  const performSearch = async (
+    components: string,
+    idcs: string,
+    atLeastComponentFreq: boolean,
+    useWebWorker: boolean = false
+  ) => {
+    setSearching(true);
+    const pcq = useWebWorker
+      ? searchWorkerInstance.performComponentQuery
+      : performComponentQuery;
+    const fidcs = useWebWorker
+      ? searchWorkerInstance.filterUsingIDCs
+      : filterUsingIDCs;
+
+    let s = Array.from(
+      await pcq(
+        forwardMap,
+        reverseMapCharFreqsOnly,
+        components,
+        atLeastComponentFreq
+      )
+    );
+
+    if (!idcs) {
+      // return s;
+      setSearching(false);
+      setSearchResults(s);
+      return !!s.length;
+    }
+    // no need to return (?) or status only
+    s = await fidcs(reverseMapIDSOnly, s, idcs);
+    setSearching(false);
+    setSearchResults(s);
+    // return s;
+    return !!s.length;
   };
 
   const context = {

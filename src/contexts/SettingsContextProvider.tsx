@@ -1,14 +1,17 @@
 import React from "react";
 
 const defaultValue = {
-  exactRadicalFreq: false,
-  setExactRadicalFreq: (unused: boolean) => {},
+  atLeastComponentFreq: false,
+  setAtLeastComponentFreq: (unused: boolean) => {},
 
   darkMode: false,
   setDarkMode: (unused: boolean) => {},
 
   locale: "en",
   setLocale: (unused: string) => {},
+
+  useWebWorker: false,
+  setUseWebWorker: (unused: boolean) => {},
 };
 
 export const SettingsContext = React.createContext(defaultValue);
@@ -26,8 +29,13 @@ const usePersistedState = (key: string, defaultValue: any) => {
 
 // TODO: figure out the typing of props lol (should be a react component or styled component)
 export const SettingsContextProvider = (props: { children: any }) => {
-  const [exactRadicalFreq, setExactRadicalFreq] = usePersistedState(
-    "exactRadicalFreqMatch",
+  const [atLeastComponentFreq, setAtLeastComponentFreq] = usePersistedState(
+    "atLeastComponentFreqMatch",
+    false
+  );
+
+  const [useWebWorker, setUseWebWorker] = usePersistedState(
+    "useWebWorker",
     false
   );
 
@@ -41,20 +49,24 @@ export const SettingsContextProvider = (props: { children: any }) => {
 
   const context = React.useMemo(
     () => ({
-      exactRadicalFreq,
-      setExactRadicalFreq,
+      atLeastComponentFreq,
+      setAtLeastComponentFreq,
       darkMode,
       setDarkMode,
       locale,
       setLocale,
+      useWebWorker,
+      setUseWebWorker,
     }),
     [
-      exactRadicalFreq,
-      setExactRadicalFreq,
+      atLeastComponentFreq,
+      setAtLeastComponentFreq,
       darkMode,
       setDarkMode,
       locale,
       setLocale,
+      useWebWorker,
+      setUseWebWorker,
     ]
   );
 

@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import styled from "styled-components";
 import { DataContext } from "../../contexts/DataContextProvider";
-import { getStringForCharacterVariants } from "../ComponentsPage/utils";
+import { getStringForCharacterVariants } from "../ComponentsScrollComponents/utils";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles } from "@material-ui/core/styles";

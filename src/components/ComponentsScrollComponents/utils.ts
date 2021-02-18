@@ -125,10 +125,6 @@ export const arrayifySearchResultsForReactWindow = (
   return { arrayified, radicalToStart };
 };
 
-export const getRadicalsPerRow = (windowWidth: number): number => {
-  return Math.trunc(windowWidth / 40);
-};
-
 export const getStringForCharacterVariants = (
   variants: number[],
   intl: IntlShape

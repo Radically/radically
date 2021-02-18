@@ -1,5 +1,5 @@
 import { IDCSet } from "../constants";
-import { Queue } from "../utils";
+import Queue from "../Queue";
 
 export const performComponentQuery = (
   forwardMap: ForwardMap,

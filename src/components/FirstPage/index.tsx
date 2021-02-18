@@ -14,6 +14,8 @@ import styled from "styled-components";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 import IDSPicker from "../IDSPicker";
+import { DataContext } from "../../contexts/DataContextProvider";
+import { SearchContext } from "../../contexts/SearchContextProvider";
 
 const Input = withTheme(styled.input.attrs((props) => ({
   // we can define static props
@@ -170,12 +172,23 @@ const useButtonStyles = makeStyles((theme) => ({
     width: "100%",
     marginTop: "10px",
   },
+
+  disabled: {
+    fontSize: "12pt",
+    borderRadius: 0,
+    width: "100%",
+    marginTop: "10px",
+    border: `2px solid ${theme.palette.action.disabled}`,
+  },
 }));
 
 function FirstPage() {
   const {
-    exactRadicalFreq,
-    setExactRadicalFreq,
+    atLeastComponentFreq,
+    setAtLeastComponentFreq,
+    useWebWorker,
+    setUseWebWorker,
+
     darkMode,
     setDarkMode,
 
@@ -186,6 +199,18 @@ function FirstPage() {
   const { componentsInput, setComponentsInput } = useContext(
     SharedTextboxContext
   );
+
+  const {
+    forwardMap,
+    forwardMapLoading,
+
+    reverseMapCharFreqsOnly,
+    reverseMapCharFreqsOnlyLoading,
+  } = useContext(DataContext);
+
+  const loading = forwardMapLoading || reverseMapCharFreqsOnlyLoading;
+
+  const { searching, performSearch } = useContext(SearchContext);
 
   const buttonStyles = useButtonStyles();
 
@@ -265,31 +290,65 @@ function FirstPage() {
           <SwitchLabelContainer>
             <Switch
               color="primary"
-              checked={exactRadicalFreq}
+              checked={atLeastComponentFreq}
               onChange={(e) => {
-                setExactRadicalFreq(!exactRadicalFreq);
+                setAtLeastComponentFreq(!atLeastComponentFreq);
               }}
             />
 
-            <FirstPageSwitchCaption>部首率完全一致*</FirstPageSwitchCaption>
+            <FirstPageSwitchCaption>
+              <FormattedMessage
+                id="component_freq"
+                defaultMessage="Component freq."
+              />
+              *
+            </FirstPageSwitchCaption>
           </SwitchLabelContainer>
 
           <SwitchLabelContainer>
             <Switch
               id="radical-frequency-switch"
               color="primary"
-              checked={true}
-              onChange={() => {}}
+              checked={useWebWorker}
+              onChange={(e) => {
+                setUseWebWorker(!useWebWorker);
+              }}
             />
 
-            <FirstPageSwitchCaption>託於副處理脈絡</FirstPageSwitchCaption>
+            <FirstPageSwitchCaption>
+              <FormattedMessage
+                id="use_web_worker"
+                defaultMessage="Use web worker"
+              />
+            </FirstPageSwitchCaption>
           </SwitchLabelContainer>
 
           {/* force flex wrap onto next line */}
           <div style={{ flexBasis: "100%", height: 0 }} />
 
-          <Button onClick={() => {}} classes={buttonStyles}>
-            <FormattedMessage id="search" defaultMessage="Search" />
+          <Button
+            disabled={loading || !componentsInput.length}
+            onClick={async () => {
+              console.log(
+                await performSearch(
+                  componentsInput,
+                  idcs,
+                  atLeastComponentFreq,
+                  useWebWorker
+                )
+              );
+            }}
+            classes={buttonStyles}
+          >
+            {searching && (
+              <FormattedMessage id="searching" defaultMessage="Searching..." />
+            )}
+            {loading && (
+              <FormattedMessage id="loading" defaultMessage="Loading..." />
+            )}
+            {!loading && !searching && (
+              <FormattedMessage id="search" defaultMessage="Search" />
+            )}
           </Button>
         </ToggleButtonFlex>
       </LetterBox>

@@ -1,5 +1,26 @@
 {
   "name": "cjk-radical-search",
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/etl/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "coverageReporters": [
+      "text"
+    ],
+    "moduleNameMapper": {
+      "searchworker": "<rootDir>/__mocks__/searchworker"
+    }
+  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -89,6 +110,7 @@
     "@types/react-ultimate-pagination": "^1.2.0",
     "@types/react-virtualized-auto-sizer": "^1.0.0",
     "axios": "^0.21.1",
+    "comlink-loader": "^2.0.0",
     "crc-hash": "^0.2.2",
     "jest-styled-components": "^7.0.3",
     "object-sizeof": "^1.6.1",

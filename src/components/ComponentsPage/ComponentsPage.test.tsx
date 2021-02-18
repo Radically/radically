@@ -71,7 +71,7 @@ describe("Components Page Tests", () => {
     );
 
     const container = document.querySelector(
-      "#strokes-scroll-container"
+      "#components-page-strokes-scroll-container"
     ) as HTMLElement;
 
     for (let cnt of Object.values(mockDataContext.strokeCount)) {

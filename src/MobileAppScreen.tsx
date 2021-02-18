@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import FirstPage from "./components/FirstPage";
 import ComponentsPage from "./components/ComponentsPage";
+import ResultsPage from "./components/ResultsPage";
 
 import { withTheme, makeStyles } from "@material-ui/core/styles";
 
@@ -117,14 +118,7 @@ function MobileAppScreen() {
           <ComponentResultsPageWrapper id={"componentresultspagewrapper"}>
             <ComponentsPage />
 
-            <div
-              style={{
-                scrollSnapAlign: "start",
-                backgroundColor: "yellow",
-                height: "30px",
-                minWidth: "100vw",
-              }}
-            ></div>
+            <ResultsPage />
           </ComponentResultsPageWrapper>
         </StickyOutputBarWrapper>
       </MobileAppScreenContainer>
