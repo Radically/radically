@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
 import styled from "styled-components";
 import { SearchContext } from "../../contexts/SearchContextProvider";
@@ -90,6 +90,10 @@ function ResultsPage() {
 
   // radicals list handlers and methods begin here
   const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
+
+  useEffect(() => {
+    setSelectedInfo({} as SelectedInfo);
+  }, [searchResults]);
 
   const componentSelected = "index" in selectedInfo && "col" in selectedInfo;
 
