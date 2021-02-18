@@ -16,6 +16,7 @@ export const strokeCountToRadicals = (
     if (!res[strokes]) res[strokes] = [];
     res[strokes].push(radical);
   }
+  if (res[999].length == 0) delete res[999];
   return res;
 };
 

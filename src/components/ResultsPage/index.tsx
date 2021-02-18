@@ -170,31 +170,33 @@ function ResultsPage() {
               </CenterTextContainer>
             )}
 
-            <AutoSizer>
-              {({ height, width }) => (
-                <List
-                  style={{
-                    color: darkMode ? "white" : "black",
-                    fontWeight: "bold",
-                  }}
-                  outerElementType={outerElementType}
-                  // outerRef={listOuterRef}
-                  ref={componentListRef}
-                  height={height}
-                  itemData={{
-                    radicalsPerRow,
-                    arrayified,
-                    selectedInfo,
-                    handleRadicalClick,
-                  }}
-                  itemCount={arrayified.length}
-                  itemSize={40}
-                  width={width}
-                >
-                  {ComponentPickerRow}
-                </List>
-              )}
-            </AutoSizer>
+            {!!searchResults.length && (
+              <AutoSizer>
+                {({ height, width }) => (
+                  <List
+                    style={{
+                      color: darkMode ? "white" : "black",
+                      fontWeight: "bold",
+                    }}
+                    outerElementType={outerElementType}
+                    // outerRef={listOuterRef}
+                    ref={componentListRef}
+                    height={height}
+                    itemData={{
+                      radicalsPerRow,
+                      arrayified,
+                      selectedInfo,
+                      handleRadicalClick,
+                    }}
+                    itemCount={arrayified.length}
+                    itemSize={40}
+                    width={width}
+                  >
+                    {ComponentPickerRow}
+                  </List>
+                )}
+              </AutoSizer>
+            )}
           </RadicalsScrollContainer>
         </StrokesComponentsContainer>
 

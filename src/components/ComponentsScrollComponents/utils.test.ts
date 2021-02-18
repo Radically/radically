@@ -9,7 +9,7 @@ test("stroke count to list of radicals map", () => {
     1: ["a", "b", "c"],
     2: ["d", "e", "f"],
     3: ["g", "h", "i"],
-    999: [],
+    // 999: [],
   });
 });
 
