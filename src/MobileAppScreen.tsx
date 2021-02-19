@@ -18,6 +18,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 
 import OutputBar, { heightPx } from "./components/OutputBar";
+import grey from "@material-ui/core/colors/grey";
+import { useIntl } from "react-intl";
+import teal from "@material-ui/core/colors/teal";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -74,19 +77,10 @@ const ComponentResultsPageWrapper = styled.div`
   }
 `;
 
-const useBottomNavigationStyles = makeStyles((theme: any) => ({
-  root: {
-    "&$selected": {
-      color: "white",
-    },
-  },
-  selected: {
-    color: "white",
-  },
-}));
 
 function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
+  const intl = useIntl();
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
@@ -110,6 +104,18 @@ function MobileAppScreen() {
 
     bottomNavigation: {
       backgroundColor: darkMode ? null : theme.palette.primary.main,
+    },
+  }));
+
+  const useBottomNavigationStyles = makeStyles((theme: any) => ({
+    root: {
+      "&$selected": {
+        color: darkMode ? teal[300]: "white",
+      },
+      color: grey[300],
+    },
+    selected: {
+      color: darkMode ? teal[300]: "white",
     },
   }));
 
@@ -182,7 +188,9 @@ function MobileAppScreen() {
               behavior: "smooth",
             });
           }}
-          label="Search"
+          label={intl.formatMessage({
+            id: "search",
+          })}
           icon={<SearchIcon />}
         />
 
@@ -195,7 +203,9 @@ function MobileAppScreen() {
               behavior: "smooth",
             });
           }}
-          label="Components"
+          label={intl.formatMessage({
+            id: "components",
+          })}
           icon={
             <span
               style={{
@@ -212,7 +222,9 @@ function MobileAppScreen() {
         <BottomNavigationAction
           classes={bottomNavigationClasses}
           onClick={scrollToResults}
-          label="Output"
+          label={intl.formatMessage({
+            id: "results",
+          })}
           icon={<ShortTextIcon />}
         />
       </BottomNavigation>

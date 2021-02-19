@@ -19,6 +19,7 @@
     "output": "Output",
     "copied_to_clipboard": "Copied to clipboard",
     "no_info": "No information",
+    "results": "Results",
     "no_results": "No results",
 
     "variant.gukja": "KO-Gukja",
@@ -56,6 +57,7 @@
     "output": "輸出",
     "copied_to_clipboard": "已複製至切取粘貼板",
     "no_info": "無資料",
+    "results": "結果",
     "no_results": "無結果",
 
     "variant.gukja": "韓國國字",
