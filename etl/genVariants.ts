@@ -192,7 +192,12 @@ const addSawndip = async (map: VariantsSet) => {
     if (!entry) continue;
     // U+2A708	kIRG_JSource	JK-65004
     const split = entry.split("\t");
-    if (split[1] === "kIRG_GSource" && split[2].startsWith("GZ")) {
+    if (
+      split[1] === "kIRG_GSource" &&
+      (split[2].startsWith("GZ-") ||
+        split[2].startsWith("GLGYJ-") ||
+        split[2].startsWith("GPGLG-"))
+    ) {
       const sawndip = String.fromCodePoint(parseInt(split[0].substr(2), 16));
       createMapEntry(sawndip);
       map[sawndip].add(CharacterVariant.sawndip);
