@@ -38,7 +38,7 @@ const Container = styled.div`
   padding-right: 10px;
 `;
 
-const VariantsStringContainer = styled.div`
+const MetadataContainer = styled.div`
   padding-bottom: 10px;
   font-weight: bold;
 `;
@@ -72,13 +72,17 @@ const useButtonStyles = makeStyles((theme) => ({
 }));
 
 const CharacterResultReadings = React.memo(
-  (props: { char: string; readings: Readings }) => {
-    const { char, readings } = props;
+  (props: {
+    char: string;
+    readings: Readings;
+    toastOnGetRelated?: boolean;
+  }) => {
+    const { char, readings, toastOnGetRelated } = props;
     const intl = useIntl();
     const { showText } = useContext(QuickToastContext);
     const buttonStyles = useButtonStyles();
     const buttonGroupStyles = useButtonGroupStyles();
-    const { variantsLocales } = useContext(DataContext);
+    const { variantsLocales, reverseMapIDSOnly } = useContext(DataContext);
     const {
       output,
       setOutput,
@@ -118,6 +122,13 @@ const CharacterResultReadings = React.memo(
           <Button
             onClick={() => {
               setRelatedComponentsInput(relatedComponentsInput + char);
+              if (toastOnGetRelated) {
+                showText(
+                  intl.formatMessage({
+                    id: "resultspage.added_to_components_page",
+                  })
+                );
+              }
             }}
             classes={buttonStyles}
           >
@@ -195,10 +206,13 @@ const CharacterResultReadings = React.memo(
           {/* <div> */}
           <div style={{ fontSize: "0.9rem" }}>
             {variantsString && (
-              <VariantsStringContainer>
-                {variantsString}
-              </VariantsStringContainer>
+              <MetadataContainer>{variantsString}</MetadataContainer>
             )}
+            <MetadataContainer>
+              {`U+${char.codePointAt(0)?.toString(16).toUpperCase()} ${
+                reverseMapIDSOnly[char]?.map(({ i }) => i).join(" • ") || ""
+              }`}
+            </MetadataContainer>
             {char in readings ? (
               Object.entries(readings[char]).map((entry) => (
                 <div>

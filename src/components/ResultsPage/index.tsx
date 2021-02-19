@@ -220,6 +220,7 @@ function ResultsPage() {
               key={selectedInfo.radical}
               char={selectedInfo.radical}
               readings={readings}
+              toastOnGetRelated
             />
           )}
         </ReadingsScrollContainer>
