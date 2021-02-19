@@ -4,3 +4,4 @@ twedu/variant,<name>,異體字（民國教育部）
 twedu/regular,<name>,正字（民國教育部）
 葵,twedu/variant,𦷡
 葵,twedu/variant,𦮙
+久,twedu/variant,乆
