@@ -229,5 +229,7 @@ export const getDecompositionAndVariants = (
     }
   }
 
+  set.add(char); // add the char itself
+
   return Array.from(set);
 };
