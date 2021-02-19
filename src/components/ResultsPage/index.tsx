@@ -62,7 +62,8 @@ interface SelectedInfo {
   radical: string;
 }
 
-function ResultsPage() {
+function ResultsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
+  const { containerRef } = props;
   const intl = useIntl();
   const { darkMode } = useContext(SettingsContext);
   const { searchResults } = useContext(SearchContext);
@@ -131,7 +132,7 @@ function ResultsPage() {
   ));
 
   return (
-    <ResultsPageContainer id="results-page-container">
+    <ResultsPageContainer ref={containerRef} id="results-page-container">
       <ComponentsReadingSplit id="results-page-split-container">
         <StrokesComponentsContainer
           id={"results-page-strokes-components-container"}

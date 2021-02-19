@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef, useState } from "react";
 import styled from "styled-components";
 
 import FirstPage from "./components/FirstPage";
@@ -14,7 +14,6 @@ import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 // material icons
 import ShortTextIcon from "@material-ui/icons/ShortText";
 import SearchIcon from "@material-ui/icons/Search";
-import TranslateIcon from "@material-ui/icons/Translate";
 
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 
@@ -75,8 +74,21 @@ const ComponentResultsPageWrapper = styled.div`
   }
 `;
 
+const useBottomNavigationStyles = makeStyles((theme: any) => ({
+  root: {
+    "&$selected": {
+      color: "white",
+    },
+  },
+  selected: {
+    color: "white",
+  },
+}));
+
 function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
+
+  const [bottomNavValue, setBottomNavValue] = useState(0);
 
   const useStyles = makeStyles((theme: any) => ({
     stickToBottom: {
@@ -99,31 +111,61 @@ function MobileAppScreen() {
     bottomNavigation: {
       backgroundColor: darkMode ? null : theme.palette.primary.main,
     },
-
-    bottomNavigationAction: {
-      color: "white",
-    },
   }));
 
+  const mobileAppScreenContainerRef = useRef<HTMLDivElement>(null);
+  const componentsPageContainerRef = useRef<HTMLDivElement>(null);
+  const resultsPageContainerRef = useRef<HTMLDivElement>(null);
+
+  const firstPageBoundary = componentsPageContainerRef.current?.offsetLeft || 0;
+  const secondPageBoundary = resultsPageContainerRef.current?.offsetLeft || 0;
+
+  const getIndex = (scrollPosition: number) => {
+    if (scrollPosition < firstPageBoundary) {
+      return 0;
+    } else if (scrollPosition < secondPageBoundary) {
+      return 1;
+    }
+    return 2;
+  };
+
   const classes = useStyles();
+  const bottomNavigationClasses = useBottomNavigationStyles();
+
+  const scrollToResults = () => {
+    mobileAppScreenContainerRef.current?.scrollTo({
+      left: resultsPageContainerRef.current?.offsetLeft,
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <RootMobileContainer>
       {/* <div style={{ height: "100vh", backgroundColor: "red" }}>mobile</div> */}
-      <MobileAppScreenContainer id={"mobile-app-screen-container"}>
-        <FirstPage />
+      <MobileAppScreenContainer
+        ref={mobileAppScreenContainerRef}
+        onScroll={(e: React.UIEvent<HTMLElement>) => {
+          const scrollPosition = (e.target as Element).scrollLeft;
+          setBottomNavValue(getIndex(scrollPosition));
+        }}
+        id={"mobile-app-screen-container"}
+      >
+        <FirstPage scrollToResults={scrollToResults} />
 
         <StickyOutputBarWrapper id={"stickyoutputbarwrapper"}>
           {/* the results bar */}
           <OutputBar />
           <ComponentResultsPageWrapper id={"componentresultspagewrapper"}>
-            <ComponentsPage />
+            <ComponentsPage containerRef={componentsPageContainerRef} />
 
-            <ResultsPage />
+            <ResultsPage containerRef={resultsPageContainerRef} />
           </ComponentResultsPageWrapper>
         </StickyOutputBarWrapper>
       </MobileAppScreenContainer>
 
       <BottomNavigation
+        value={bottomNavValue}
         className={classes.stickToBottom + " " + classes.bottomNavigation}
         /* value={value}
               onChange={(event, newValue) => {
@@ -132,15 +174,27 @@ function MobileAppScreen() {
         showLabels
       >
         <BottomNavigationAction
-          className={classes.bottomNavigationAction}
-          onClick={() => {}}
+          classes={bottomNavigationClasses}
+          onClick={() => {
+            mobileAppScreenContainerRef.current?.scrollTo({
+              left: 0,
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
           label="Search"
           icon={<SearchIcon />}
         />
 
         <BottomNavigationAction
-          className={classes.bottomNavigationAction}
-          onClick={() => {}}
+          classes={bottomNavigationClasses}
+          onClick={() => {
+            mobileAppScreenContainerRef.current?.scrollTo({
+              left: componentsPageContainerRef.current?.offsetLeft,
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
           label="Components"
           icon={
             <span
@@ -156,8 +210,8 @@ function MobileAppScreen() {
         />
 
         <BottomNavigationAction
-          className={classes.bottomNavigationAction}
-          onClick={() => {}}
+          classes={bottomNavigationClasses}
+          onClick={scrollToResults}
           label="Output"
           icon={<ShortTextIcon />}
         />

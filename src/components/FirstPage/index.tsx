@@ -9,13 +9,14 @@ import Switch from "@material-ui/core/Switch";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import { FunctionComponent, useContext, useState } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import styled from "styled-components";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 import IDSPicker from "../IDSPicker";
 import { DataContext } from "../../contexts/DataContextProvider";
 import { SearchContext } from "../../contexts/SearchContextProvider";
+import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 
 const Input = withTheme(styled.input.attrs((props) => ({
   // we can define static props
@@ -182,7 +183,8 @@ const useButtonStyles = makeStyles((theme) => ({
   },
 }));
 
-function FirstPage() {
+function FirstPage(props: { scrollToResults: () => void }) {
+  const { scrollToResults } = props;
   const {
     atLeastComponentFreq,
     setAtLeastComponentFreq,
@@ -195,7 +197,7 @@ function FirstPage() {
     locale,
     setLocale,
   } = useContext(SettingsContext);
-
+  const intl = useIntl();
   const { componentsInput, setComponentsInput } = useContext(
     SharedTextboxContext
   );
@@ -212,12 +214,14 @@ function FirstPage() {
 
   const { searching, performSearch } = useContext(SearchContext);
 
+  const { showText } = useContext(QuickToastContext);
+
   const buttonStyles = useButtonStyles();
 
   const [idcs, setIDCs] = useState("");
 
   return (
-    <FirstPageContainer>
+    <FirstPageContainer id="first-page-container">
       <IconButton
         onClick={() => {
           setDarkMode(!darkMode);
@@ -266,7 +270,7 @@ function FirstPage() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setComponentsInput(e.target.value);
               }}
-              placeholder="食喜"
+              placeholder="飠喜"
             />
           </div>
 
@@ -329,14 +333,22 @@ function FirstPage() {
           <Button
             disabled={loading || !componentsInput.length}
             onClick={async () => {
-              console.log(
-                await performSearch(
-                  componentsInput,
-                  idcs,
-                  atLeastComponentFreq,
-                  useWebWorker
-                )
+              const hasResults = await performSearch(
+                componentsInput,
+                idcs,
+                atLeastComponentFreq,
+                useWebWorker
               );
+
+              if (hasResults) {
+                scrollToResults();
+              } else {
+                showText(
+                  intl.formatMessage({
+                    id: "no_results",
+                  })
+                );
+              }
             }}
             classes={buttonStyles}
           >

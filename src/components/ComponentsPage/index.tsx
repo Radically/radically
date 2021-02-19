@@ -103,7 +103,8 @@ interface SelectedInfo {
   radical: string;
 }
 
-function ComponentsPage() {
+function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
+  const { containerRef } = props;
   const intl = useIntl();
   // const [input, setInput] = useState("");
   const {
@@ -199,7 +200,7 @@ function ComponentsPage() {
   };
 
   return (
-    <ComponentsPageContainer id="components-page-container">
+    <ComponentsPageContainer ref={containerRef} id="components-page-container">
       <SearchContainer>
         <SearchInput
           value={input}
