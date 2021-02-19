@@ -18,6 +18,7 @@ const Container = styled.div`
   // border-radius: 5px;
   //   align-items: center;
 
+  overflow-wrap: anywhere;
   // bottom navbar + 10px padding
   @supports not (-webkit-touch-callout: none) {
     @media (orientation: portrait) {
@@ -27,6 +28,7 @@ const Container = styled.div`
 
   @supports (-webkit-touch-callout: none) {
     margin-bottom: 10px;
+    height: 0;
   }
 
   @media (orientation: landscape) {
@@ -216,7 +218,7 @@ const CharacterResultReadings = React.memo(
             {char in readings ? (
               Object.entries(readings[char]).map((entry) => (
                 <div>
-                  <span style={{ fontWeight: "bold" }}>{entry[0]}:</span>{" "}
+                  <span style={{ fontWeight: "bold", overflowWrap: 'anywhere' }}>{entry[0]}:</span>{" "}
                   {entry[1]}
                 </div>
               ))
