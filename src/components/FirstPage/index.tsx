@@ -220,6 +220,33 @@ function FirstPage(props: { scrollToResults: () => void }) {
 
   const [idcs, setIDCs] = useState("");
 
+  const search = async () => {
+    const hasResults = await performSearch(
+      componentsInput,
+      idcs,
+      atLeastComponentFreq,
+      useWebWorker
+    );
+
+    if (hasResults) {
+      scrollToResults();
+    } else {
+      showText(
+        intl.formatMessage({
+          id: "no_results",
+        })
+      );
+    }
+  };
+
+  const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.key === "Enter") {
+      if (loading || !componentsInput.length) return;
+      (e.target as HTMLInputElement).blur();
+      search();
+    }
+  };
+
   return (
     <FirstPageContainer id="first-page-container">
       <IconButton
@@ -262,11 +289,13 @@ function FirstPage(props: { scrollToResults: () => void }) {
       <LetterBox>
         <RadicalIDSFlex>
           <div style={{ width: "100%" }}>
-            <InputLabel>
+            <InputLabel htmlFor="components-search-input">
               <FormattedMessage id="components" defaultMessage="Components" />
             </InputLabel>
             <Input
+              id="components-search-input"
               value={componentsInput}
+              onKeyUp={handleEnterKey}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setComponentsInput(e.target.value);
               }}
@@ -275,10 +304,12 @@ function FirstPage(props: { scrollToResults: () => void }) {
           </div>
 
           <div style={{ width: "100%", paddingTop: "10px" }}>
-            <InputLabel>
+            <InputLabel htmlFor="idcs-search-input">
               <FormattedMessage id="idcs" defaultMessage="IDCs" />
             </InputLabel>
             <Input
+              id="idcs-search-input"
+              onKeyUp={handleEnterKey}
               onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
                 setIDCs(evt.target.value);
               }}
@@ -332,24 +363,7 @@ function FirstPage(props: { scrollToResults: () => void }) {
 
           <Button
             disabled={loading || !componentsInput.length}
-            onClick={async () => {
-              const hasResults = await performSearch(
-                componentsInput,
-                idcs,
-                atLeastComponentFreq,
-                useWebWorker
-              );
-
-              if (hasResults) {
-                scrollToResults();
-              } else {
-                showText(
-                  intl.formatMessage({
-                    id: "no_results",
-                  })
-                );
-              }
-            }}
+            onClick={search}
             classes={buttonStyles}
           >
             {searching && (

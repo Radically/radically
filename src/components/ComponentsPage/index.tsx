@@ -199,10 +199,19 @@ function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
     }
   };
 
+  const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.key === "Enter") {
+      if (!input) return;
+      (e.target as HTMLInputElement).blur();
+      performSearch();
+    }
+  };
+
   return (
     <ComponentsPageContainer ref={containerRef} id="components-page-container">
       <SearchContainer>
         <SearchInput
+          onKeyUp={handleEnterKey}
           value={input}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             // clear the search results
