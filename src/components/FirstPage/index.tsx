@@ -47,8 +47,37 @@ const Input = withTheme(styled.input.attrs((props) => ({
   width: 100%;
 `);
 
-const AppNameh1 = styled.h1`
-  font-size: 1.5rem;
+const AppNameh1 = styled.h1<{ locale?: string; darkMode?: boolean }>`
+  display: inline-block;
+  font-size: ${(props) => (props.locale === "en" ? "2.8rem" : "3.2rem")};
+
+  margin: 0px;
+  /* Create the gradient. */
+  background-image: linear-gradient(
+    60deg,
+    ${(props) => (props.darkMode ? "white" : "black")},
+    ${(props) => (props.darkMode ? teal[300] : teal[800])}
+  );
+
+  /* Set the background size and repeat properties. */
+  background-size: 100%;
+  background-repeat: repeat;
+
+  /* Use the text as a mask for the background. */
+  /* This will show the gradient as a text color rather than element bg. */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+`;
+
+const AppDesch3 = styled.h3<{ locale?: string; darkMode?: boolean }>`
+  display: inline-block;
+
+  font-size: ${(props) => (props.locale === "en" ? "0.8rem" : "1.2rem")};
+
+  margin: 0px;
+
   // background-color: #ca4246;
   // background-color: red;
 
@@ -70,6 +99,17 @@ const AppNameh1 = styled.h1`
   -webkit-text-fill-color: transparent;
   -moz-background-clip: text;
   -moz-text-fill-color: transparent;
+`;
+
+const AppNameDescWrapper = styled.div`
+  width: 75%;
+  @media (max-width: 700px) and (orientation: landscape) {
+    width: 90%;
+  }
+
+  padding-bottom: 0.8rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const FirstPageContainer = withTheme(styled("div")`
@@ -285,7 +325,18 @@ function FirstPage(props: { scrollToResults: () => void }) {
         {locale === "en" ? "EN" : "漢"}
       </IconButton>
 
-      <AppNameh1 darkMode={darkMode}>部首組合式漢字檢索</AppNameh1>
+      <AppNameDescWrapper>
+        <AppNameh1 locale={intl.locale} darkMode={darkMode}>
+          <FormattedMessage id="app_name" defaultMessage="Radically" />
+        </AppNameh1>
+        <AppDesch3 locale={intl.locale} darkMode={darkMode}>
+          <FormattedMessage
+            id="app_desc"
+            defaultMessage="A CJK character components-based search tool"
+          />
+        </AppDesch3>
+      </AppNameDescWrapper>
+
       <LetterBox>
         <RadicalIDSFlex>
           <div style={{ width: "100%" }}>
