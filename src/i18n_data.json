@@ -21,6 +21,7 @@
     "no_info": "No information",
     "results": "Results",
     "no_results": "No results",
+    "about": "About",
 
     "variant.gukja": "KO-Gukja",
     "variant.korean_standard": "KO-Basic",
@@ -59,6 +60,7 @@
     "no_info": "無資料",
     "results": "結果",
     "no_results": "無結果",
+    "about": "說明",
 
     "variant.gukja": "韓國國字",
     "variant.korean_standard": "韓國基礎漢字",

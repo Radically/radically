@@ -14,6 +14,7 @@ import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 // material icons
 import ShortTextIcon from "@material-ui/icons/ShortText";
 import SearchIcon from "@material-ui/icons/Search";
+import InfoIcon from "@material-ui/icons/Info";
 
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 
@@ -21,6 +22,7 @@ import OutputBar, { heightPx } from "./components/OutputBar";
 import grey from "@material-ui/core/colors/grey";
 import { useIntl } from "react-intl";
 import teal from "@material-ui/core/colors/teal";
+import AboutPage from "./components/AboutPage";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -77,7 +79,6 @@ const ComponentResultsPageWrapper = styled.div`
   }
 `;
 
-
 function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
   const intl = useIntl();
@@ -110,29 +111,33 @@ function MobileAppScreen() {
   const useBottomNavigationStyles = makeStyles((theme: any) => ({
     root: {
       "&$selected": {
-        color: darkMode ? teal[300]: "white",
+        color: darkMode ? teal[300] : "white",
       },
       color: grey[300],
     },
     selected: {
-      color: darkMode ? teal[300]: "white",
+      color: darkMode ? teal[300] : "white",
     },
   }));
 
   const mobileAppScreenContainerRef = useRef<HTMLDivElement>(null);
   const componentsPageContainerRef = useRef<HTMLDivElement>(null);
   const resultsPageContainerRef = useRef<HTMLDivElement>(null);
+  const aboutPageContainerRef = useRef<HTMLDivElement>(null);
 
   const firstPageBoundary = componentsPageContainerRef.current?.offsetLeft || 0;
   const secondPageBoundary = resultsPageContainerRef.current?.offsetLeft || 0;
+  const thirdPageBoundary = aboutPageContainerRef.current?.offsetLeft || 0;
 
   const getIndex = (scrollPosition: number) => {
     if (scrollPosition < firstPageBoundary) {
       return 0;
     } else if (scrollPosition < secondPageBoundary) {
       return 1;
+    } else if (scrollPosition < thirdPageBoundary) {
+      return 2;
     }
-    return 2;
+    return 3;
   };
 
   const classes = useStyles();
@@ -168,6 +173,7 @@ function MobileAppScreen() {
             <ResultsPage containerRef={resultsPageContainerRef} />
           </ComponentResultsPageWrapper>
         </StickyOutputBarWrapper>
+        <AboutPage containerRef={aboutPageContainerRef} />
       </MobileAppScreenContainer>
 
       <BottomNavigation
@@ -226,6 +232,21 @@ function MobileAppScreen() {
             id: "results",
           })}
           icon={<ShortTextIcon />}
+        />
+
+        <BottomNavigationAction
+          classes={bottomNavigationClasses}
+          onClick={() => {
+            mobileAppScreenContainerRef.current?.scrollTo({
+              left: aboutPageContainerRef.current?.offsetLeft,
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
+          label={intl.formatMessage({
+            id: "about",
+          })}
+          icon={<InfoIcon />}
         />
       </BottomNavigation>
     </RootMobileContainer>
