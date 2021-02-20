@@ -49,7 +49,7 @@ const Input = withTheme(styled.input.attrs((props) => ({
 
 const AppNameh1 = styled.h1<{ locale?: string; darkMode?: boolean }>`
   display: inline-block;
-  font-size: ${(props) => (props.locale === "en" ? "2.8rem" : "3.2rem")};
+  font-size: ${(props) => (props.locale === "en" ? "2.5rem" : "3rem")};
 
   margin: 0px;
   /* Create the gradient. */
@@ -157,7 +157,7 @@ const ToggleButtonFlex = styled.div`
     align-items: flex-end;
 
     // add padding to the top
-    padding-top: 10px;
+    // padding-top: 10px;
   }
 `;
 
@@ -326,15 +326,19 @@ function FirstPage(props: { scrollToResults: () => void }) {
       </IconButton>
 
       <AppNameDescWrapper>
-        <AppNameh1 locale={intl.locale} darkMode={darkMode}>
-          <FormattedMessage id="app_name" defaultMessage="Radically" />
-        </AppNameh1>
-        <AppDesch3 locale={intl.locale} darkMode={darkMode}>
-          <FormattedMessage
-            id="app_desc"
-            defaultMessage="A CJK character components-based search tool"
-          />
-        </AppDesch3>
+        <div>
+          <AppNameh1 locale={intl.locale} darkMode={darkMode}>
+            <FormattedMessage id="app_name" defaultMessage="Radically" />
+          </AppNameh1>
+        </div>
+        <div>
+          <AppDesch3 locale={intl.locale} darkMode={darkMode}>
+            <FormattedMessage
+              id="app_desc"
+              defaultMessage="A CJK character components-based search tool"
+            />
+          </AppDesch3>
+        </div>
       </AppNameDescWrapper>
 
       <LetterBox>
