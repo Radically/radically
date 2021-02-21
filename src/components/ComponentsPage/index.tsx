@@ -46,6 +46,8 @@ import {
 import { getRadicalsPerRow, isCJK, useWindowDimensions } from "../../utils";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 
+export const searchInputHeightPx = "45px";
+
 const ComponentsPageContainer = styled("div")`
   display: flex;
   flex-direction: column;
@@ -59,17 +61,17 @@ const ComponentsPageContainer = styled("div")`
 
   // for mobile safari
   // 56px is the height of the MUI bottom navbar
-  @supports (-webkit-touch-callout: none) {
+  /* @supports (-webkit-touch-callout: none) {
     @media (orientation: portrait) {
       margin-bottom: calc(56px + ${heightPx}px);
     }
-  }
+  } */
 `;
 
 const SearchContainer = withTheme(styled.div`
   padding-right: 5px;
   padding-left: 10px;
-  height: 45px;
+  height: ${searchInputHeightPx};
   background-color: ${(props) => props.theme.palette.background.paper};
   border-bottom: 1px solid #909090;
   display: flex;
@@ -84,7 +86,7 @@ const SearchInput = withTheme(
     size: props.size || "0.5em",
   }))`
     flex: 1;
-    height: 45px;
+    height: ${searchInputHeightPx};
     -webkit-appearance: none;
     outline: none;
     border: none;
