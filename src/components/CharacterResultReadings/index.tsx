@@ -95,6 +95,40 @@ const CharacterResultReadings = React.memo(
       variantsLocales[char]?.v,
       intl
     );
+
+    const addToSearch = () => {
+      setComponentsInput(componentsInput + char);
+      showText(
+        intl.formatMessage({
+          id: "added",
+        })
+      );
+    };
+
+    function addToComponents() {
+      setRelatedComponentsInput(relatedComponentsInput + char);
+      if (toastOnGetRelated) {
+        showText(
+          intl.formatMessage({
+            id: "resultspage.added_to_components_page",
+          })
+        );
+      }
+    }
+
+    function copyToClipboard() {
+      navigator.clipboard.writeText(char);
+      showText(
+        intl.formatMessage({
+          id: "copied_to_clipboard",
+        })
+      );
+    }
+
+    function addToOutput() {
+      setOutput(output + char);
+    }
+
     return (
       <Container>
         <ButtonGroup
@@ -103,35 +137,13 @@ const CharacterResultReadings = React.memo(
           aria-label="outlined primary button group"
           classes={buttonGroupStyles}
         >
-          <Button
-            onClick={() => {
-              setComponentsInput(componentsInput + char);
-              showText(
-                intl.formatMessage({
-                  id: "added",
-                })
-              );
-            }}
-            classes={buttonStyles}
-          >
+          <Button onClick={addToSearch} classes={buttonStyles}>
             <FormattedMessage
               id="componentspage.add_to_search"
               defaultMessage="Add to search"
             />
           </Button>
-          <Button
-            onClick={() => {
-              setRelatedComponentsInput(relatedComponentsInput + char);
-              if (toastOnGetRelated) {
-                showText(
-                  intl.formatMessage({
-                    id: "resultspage.added_to_components_page",
-                  })
-                );
-              }
-            }}
-            classes={buttonStyles}
-          >
+          <Button onClick={addToComponents} classes={buttonStyles}>
             <FormattedMessage
               id="componentspage.get_related"
               defaultMessage="Get related"
@@ -146,26 +158,11 @@ const CharacterResultReadings = React.memo(
           classes={buttonGroupStyles}
         >
           {navigator.clipboard && window.isSecureContext && (
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(char);
-                showText(
-                  intl.formatMessage({
-                    id: "copied_to_clipboard",
-                  })
-                );
-              }}
-              classes={buttonStyles}
-            >
+            <Button onClick={copyToClipboard} classes={buttonStyles}>
               <FormattedMessage id="copy" defaultMessage="Copy" />
             </Button>
           )}
-          <Button
-            onClick={() => {
-              setOutput(output + char);
-            }}
-            classes={buttonStyles}
-          >
+          <Button onClick={addToOutput} classes={buttonStyles}>
             <FormattedMessage id="output" defaultMessage="Output" />
           </Button>
         </ButtonGroup>
