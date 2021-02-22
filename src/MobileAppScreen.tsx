@@ -23,7 +23,6 @@ import grey from "@material-ui/core/colors/grey";
 import { useIntl } from "react-intl";
 import teal from "@material-ui/core/colors/teal";
 import AboutPage from "./components/AboutPage";
-import { useMediaQuery } from "@material-ui/core";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -67,9 +66,9 @@ const StickyOutputBarWrapper = styled.div`
 
 const ComponentResultsPageWrapper = styled.div`
   display: flex;
-  @media (orientation: landscape) {
-    flex: 1;
-  }
+  // @media (orientation: landscape) {
+  //   flex: 1;
+  // }
 
   // height instead of min-height
   // because i want it the contents to be scrollable
