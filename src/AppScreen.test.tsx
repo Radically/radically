@@ -1,3 +1,5 @@
+global.CSS = { supports: jest.fn(), escape: jest.fn() };
+
 jest.mock("./searchworker");
 
 import React from "react";
