@@ -76,46 +76,47 @@ const ComponentResultsPageWrapper = styled.div`
   height: calc(100% - ${heightPx}px);
 `;
 
+const useStyles = makeStyles((theme: any) => ({
+  stickToBottom: {
+    width: "100%",
+    // sticky only in mobile portrait mode
+    // fixed is finicky especially with ff android
+    "@media (orientation: portrait)": {
+      "@supports (-moz-appearance:none)": {
+        position: "sticky",
+      },
+
+      "@supports not (-moz-appearance:none)": {
+        position: "fixed",
+      },
+    },
+    bottom: 0,
+    left: 0,
+  },
+
+  bottomNavigation: (props: { darkMode?: boolean }) => ({
+    backgroundColor: props.darkMode ? null : theme.palette.primary.main,
+  }),
+}));
+
+const useBottomNavigationStyles = makeStyles((theme: any) => ({
+  root: (props: { darkMode?: boolean }) => ({
+    "&$selected": {
+      color: props.darkMode ? teal[300] : "white",
+    },
+    color: grey[300],
+  }),
+
+  selected: (props: { darkMode?: boolean }) => ({
+    color: props.darkMode ? teal[300] : "white",
+  }),
+}));
+
 function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
   const intl = useIntl();
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
-
-  const useStyles = makeStyles((theme: any) => ({
-    stickToBottom: {
-      width: "100%",
-      // sticky only in mobile portrait mode
-      // fixed is finicky especially with ff android
-      "@media (orientation: portrait)": {
-        "@supports (-moz-appearance:none)": {
-          position: "sticky",
-        },
-
-        "@supports not (-moz-appearance:none)": {
-          position: "fixed",
-        },
-      },
-      bottom: 0,
-      left: 0,
-    },
-
-    bottomNavigation: {
-      backgroundColor: darkMode ? null : theme.palette.primary.main,
-    },
-  }));
-
-  const useBottomNavigationStyles = makeStyles((theme: any) => ({
-    root: {
-      "&$selected": {
-        color: darkMode ? teal[300] : "white",
-      },
-      color: grey[300],
-    },
-    selected: {
-      color: darkMode ? teal[300] : "white",
-    },
-  }));
 
   const mobileAppScreenContainerRef = useRef<HTMLDivElement>(null);
   const componentsPageContainerRef = useRef<HTMLDivElement>(null);
@@ -137,8 +138,8 @@ function MobileAppScreen() {
     return 3;
   };
 
-  const classes = useStyles();
-  const bottomNavigationClasses = useBottomNavigationStyles();
+  const classes = useStyles({ darkMode });
+  const bottomNavigationClasses = useBottomNavigationStyles({ darkMode });
   // android ff has a bug with scrolling to componentspage' offset
   const scrollBehavior = CSS.supports("(-moz-appearance:none)")
     ? "auto"
