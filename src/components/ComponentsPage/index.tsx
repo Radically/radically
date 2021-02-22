@@ -49,6 +49,7 @@ import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvide
 export const searchInputHeightInPx = 45;
 
 const ComponentsPageContainer = styled("div")`
+  flex: 1;
   display: flex;
   flex-direction: column;
   // align-items: center;
@@ -57,7 +58,7 @@ const ComponentsPageContainer = styled("div")`
   // position: relative;
 
   scroll-snap-align: start;
-  min-width: 100vw;
+  // min-width: 100vw;
 
   // for mobile safari
   // 56px is the height of the MUI bottom navbar
@@ -273,8 +274,8 @@ function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
               >
                 {count === "999"
                   ? intl.formatMessage({
-                      id: "unclear",
-                    })
+                    id: "unclear",
+                  })
                   : count}
               </div>
             ))}

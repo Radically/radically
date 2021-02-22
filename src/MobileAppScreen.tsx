@@ -25,6 +25,7 @@ import { useIntl } from "react-intl";
 import teal from "@material-ui/core/colors/teal";
 import AboutPage from "./components/AboutPage";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { LandscapeHandle } from "./components/ComponentsBrowser";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -83,7 +84,7 @@ const InfoContainer = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  padding: 15px;
+  padding: 0px 15px; 15px;
   box-sizing: border-box;
 `;
 
@@ -121,6 +122,12 @@ const useBottomNavigationStyles = makeStyles((theme: any) => ({
   selected: (props: { darkMode?: boolean }) => ({
     color: props.darkMode ? teal[300] : "white",
   }),
+}));
+
+const useAlertStyles = makeStyles((theme: any) => ({
+  root: {
+    marginTop: '15px'
+  }
 }));
 
 function MobileAppScreen() {
@@ -164,6 +171,7 @@ function MobileAppScreen() {
 
   const classes = useStyles({ darkMode });
   const bottomNavigationClasses = useBottomNavigationStyles({ darkMode });
+  const alertStyles = useAlertStyles();
   // android ff has a bug with scrolling to componentspage' offset
   const scrollBehavior = CSS.supports("(-moz-appearance:none)")
     ? "auto"
@@ -194,9 +202,18 @@ function MobileAppScreen() {
           {/* the results bar */}
           <OutputBar />
           <ComponentResultsPageWrapper id={"componentresultspagewrapper"}>
-            <ComponentsPage containerRef={componentsPageContainerRef} />
 
-            <ResultsPage containerRef={resultsPageContainerRef} />
+            <div style={{ display: 'flex', minWidth: '100vw' }}>
+              <ComponentsPage containerRef={componentsPageContainerRef} />
+
+              {isLandscape && <LandscapeHandle />}
+            </div>
+
+            <div style={{ display: 'flex', minWidth: '100vw' }}>
+              <ResultsPage containerRef={resultsPageContainerRef} />
+
+              {isLandscape && <LandscapeHandle />}
+            </div>
           </ComponentResultsPageWrapper>
         </StickyOutputBarWrapper>
         <AboutPage containerRef={aboutPageContainerRef} />
@@ -277,11 +294,11 @@ function MobileAppScreen() {
       </BottomNavigation>
 
       {showAlertContainer && <InfoContainer>
-        {showLandscapeAlert && <Alert severity="info" onClose={() => { setShowLandscapeAlert(false); }}>
+        {showLandscapeAlert && <Alert classes={alertStyles} severity="info" onClose={() => { setShowLandscapeAlert(false); }}>
           Landscape mode detected - scroll downwards to reveal the navbar!
         </Alert>}
 
-        {showMobileChromeAlert && <Alert severity="error" onClose={() => { setShowMobileChromeAlert(false); }}>
+        {showMobileChromeAlert && <Alert classes={alertStyles} severity="error" onClose={() => { setShowMobileChromeAlert(false); }}>
           Regretfully, landscape mode performs suboptimally in mobile Chromium. Unexpected behavior, mostly abrupt jumps, may occur when using the pickers. Waiting for the momentum scrolling to finish or using the navbar can help mitigate this. Portrait mode is strongly recommended.
         </Alert>}
       </InfoContainer>}

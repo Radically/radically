@@ -1,5 +1,17 @@
+import grey from "@material-ui/core/colors/grey";
 import { withTheme } from "@material-ui/core/styles";
 import styled from "styled-components";
+
+export const LandscapeHandle = styled.div`
+  width: 30px;
+  background: repeating-linear-gradient(
+    45deg,
+    ${grey[300]},
+    ${grey[300]} 10px,
+    ${grey[800]} 10px,
+    ${grey[800]} 20px
+  );
+`;
 
 export const StrokesScrollContainer = withTheme(styled.div`
   // flex: 0.1;
