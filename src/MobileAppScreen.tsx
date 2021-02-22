@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import FirstPage from "./components/FirstPage";
@@ -6,6 +6,7 @@ import ComponentsPage from "./components/ComponentsPage";
 import ResultsPage from "./components/ResultsPage";
 
 import { withTheme, makeStyles } from "@material-ui/core/styles";
+import Alert from "@material-ui/lab/Alert";
 
 // the bottom navigation
 import BottomNavigation from "@material-ui/core/BottomNavigation";
@@ -23,6 +24,7 @@ import grey from "@material-ui/core/colors/grey";
 import { useIntl } from "react-intl";
 import teal from "@material-ui/core/colors/teal";
 import AboutPage from "./components/AboutPage";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -76,6 +78,15 @@ const ComponentResultsPageWrapper = styled.div`
   height: calc(100% - ${heightPx}px);
 `;
 
+const InfoContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px;
+  box-sizing: border-box;
+`;
+
 const useStyles = makeStyles((theme: any) => ({
   stickToBottom: {
     width: "100%",
@@ -115,6 +126,19 @@ const useBottomNavigationStyles = makeStyles((theme: any) => ({
 function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
   const intl = useIntl();
+
+  const isLandscape = useMediaQuery("(orientation: landscape)");
+
+  const [showLandscapeAlert, setShowLandscapeAlert] = useState(false);
+  // @ts-ignore
+  const [showMobileChromeAlert, setShowMobileChromeAlert] = useState(false);
+  const showAlertContainer = showLandscapeAlert || showMobileChromeAlert;
+
+  useEffect(() => {
+    setShowLandscapeAlert(isLandscape);
+    // @ts-ignore
+    setShowMobileChromeAlert(!!window.chrome && isLandscape);
+  }, [isLandscape]);
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
@@ -251,6 +275,18 @@ function MobileAppScreen() {
           icon={<InfoIcon />}
         />
       </BottomNavigation>
+
+      {showAlertContainer && <InfoContainer>
+        {showLandscapeAlert && <Alert severity="info" onClose={() => { setShowLandscapeAlert(false); }}>
+          Landscape mode detected - scroll downwards to reveal the navbar!
+        </Alert>}
+
+        {showMobileChromeAlert && <Alert severity="error" onClose={() => { setShowMobileChromeAlert(false); }}>
+          Regretfully, landscape mode performs suboptimally in mobile Chromium. Unexpected behavior, mostly abrupt jumps, may occur when using the pickers. Waiting for the momentum scrolling to finish or using the navbar can help mitigate this. Portrait mode is strongly recommended.
+        </Alert>}
+      </InfoContainer>}
+
+
     </RootMobileContainer>
   );
 }
