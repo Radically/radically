@@ -23,6 +23,7 @@ import grey from "@material-ui/core/colors/grey";
 import { useIntl } from "react-intl";
 import teal from "@material-ui/core/colors/teal";
 import AboutPage from "./components/AboutPage";
+import { useMediaQuery } from "@material-ui/core";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -139,12 +140,16 @@ function MobileAppScreen() {
 
   const classes = useStyles();
   const bottomNavigationClasses = useBottomNavigationStyles();
+  // android ff has a bug with scrolling to componentspage' offset
+  const scrollBehavior = CSS.supports("(-moz-appearance:none)")
+    ? "auto"
+    : "smooth";
 
   const scrollToResults = () => {
     mobileAppScreenContainerRef.current?.scrollTo({
       left: resultsPageContainerRef.current?.offsetLeft,
       top: 0,
-      behavior: "smooth",
+      behavior: scrollBehavior,
     });
   };
 
@@ -188,7 +193,7 @@ function MobileAppScreen() {
             mobileAppScreenContainerRef.current?.scrollTo({
               left: 0,
               top: 0,
-              behavior: "smooth",
+              behavior: scrollBehavior,
             });
           }}
           label={intl.formatMessage({
@@ -203,7 +208,7 @@ function MobileAppScreen() {
             mobileAppScreenContainerRef.current?.scrollTo({
               left: componentsPageContainerRef.current?.offsetLeft,
               top: 0,
-              behavior: "smooth",
+              behavior: scrollBehavior,
             });
           }}
           label={intl.formatMessage({
@@ -237,7 +242,7 @@ function MobileAppScreen() {
             mobileAppScreenContainerRef.current?.scrollTo({
               left: aboutPageContainerRef.current?.offsetLeft,
               top: 0,
-              behavior: "smooth",
+              behavior: scrollBehavior,
             });
           }}
           label={intl.formatMessage({

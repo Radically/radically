@@ -112,6 +112,7 @@
     "axios": "^0.21.1",
     "comlink-loader": "^2.0.0",
     "crc-hash": "^0.2.2",
+    "cssom": "^0.4.4",
     "jest-styled-components": "^7.0.3",
     "object-sizeof": "^1.6.1",
     "progress": "^2.0.3",
