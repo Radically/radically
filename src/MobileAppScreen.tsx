@@ -32,7 +32,17 @@ const RootMobileContainer = styled.div`
 `;
 
 const MobileAppScreenContainer = withTheme(styled.div`
-  height: 100%;
+  @media (orientation: portrait) {
+    height: calc(100% - 56px);
+  }
+
+  @media (orientation: landscape) {
+    height: 100%;
+    // for android ff and chrome
+    @supports not (-webkit-touch-callout: none) {
+      height: 100vh;
+    }
+  }
 
   // important for iOS !!!
   -webkit-overflow-scrolling: touch;
@@ -63,20 +73,20 @@ const ComponentResultsPageWrapper = styled.div`
   // mobile safari's definition of 100% when there
   // is a sticky element on the screen is different from
   // ff android and chrome android's definition
-  @supports (-webkit-touch-callout: none) {
+  /* @supports (-webkit-touch-callout: none) {
     @media (orientation: portrait) {
       height: 100%;
     }
-  }
+  } */
 
-  @supports (not (-webkit-touch-callout: none)) {
-    @media (orientation: portrait) {
-      // height instead of min-height
-      // because i want it the contents to be scrollable
-      // and not mess with the tab navigation
-      height: calc(100% - ${heightPx}px);
-    }
-  }
+  // @supports (not (-webkit-touch-callout: none)) {
+  // @media (orientation: portrait) {
+  // height instead of min-height
+  // because i want it the contents to be scrollable
+  // and not mess with the tab navigation
+  height: calc(100% - ${heightPx}px);
+  // }
+  // }
 `;
 
 function MobileAppScreen() {

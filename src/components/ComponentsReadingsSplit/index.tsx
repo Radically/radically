@@ -3,11 +3,16 @@ import { FunctionComponent } from "react";
 import Split from "react-split";
 import styled from "styled-components";
 
-const StyledSplit = styled(Split)`
+const StyledSplit = styled(Split)<{ negativePx?: number }>`
   flex: 1;
+  max-height: calc(100% - ${(props) => props.negativePx}px);
 `;
-const ComponentsReadingSplit: FunctionComponent<{ id?: string }> = (props) => {
-  const { children, id } = props;
+
+const ComponentsReadingSplit: FunctionComponent<{
+  id?: string;
+  negativePx?: number;
+}> = (props) => {
+  const { children, id, negativePx } = props;
 
   const isLandscape = useMediaQuery("(orientation: landscape)");
   const isSafari = navigator.vendor.includes("Apple");
@@ -15,6 +20,7 @@ const ComponentsReadingSplit: FunctionComponent<{ id?: string }> = (props) => {
   return (
     <StyledSplit
       id={id || "components-split-container"}
+      negativePx={negativePx || 0}
       sizes={[60, 40]}
       minSize={isLandscape || isSafari ? 10 : 60} // 56px + 4
       expandToMin={true}

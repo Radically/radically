@@ -49,11 +49,11 @@ const ResultsPageContainer = styled("div")`
 
   // for mobile safari
   // 56px is the height of the MUI bottom navbar
-  @supports (-webkit-touch-callout: none) {
+  /* @supports (-webkit-touch-callout: none) {
     @media (orientation: portrait) {
       margin-bottom: calc(56px + ${heightPx}px);
     }
-  }
+  } */
 `;
 
 interface SelectedInfo {

@@ -20,7 +20,7 @@ const Container = styled.div`
 
   overflow-wrap: anywhere;
   // bottom navbar + 10px padding
-  @supports not (-webkit-touch-callout: none) {
+  /* @supports not (-webkit-touch-callout: none) {
     @media (orientation: portrait) {
       margin-bottom: calc(56px + 10px);
     }
@@ -33,11 +33,9 @@ const Container = styled.div`
 
   @media (orientation: landscape) {
     margin-bottom: 10px;
-  }
+  } */
 
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 10px;
 `;
 
 const MetadataContainer = styled.div`
@@ -218,7 +216,11 @@ const CharacterResultReadings = React.memo(
             {char in readings ? (
               Object.entries(readings[char]).map((entry) => (
                 <div>
-                  <span style={{ fontWeight: "bold", overflowWrap: 'anywhere' }}>{entry[0]}:</span>{" "}
+                  <span
+                    style={{ fontWeight: "bold", overflowWrap: "anywhere" }}
+                  >
+                    {entry[0]}:
+                  </span>{" "}
                   {entry[1]}
                 </div>
               ))

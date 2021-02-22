@@ -46,7 +46,7 @@ import {
 import { getRadicalsPerRow, isCJK, useWindowDimensions } from "../../utils";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 
-export const searchInputHeightPx = "45px";
+export const searchInputHeightInPx = 45;
 
 const ComponentsPageContainer = styled("div")`
   display: flex;
@@ -71,7 +71,7 @@ const ComponentsPageContainer = styled("div")`
 const SearchContainer = withTheme(styled.div`
   padding-right: 5px;
   padding-left: 10px;
-  height: ${searchInputHeightPx};
+  height: ${searchInputHeightInPx}px;
   background-color: ${(props) => props.theme.palette.background.paper};
   border-bottom: 1px solid #909090;
   display: flex;
@@ -86,7 +86,7 @@ const SearchInput = withTheme(
     size: props.size || "0.5em",
   }))`
     flex: 1;
-    height: ${searchInputHeightPx};
+    height: ${searchInputHeightInPx}px;
     -webkit-appearance: none;
     outline: none;
     border: none;
@@ -240,7 +240,10 @@ function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
         </IconButton>
       </SearchContainer>
 
-      <ComponentsReadingsSplit id="components-page-split-container">
+      <ComponentsReadingsSplit
+        id="components-page-split-container"
+        negativePx={searchInputHeightInPx}
+      >
         <StrokesComponentsContainer
           id={"components-page-strokes-components-container"}
         >
