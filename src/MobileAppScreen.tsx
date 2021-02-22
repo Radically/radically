@@ -58,10 +58,10 @@ const MobileAppScreenContainer = withTheme(styled.div`
 
 const StickyOutputBarWrapper = styled.div`
   height: 100%;
-  @media (orientation: landscape) {
-    display: flex;
-    flex-direction: column;
-  }
+  // @media (orientation: landscape) {
+  //   display: flex;
+  //   flex-direction: column;
+  // }
 `;
 
 const ComponentResultsPageWrapper = styled.div`
@@ -70,23 +70,10 @@ const ComponentResultsPageWrapper = styled.div`
     flex: 1;
   }
 
-  // mobile safari's definition of 100% when there
-  // is a sticky element on the screen is different from
-  // ff android and chrome android's definition
-  /* @supports (-webkit-touch-callout: none) {
-    @media (orientation: portrait) {
-      height: 100%;
-    }
-  } */
-
-  // @supports (not (-webkit-touch-callout: none)) {
-  // @media (orientation: portrait) {
   // height instead of min-height
   // because i want it the contents to be scrollable
   // and not mess with the tab navigation
   height: calc(100% - ${heightPx}px);
-  // }
-  // }
 `;
 
 function MobileAppScreen() {
