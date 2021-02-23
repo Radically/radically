@@ -5,18 +5,26 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import React, { useContext } from "react";
 import { useIntl } from "react-intl";
 import styled from "styled-components";
-import { SharedTextboxContext, SharedTextboxContextProvider } from "../../contexts/SharedTextboxContextProvider";
+import {
+  SharedTextboxContext,
+  SharedTextboxContextProvider,
+} from "../../contexts/SharedTextboxContextProvider";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 
 export const heightPx = 30;
 
 const OutputBarContainer = withTheme(styled.div`
   position: sticky;
-  width: 100vw;
+  width: 100%;
+  @media (max-width: 767px) {
+    width: 100vw;
+  }
   left: 0px;
   height: ${heightPx}px;
   background-color: ${(props) => props.theme.palette.background.paper};
-  border-bottom: 1px solid #909090;
+  @media (max-width: 767px) {
+    border-bottom: 1px solid #909090;
+  }
   display: flex;
   // padding-right: 5px;
   // margin-left: 10px;

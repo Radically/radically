@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ComponentsPage from "./components/ComponentsPage";
 import FirstPage from "./components/FirstPage/desktop";
+import OutputBar from "./components/OutputBar";
 import ResultsPage from "./components/ResultsPage";
 
 const DesktopAppScreenContainer = withTheme(styled.div`
@@ -35,8 +36,20 @@ function DesktopAppScreen() {
     <DesktopAppScreenContainer id="app-screen-container-desktop">
       <MainContainer id="main-container-desktop">
         <FirstPage />
-        <ComponentsPage desktop />
-        <ResultsPage desktop />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div style={{ width: "100%", flex: 1, display: "flex" }}>
+            <ComponentsPage desktop />
+            <ResultsPage desktop />
+          </div>
+
+          <OutputBar />
+        </div>
       </MainContainer>
 
       <div>
