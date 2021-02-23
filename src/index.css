@@ -1,4 +1,9 @@
 @font-face {
+  font-family: "UniHentaiKana";
+  src: url(./fonts/UniHentaiKana-Regular.woff) format("woff");
+}
+
+@font-face {
   font-family: "HelveticaLatin";
 
   src: local("Helvetica Neue"),
@@ -34,7 +39,7 @@
 
 html {
   /* --default-sans: HelveticaLatin, Hanamin, KaiXinSong; */
-  --default-sans: HelveticaLatin, KaiXinSong;
+  --default-sans: HelveticaLatin, KaiXinSong, UniHentaiKana;
 }
 
 body {
