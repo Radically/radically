@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ComponentsPage from "./components/ComponentsPage";
 import FirstPage from "./components/FirstPage/desktop";
+import ResultsPage from "./components/ResultsPage";
 
 const DesktopAppScreenContainer = withTheme(styled.div`
   @media (max-width: 767px) {
@@ -23,7 +24,7 @@ const DesktopAppScreenContainer = withTheme(styled.div`
 const MainContainer = styled.div`
   min-height: 550px;
   overflow: hidden;
-  height: 65vh;
+  height: 70vh;
   display: flex;
 
   border-bottom: 1px solid #909090;
@@ -35,6 +36,7 @@ function DesktopAppScreen() {
       <MainContainer id="main-container-desktop">
         <FirstPage />
         <ComponentsPage desktop />
+        <ResultsPage desktop />
       </MainContainer>
 
       <div>

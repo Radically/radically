@@ -74,6 +74,10 @@ const ComponentsPageContainer = styled("div")`
       margin-bottom: calc(56px + ${heightPx}px);
     }
   } */
+
+  @media (min-width: 768px) {
+    border-right: 1px solid #909090;
+  }
 `;
 
 const SearchContainer = withTheme(styled.div`

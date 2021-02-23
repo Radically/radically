@@ -4,7 +4,11 @@ import styled from "styled-components";
 import { SearchContext } from "../../contexts/SearchContextProvider";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
-import { getRadicalsPerRow, useWindowDimensions } from "../../utils";
+import {
+  getRadicalsPerRow,
+  notPositive,
+  useWindowDimensions,
+} from "../../utils";
 
 import {
   FixedSizeList,
@@ -20,7 +24,8 @@ import {
   LoadingTextContainer,
   ReadingsScrollContainer,
   StrokesComponentsContainer,
-  StrokesScrollContainer,
+  // StrokesScrollContainer,
+  StrokesScrollContainerSimpleBar,
 } from "../ComponentsBrowser";
 
 import ComponentsReadingSplit from "../ComponentsReadingsSplit";
@@ -35,6 +40,7 @@ import {
   outerElementType,
 } from "../ComponentsScrollComponents";
 import CharacterResultReadings from "../CharacterResultReadings";
+import { widthPx } from "../FirstPage/desktop";
 
 const ResultsPageContainer = styled("div")`
   flex: 1;
@@ -63,8 +69,11 @@ interface SelectedInfo {
   radical: string;
 }
 
-function ResultsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
-  const { containerRef } = props;
+function ResultsPage(props: {
+  containerRef?: React.Ref<HTMLDivElement>;
+  desktop?: boolean;
+}) {
+  const { containerRef, desktop } = props;
   const intl = useIntl();
   const { darkMode } = useContext(SettingsContext);
   const { searchResults } = useContext(SearchContext);
@@ -75,7 +84,14 @@ function ResultsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
   } = useContext(SharedTextboxContext);
 
   const { width, height } = useWindowDimensions();
-  const radicalsPerRow = getRadicalsPerRow(width || 320);
+  const radicalsPerRow = notPositive(
+    getRadicalsPerRow(
+      !!desktop && !!width && width > widthPx
+        ? (width - widthPx) / 2
+        : width || 320
+    ),
+    10
+  );
 
   const {
     baseRadicals,
@@ -138,7 +154,9 @@ function ResultsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
         <StrokesComponentsContainer
           id={"results-page-strokes-components-container"}
         >
-          <StrokesScrollContainer id={"results-page-strokes-scroll-container"}>
+          <StrokesScrollContainerSimpleBar
+            id={"results-page-strokes-scroll-container"}
+          >
             {Object.keys(strokeCountToRadicalsMap).map((count, idx) => (
               <div
                 key={idx}
@@ -159,12 +177,13 @@ function ResultsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
               >
                 {count === "999"
                   ? intl.formatMessage({
-                    id: "unclear",
-                  })
+                      id: "unclear",
+                    })
                   : count}
               </div>
             ))}
-          </StrokesScrollContainer>
+          </StrokesScrollContainerSimpleBar>
+
           <RadicalsScrollContainer id="results-page-components-scroll-container">
             {!searchResults.length && (
               <CenterTextContainer darkMode={darkMode}>
