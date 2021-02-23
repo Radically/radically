@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import FirstPage from "./components/FirstPage";
+import FirstPage from "./components/FirstPage/mobile";
 import ComponentsPage from "./components/ComponentsPage";
 import ResultsPage from "./components/ResultsPage";
 
@@ -126,8 +126,8 @@ const useBottomNavigationStyles = makeStyles((theme: any) => ({
 
 const useAlertStyles = makeStyles((theme: any) => ({
   root: {
-    marginTop: '15px'
-  }
+    marginTop: "15px",
+  },
 }));
 
 function MobileAppScreen() {
@@ -202,14 +202,13 @@ function MobileAppScreen() {
           {/* the results bar */}
           <OutputBar />
           <ComponentResultsPageWrapper id={"componentresultspagewrapper"}>
-
-            <div style={{ display: 'flex', minWidth: '100vw' }}>
+            <div style={{ display: "flex", minWidth: "100vw" }}>
               <ComponentsPage containerRef={componentsPageContainerRef} />
 
               {isLandscape && <LandscapeHandle />}
             </div>
 
-            <div style={{ display: 'flex', minWidth: '100vw' }}>
+            <div style={{ display: "flex", minWidth: "100vw" }}>
               <ResultsPage containerRef={resultsPageContainerRef} />
 
               {isLandscape && <LandscapeHandle />}
@@ -293,17 +292,37 @@ function MobileAppScreen() {
         />
       </BottomNavigation>
 
-      {showAlertContainer && <InfoContainer>
-        {showLandscapeAlert && <Alert classes={alertStyles} severity="info" onClose={() => { setShowLandscapeAlert(false); }}>
-          Landscape mode detected - scroll downwards to reveal the navbar!
-        </Alert>}
+      {showAlertContainer && (
+        <InfoContainer>
+          {showLandscapeAlert && (
+            <Alert
+              classes={alertStyles}
+              severity="info"
+              onClose={() => {
+                setShowLandscapeAlert(false);
+              }}
+            >
+              Landscape mode detected - scroll downwards to reveal the navbar!
+            </Alert>
+          )}
 
-        {showMobileChromeAlert && <Alert classes={alertStyles} severity="error" onClose={() => { setShowMobileChromeAlert(false); }}>
-          Regretfully, landscape mode performs suboptimally in mobile Chromium. Unexpected behavior, mostly abrupt jumps, may occur when using the pickers. Waiting for the momentum scrolling to finish or using the navbar can help mitigate this. Portrait mode is strongly recommended.
-        </Alert>}
-      </InfoContainer>}
-
-
+          {showMobileChromeAlert && (
+            <Alert
+              classes={alertStyles}
+              severity="error"
+              onClose={() => {
+                setShowMobileChromeAlert(false);
+              }}
+            >
+              Regretfully, landscape mode performs suboptimally in mobile
+              Chromium. Unexpected behavior, mostly abrupt jumps, may occur when
+              using the pickers. Waiting for the momentum scrolling to finish or
+              using the navbar can help mitigate this. Portrait mode is strongly
+              recommended.
+            </Alert>
+          )}
+        </InfoContainer>
+      )}
     </RootMobileContainer>
   );
 }

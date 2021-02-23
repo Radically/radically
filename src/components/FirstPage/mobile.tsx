@@ -1,7 +1,6 @@
 // yep, i'm not very imaginative
 // the page with the welcome name and the radical and ids text boxes
 
-import teal from "@material-ui/core/colors/teal";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import { makeStyles, withTheme } from "@material-ui/core/styles";
@@ -18,90 +17,9 @@ import { DataContext } from "../../contexts/DataContextProvider";
 import { SearchContext } from "../../contexts/SearchContextProvider";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 
-const Input = withTheme(styled.input.attrs((props) => ({
-  // we can define static props
-  type: "search",
+import { Input, AppNameh1, AppDesch3, useButtonStyles } from "./shared";
 
-  // or we can define dynamic ones
-  size: props.size || "0.5em",
-}))`
-  // display: block;
-  color: ${(props) => props.theme.palette.text.primary};
-  font-size: 1em;
-  font-family: var(--default-sans);
-  font-weight: bold;
-  border: 1px solid #909090;
-  // border-radius: 2px;
-
-  /* here we use the dynamically computed prop */
-  // margin: ${(props) => props.size};
-  margin-top: ${(props) => props.size};
-  padding: ${(props) => props.size};
-
-  &:focus {
-    border: 2px solid black;
-  }
-
-  box-sizing: border-box;
-  background-color: ${(props) => props.theme.palette.background.paper};
-  width: 100%;
-`);
-
-const AppNameh1 = styled.h1<{ locale?: string; darkMode?: boolean }>`
-  display: inline-block;
-  font-size: ${(props) => (props.locale === "en" ? "2.5rem" : "3rem")};
-
-  margin: 0px;
-  /* Create the gradient. */
-  background-image: linear-gradient(
-    60deg,
-    ${(props) => (props.darkMode ? "white" : "black")},
-    ${(props) => (props.darkMode ? teal[300] : teal[800])}
-  );
-
-  /* Set the background size and repeat properties. */
-  background-size: 100%;
-  background-repeat: repeat;
-
-  /* Use the text as a mask for the background. */
-  /* This will show the gradient as a text color rather than element bg. */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-background-clip: text;
-  -moz-text-fill-color: transparent;
-`;
-
-const AppDesch3 = styled.h3<{ locale?: string; darkMode?: boolean }>`
-  display: inline-block;
-
-  font-size: ${(props) => (props.locale === "en" ? "0.8rem" : "1.2rem")};
-
-  margin: 0px;
-
-  // background-color: #ca4246;
-  // background-color: red;
-
-  /* Create the gradient. */
-  background-image: linear-gradient(
-    60deg,
-    ${(props: { darkMode?: boolean }) => (props.darkMode ? "white" : "black")},
-    ${(props: { darkMode?: boolean }) =>
-      props.darkMode ? teal[300] : teal[800]}
-  );
-
-  /* Set the background size and repeat properties. */
-  background-size: 100%;
-  background-repeat: repeat;
-
-  /* Use the text as a mask for the background. */
-  /* This will show the gradient as a text color rather than element bg. */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-background-clip: text;
-  -moz-text-fill-color: transparent;
-`;
-
-const AppNameDescWrapper = styled.div`
+export const AppNameDescWrapper = styled.div`
   width: 75%;
   @media (max-width: 700px) and (orientation: landscape) {
     width: 90%;
@@ -192,36 +110,6 @@ const SwitchLabelContainer: FunctionComponent<{}> = (props) => {
   const { children } = props;
   return <_SwitchLabelContainer>{children}</_SwitchLabelContainer>;
 };
-
-const useButtonStyles = makeStyles((theme) => ({
-  root: {
-    fontSize: "12pt",
-    borderRadius: 0,
-    // fontFamily: "var(--default-sans);",
-    // fontWeight: "bold",
-    border: `2px solid ${theme.palette.primary.main}`,
-    color: theme.palette.primary.main,
-    lineHeight: "1.2em",
-    "&:hover": {
-      border: `2px solid ${theme.palette.primary.main}`,
-    },
-    "&:active": {
-      border: `2px solid ${theme.palette.primary.main}`,
-      backgroundColor: theme.palette.primary.main,
-      color: "white",
-    },
-    width: "100%",
-    marginTop: "10px",
-  },
-
-  disabled: {
-    fontSize: "12pt",
-    borderRadius: 0,
-    width: "100%",
-    marginTop: "10px",
-    border: `2px solid ${theme.palette.action.disabled}`,
-  },
-}));
 
 function FirstPage(props: { scrollToResults: () => void }) {
   const { scrollToResults } = props;
