@@ -9,7 +9,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import ComponentsReadingsSplit from "../ComponentsReadingsSplit";
 
 import {
-  StrokesScrollContainer,
+  // StrokesScrollContainer,
+  StrokesScrollContainerSimpleBar,
   StrokesComponentsContainer,
   RadicalsScrollContainer,
   LoadingTextContainer,
@@ -43,8 +44,14 @@ import {
   strokeCountToRadicals,
 } from "../ComponentsScrollComponents/utils";
 
-import { getRadicalsPerRow, isCJK, useWindowDimensions } from "../../utils";
+import {
+  getRadicalsPerRow,
+  isCJK,
+  notPositive,
+  useWindowDimensions,
+} from "../../utils";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
+import { widthPx } from "../FirstPage/desktop";
 
 export const searchInputHeightInPx = 45;
 
@@ -106,8 +113,11 @@ interface SelectedInfo {
   radical: string;
 }
 
-function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
-  const { containerRef } = props;
+function ComponentsPage(props: {
+  containerRef?: React.Ref<HTMLDivElement>;
+  desktop?: boolean;
+}) {
+  const { containerRef, desktop } = props;
   const intl = useIntl();
   // const [input, setInput] = useState("");
   const {
@@ -117,7 +127,18 @@ function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
 
   const { darkMode } = useContext(SettingsContext);
   const { width, height } = useWindowDimensions();
-  const radicalsPerRow = getRadicalsPerRow(width || 320);
+
+  // as of the time of writing, display: none; is used to
+  // hide the mobile view when the desktop viewport is shown;
+  // however occasionally it has ZERO width
+  const radicalsPerRow = notPositive(
+    getRadicalsPerRow(
+      !!desktop && !!width && width > widthPx
+        ? (width - widthPx) / 2
+        : width || 320
+    ),
+    10
+  );
 
   const {
     baseRadicals,
@@ -248,9 +269,7 @@ function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
         <StrokesComponentsContainer
           id={"components-page-strokes-components-container"}
         >
-          <StrokesScrollContainer
-            id={"components-page-strokes-scroll-container"}
-          >
+          <StrokesScrollContainerSimpleBar>
             {(!!searchResults
               ? Object.keys(searchResults)
               : Object.keys(strokeCountToRadicalsMap)
@@ -274,12 +293,12 @@ function ComponentsPage(props: { containerRef?: React.Ref<HTMLDivElement> }) {
               >
                 {count === "999"
                   ? intl.formatMessage({
-                    id: "unclear",
-                  })
+                      id: "unclear",
+                    })
                   : count}
               </div>
             ))}
-          </StrokesScrollContainer>
+          </StrokesScrollContainerSimpleBar>
 
           <RadicalsScrollContainer id="components-page-components-scroll-container">
             {baseRadicalsLoading && (

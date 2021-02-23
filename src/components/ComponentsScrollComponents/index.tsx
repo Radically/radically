@@ -14,8 +14,20 @@ import IndividualComponentCell from "../IndividualComponentCell";
 // import { withTheme } from "@material-ui/core/styles";
 // import { SettingsContext } from "../../contexts/SettingsContextProvider";
 
+const AutosizerOuterDiv = styled.div`
+  // hide scrollbars on desktop
+  @media (min-width: 768px) {
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+`;
+
 export const outerElementType = forwardRef((props, ref: any) => (
-  <div
+  <AutosizerOuterDiv
+    style={{}}
     onKeyDown={(e) => {
       const { key } = e;
       if (key.startsWith("Arrow")) e.preventDefault();

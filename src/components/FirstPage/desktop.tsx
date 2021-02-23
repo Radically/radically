@@ -66,6 +66,8 @@ export const AppNameDescWrapper = styled.div`
   flex-direction: column;
 `;
 
+export const widthPx = 350;
+
 const FirstPageContainer = withTheme(styled("div")`
   display: flex;
   flex-direction: column;
@@ -75,7 +77,8 @@ const FirstPageContainer = withTheme(styled("div")`
   height: 100%; // % of the parent container
   position: relative;
 
-  width: 350px;
+  width: ${widthPx}px;
+  border-right: 1px solid #909090;
 `);
 
 function FirstPageDesktop() {

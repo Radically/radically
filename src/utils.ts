@@ -50,3 +50,11 @@ export function isCJK(idsChar: string) {
   if (idsChar === "？") return false;
   return true;
 }
+
+// returns numIfNotPositive if num is not positive
+export function notPositive(num: number, numIfNotPositive: number) {
+  if (num <= 0) {
+    return numIfNotPositive;
+  }
+  return num;
+}

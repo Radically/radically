@@ -1,5 +1,6 @@
 import grey from "@material-ui/core/colors/grey";
 import { withTheme } from "@material-ui/core/styles";
+import SimpleBar from "simplebar-react";
 import styled from "styled-components";
 
 export const LandscapeHandle = styled.div`
@@ -12,6 +13,19 @@ export const LandscapeHandle = styled.div`
     ${grey[800]} 20px
   );
 `;
+
+export const StrokesScrollContainerSimpleBar = withTheme(styled(
+  SimpleBar
+).attrs((props) => ({
+  autoHide: false,
+}))`
+  width: 50px;
+  float: left;
+  border-right: 1px solid #909090;
+  min-height: 100%;
+  height: 0px;
+  color: ${(props) => props.theme.palette.text.primary};
+`);
 
 export const StrokesScrollContainer = withTheme(styled.div`
   // flex: 0.1;
@@ -30,6 +44,13 @@ export const StrokesScrollContainer = withTheme(styled.div`
   flex-direction: column;
 
   color: ${(props) => props.theme.palette.text.primary};
+
+  // hide scrollbars
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 `);
 
 export const StrokesComponentsContainer = styled.div`
@@ -56,6 +77,13 @@ export const RadicalsScrollContainer = styled.div`
 
   padding-left: 10px;
   padding-right: 10px;
+
+  // hide scrollbars
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 `;
 
 export const ReadingsScrollContainer = withTheme(styled.div`
