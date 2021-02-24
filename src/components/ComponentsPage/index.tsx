@@ -52,6 +52,7 @@ import {
 } from "../../utils";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 import { widthPx } from "../FirstPage/desktop";
+import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 
 export const searchInputHeightInPx = 45;
 
@@ -127,7 +128,11 @@ function ComponentsPage(props: {
   const {
     relatedComponentsInput: input,
     setRelatedComponentsInput: setInput,
+    componentsInput,
+    setComponentsInput,
   } = useContext(SharedTextboxContext);
+
+  const { showText } = useContext(QuickToastContext);
 
   const { darkMode } = useContext(SettingsContext);
   const { width, height } = useWindowDimensions();
@@ -176,6 +181,15 @@ function ComponentsPage(props: {
     // arrowKeyPressed.current = false;
     // if (selectedInfo.index === index && selectedInfo.col === col)
     //   onRadicalSelected(radical);
+    if (selectedInfo.index === index && selectedInfo.col === col) {
+      setComponentsInput(componentsInput + radical);
+      showText(
+        intl.formatMessage({
+          id: "added",
+        })
+      );
+    }
+
     setSelectedInfo({ index, col, radical });
     event.stopPropagation();
     event.preventDefault();

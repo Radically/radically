@@ -25,7 +25,7 @@ const DesktopAppScreenContainer = withTheme(styled.div`
 const MainContainer = styled.div`
   min-height: 550px;
   overflow: hidden;
-  height: 70vh;
+  height: 80vh;
   display: flex;
 
   border-bottom: 1px solid #909090;
