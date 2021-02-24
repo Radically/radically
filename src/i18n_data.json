@@ -1,7 +1,7 @@
 {
   "en": {
     "app_name": "Radically",
-    "app_desc": "A CJK component-based character search utility",
+    "app_desc": "A component-based CJK character search engine",
     "strokes": "{count, plural, one {# stroke} other {# strokes}}",
     "unclear": "Unclear",
     "components": "Components",
@@ -38,7 +38,8 @@
     "variant.other_simplified": "Other-Simplified",
     "variant.sawndip_simplified": "ZA-Simplified",
     "variant.sawndip": "ZA",
-    "variant.radical": "Radical"
+    "variant.radical": "Radical",
+    "variant.unicode_pua": "Unicode PUA"
   },
   "lzh": {
     "app_name": "部將",
@@ -79,6 +80,7 @@
     "variant.other_simplified": "其餘簡化文字",
     "variant.sawndip_simplified": "簡化壯字",
     "variant.sawndip": "壯字",
-    "variant.radical": "部首"
+    "variant.radical": "部首",
+    "variant.unicode_pua": "萬國碼私用領域"
   }
 }

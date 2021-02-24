@@ -5,7 +5,7 @@ import { DataContext } from "../../contexts/DataContextProvider";
 import { getStringForCharacterVariants } from "../ComponentsScrollComponents/utils";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withTheme } from "@material-ui/core/styles";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 
@@ -70,6 +70,25 @@ const useButtonStyles = makeStyles((theme) => ({
     width: "100%",
   },
 }));
+
+const ReadingsContainer = withTheme(styled.div`
+  font-size: 0.9rem;
+  a:link {
+    color: ${(props) => props.theme.palette.text.primary};
+  }
+
+  a:visited {
+    color: ${(props) => props.theme.palette.text.primary};
+  }
+
+  a:hover {
+    color: ${(props) => props.theme.palette.text.primary};
+  }
+
+  a:active {
+    color: ${(props) => props.theme.palette.text.primary};
+  }
+`);
 
 const CharacterResultReadings = React.memo(
   (props: {
@@ -201,7 +220,7 @@ const CharacterResultReadings = React.memo(
 
           {/* <SimpleBar style={{ flex: 1, paddingTop: "5px", height: "100px" }}> */}
           {/* <div> */}
-          <div style={{ fontSize: "0.9rem" }}>
+          <ReadingsContainer>
             {variantsString && (
               <MetadataContainer>{variantsString}</MetadataContainer>
             )}
@@ -218,7 +237,10 @@ const CharacterResultReadings = React.memo(
                   >
                     {entry[0]}:
                   </span>{" "}
-                  {entry[1]}
+                  <div
+                    style={{ display: "inline" }}
+                    dangerouslySetInnerHTML={{ __html: entry[1] }}
+                  />
                 </div>
               ))
             ) : (
@@ -228,7 +250,7 @@ const CharacterResultReadings = React.memo(
                 })}
               </div>
             )}
-          </div>
+          </ReadingsContainer>
         </div>
         {/* </div> */}
         {/* </SimpleBar> */}

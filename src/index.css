@@ -1,4 +1,9 @@
 @font-face {
+  font-family: "BabelStoneHanPUA";
+  src: url(./fonts/BabelStoneHanPUA.woff2) format("woff2");
+}
+
+@font-face {
   font-family: "UniHentaiKana";
   src: url(./fonts/UniHentaiKana-Regular.woff) format("woff");
 }
@@ -39,7 +44,7 @@
 
 html {
   /* --default-sans: HelveticaLatin, Hanamin, KaiXinSong; */
-  --default-sans: HelveticaLatin, KaiXinSong, UniHentaiKana;
+  --default-sans: HelveticaLatin, BabelStoneHanPUA, KaiXinSong, UniHentaiKana;
 }
 
 body {

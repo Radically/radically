@@ -199,6 +199,11 @@ export const getStringForCharacterVariants = (
           return intl.formatMessage({
             id: "variant.radical",
           });
+
+        case CharacterVariant.unicode_pua:
+          return intl.formatMessage({
+            id: "variant.unicode_pua",
+          });
       }
     })
     .join(" • ");

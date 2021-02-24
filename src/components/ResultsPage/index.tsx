@@ -79,6 +79,8 @@ function ResultsPage(props: {
   const { searchResults } = useContext(SearchContext);
 
   const {
+    output,
+    setOutput,
     relatedComponentsInput: input,
     setRelatedComponentsInput: setInput,
   } = useContext(SharedTextboxContext);
@@ -121,6 +123,10 @@ function ResultsPage(props: {
     col: number,
     radical: string
   ) => {
+    if (selectedInfo.index === index && selectedInfo.col === col) {
+      setOutput(output + radical);
+    }
+
     setSelectedInfo({ index, col, radical });
     event.stopPropagation();
     event.preventDefault();
