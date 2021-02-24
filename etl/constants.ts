@@ -33,3 +33,8 @@ export const CJKVI_VARIANTS_SUBDIR_NAME = "cjkvi-variants";
 export const MANUAL_CJKVI_VARIANTS_SUBDIR_NAME = "manual-cjkvi-variants";
 
 export const CJKVI_TABLES_SUBDIR_NAME = "cjkvi-tables";
+
+export const BABELSTONE_PUA_JSON_NAME = "pua-latest.json";
+export const BABELSTONE_PUA_JSON_URL =
+  "https://babelstone-pua.transfusion.eu.org/pua-latest.json";
+export const BABELSTONE_SUBDIR_NAME = "babel";

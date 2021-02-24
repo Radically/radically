@@ -15,6 +15,8 @@ export enum CharacterVariant {
   sawndip_simplified = 12, // TODO
   sawndip = 13,
   radical = 14,
+
+  unicode_pua = 15,
 }
 
 // nothing to do with any existing standards, self-defined

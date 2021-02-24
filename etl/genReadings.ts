@@ -2,6 +2,7 @@ import { getRawReadings } from "./unihan-fetcher";
 import { writeJSON } from "./writer";
 
 import { JSON_FILE_NAMES } from "../src/constants";
+import { getPUAData } from "./babelstone-pua-fetcher";
 
 const main = async () => {
   const RawReadingsString = (await getRawReadings()).split("\n");
@@ -17,6 +18,22 @@ const main = async () => {
     const char = String.fromCodePoint(parseInt(code.substring(2), 16));
     if (!map[char]) map[char] = {};
     map[char][field] = entry[2];
+  }
+
+  const babelstonePUAData = await getPUAData();
+  for (let { char, note, src, src_refs, enc_stat } of babelstonePUAData.data) {
+    map[char] = {
+      note,
+      src,
+      src_refs,
+      enc_stat,
+    };
+
+    for (let key of Object.keys(map[char])) {
+      if (map[char][key].length === 0) {
+        delete map[char][key];
+      }
+    }
   }
 
   // write to file

@@ -18,6 +18,7 @@ import {
 } from "./variants-fetcher";
 
 import { Hanja as everydayHanja1800 } from "./hanja-for-everyday-use-1800.json";
+import { getPUAData } from "./babelstone-pua-fetcher";
 
 const IVS = require("ivs");
 const utfstring = require("utfstring");
@@ -221,6 +222,20 @@ const addRadicals = (map: VariantsSet) => {
   }
 };
 
+const addBabelstoneHanPUA = async (map: VariantsSet) => {
+  const createMapEntry = (char: string) => {
+    if (!(char in map)) {
+      map[char] = new Set<number>();
+    }
+  };
+
+  const babelstonePUAData = await getPUAData();
+  for (let pua of babelstonePUAData.data) {
+    createMapEntry(pua.char);
+    map[pua.char].add(CharacterVariant.unicode_pua);
+  }
+};
+
 export const generateVariantIslands = (inputMap: {
   [key: string]: Set<string>;
 }) => {
@@ -400,6 +415,7 @@ const main = async () => {
   addChinese(map);
   // jp-old-style.txt makes use of IVS characters which I strip
   await addJapaneseShinKyuPromise(map);
+  await addBabelstoneHanPUA(map);
 
   const mapArr = {} as { [key: string]: number[] };
   for (let char in map) {

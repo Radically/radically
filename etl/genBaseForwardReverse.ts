@@ -24,6 +24,7 @@ import {
   writeJSON,
   //  writeData, writeReverseMapProtobuf
 } from "./writer";
+import { getPUAData } from "./babelstone-pua-fetcher";
 // import protobuf from "protobufjs";
 // import { getRawIRGSources } from "./unihan-fetcher";
 
@@ -362,6 +363,13 @@ const main = async () => {
   let resolvedIDSData: string[][] = [];
   for (let sourceFile of await getAvailableIDSData()) {
     resolvedIDSData = resolvedIDSData.concat(getAllResolvedIDSData(sourceFile));
+  }
+
+  const babelstonePUAData = await getPUAData();
+
+  for (let pua of babelstonePUAData.data) {
+    const entry = [pua.cp, pua.char, pua.ids];
+    resolvedIDSData.push(entry);
   }
 
   const {
