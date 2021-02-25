@@ -149,3 +149,5 @@ The IDS sequences as provided by CHISE use Kangxi radicals and their actual CJK 
 [Decomposition which uses U+20086 (CJK character)](https://gitlab.chise.org/CHISE/ids/-/blob/abb8c1ae25a9e6360e8629c35b8e3e06dd38f62d/IDS-UCS-Basic.txt#L16170)
 
 All Kangxi radicals are converted to their corresponding CJK characters as part of the ETL process.
+
+All variants of a character, including transitive ones, should be retrivable from any of the characters involved. e.g. searching for 发 (SC) should return 發 (TC), 髮 (TC), 発 (JA), and searching for 鄕 (KR) should return 郷 (JA), 鄉 (TC), and 乡 (SC), along with other less-commonly used variants.
