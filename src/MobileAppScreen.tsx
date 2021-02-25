@@ -134,7 +134,7 @@ function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
   const intl = useIntl();
 
-  const isLandscape = useMediaQuery("(orientation: landscape)");
+  const isLandscape = useMediaQuery("screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)");
 
   const [showLandscapeAlert, setShowLandscapeAlert] = useState(false);
   // @ts-ignore
