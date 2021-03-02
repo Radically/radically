@@ -225,7 +225,7 @@ export const DataContextProvider = (props: { children: any }) => {
           jsonFileName: JSON_FILE_NAMES.reverseMapCharFreqsOnly,
         },
       ].map(async ({ setData, loadingKey, jsonFileName }) => {
-        let data = await fetch("json/" + jsonFileName);
+        let data = await fetch("/json/" + jsonFileName);
         setData(await data.json());
         setLoading((prevState) => ({ ...prevState, [loadingKey]: false }));
       })
