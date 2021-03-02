@@ -8,24 +8,14 @@ import ResultsPage from "./components/ResultsPage";
 import { withTheme, makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 
-// the bottom navigation
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-
-// material icons
-import ShortTextIcon from "@material-ui/icons/ShortText";
-import SearchIcon from "@material-ui/icons/Search";
-import InfoIcon from "@material-ui/icons/Info";
-
 import { SettingsContext } from "./contexts/SettingsContextProvider";
 
 import OutputBar, { heightPx } from "./components/OutputBar";
-import grey from "@material-ui/core/colors/grey";
-import { useIntl } from "react-intl";
-import teal from "@material-ui/core/colors/teal";
 import AboutPage from "./components/AboutPage";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { LandscapeHandle } from "./components/ComponentsBrowser";
+
+import BottomNavigator from "./components/BottomNavigator";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -88,42 +78,6 @@ const InfoContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const useStyles = makeStyles((theme: any) => ({
-  stickToBottom: {
-    width: "100%",
-    // sticky only in mobile portrait mode
-    // fixed is finicky especially with ff android
-    "@media (orientation: portrait)": {
-      "@supports (-moz-appearance:none)": {
-        position: "sticky",
-      },
-
-      "@supports not (-moz-appearance:none)": {
-        position: "fixed",
-      },
-    },
-    bottom: 0,
-    left: 0,
-  },
-
-  bottomNavigation: (props: { darkMode?: boolean }) => ({
-    backgroundColor: props.darkMode ? null : theme.palette.primary.main,
-  }),
-}));
-
-const useBottomNavigationStyles = makeStyles((theme: any) => ({
-  root: (props: { darkMode?: boolean }) => ({
-    "&$selected": {
-      color: props.darkMode ? teal[300] : "white",
-    },
-    color: grey[300],
-  }),
-
-  selected: (props: { darkMode?: boolean }) => ({
-    color: props.darkMode ? teal[300] : "white",
-  }),
-}));
-
 const useAlertStyles = makeStyles((theme: any) => ({
   root: {
     marginTop: "15px",
@@ -132,14 +86,20 @@ const useAlertStyles = makeStyles((theme: any) => ({
 
 function MobileAppScreen() {
   const { darkMode } = useContext(SettingsContext);
-  const intl = useIntl();
 
-  const isLandscape = useMediaQuery("screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)");
+  const isLandscape = useMediaQuery(
+    "screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)"
+  );
 
   const [showLandscapeAlert, setShowLandscapeAlert] = useState(false);
   // @ts-ignore
   const [showMobileChromeAlert, setShowMobileChromeAlert] = useState(false);
   const showAlertContainer = showLandscapeAlert || showMobileChromeAlert;
+
+  const bottomNavigatorRef = useRef({
+    onMobileAppScreenContainerScroll: (e: React.UIEvent<HTMLElement>) => {},
+  });
+  // const { width, height } = useWindowDimensions();
 
   useEffect(() => {
     setShowLandscapeAlert(isLandscape);
@@ -147,35 +107,32 @@ function MobileAppScreen() {
     setShowMobileChromeAlert(!!window.chrome && isLandscape);
   }, [isLandscape]);
 
-  const [bottomNavValue, setBottomNavValue] = useState(0);
-
   const mobileAppScreenContainerRef = useRef<HTMLDivElement>(null);
   const componentsPageContainerRef = useRef<HTMLDivElement>(null);
   const resultsPageContainerRef = useRef<HTMLDivElement>(null);
   const aboutPageContainerRef = useRef<HTMLDivElement>(null);
 
-  const firstPageBoundary = componentsPageContainerRef.current?.offsetLeft || 0;
-  const secondPageBoundary = resultsPageContainerRef.current?.offsetLeft || 0;
-  const thirdPageBoundary = aboutPageContainerRef.current?.offsetLeft || 0;
-
-  const getIndex = (scrollPosition: number) => {
-    if (scrollPosition < firstPageBoundary) {
-      return 0;
-    } else if (scrollPosition < secondPageBoundary) {
-      return 1;
-    } else if (scrollPosition < thirdPageBoundary) {
-      return 2;
-    }
-    return 3;
-  };
-
-  const classes = useStyles({ darkMode });
-  const bottomNavigationClasses = useBottomNavigationStyles({ darkMode });
   const alertStyles = useAlertStyles();
   // android ff has a bug with scrolling to componentspage' offset
   const scrollBehavior = CSS.supports("(-moz-appearance:none)")
     ? "auto"
     : "smooth";
+
+  const scrollToSearch = (e: React.MouseEvent) => {
+    mobileAppScreenContainerRef.current?.scrollTo({
+      left: 0,
+      top: 0,
+      behavior: scrollBehavior,
+    });
+  };
+
+  const scrollToComponents = (e: React.MouseEvent) => {
+    mobileAppScreenContainerRef.current?.scrollTo({
+      left: componentsPageContainerRef.current?.offsetLeft,
+      top: 0,
+      behavior: scrollBehavior,
+    });
+  };
 
   const scrollToResults = () => {
     mobileAppScreenContainerRef.current?.scrollTo({
@@ -185,15 +142,24 @@ function MobileAppScreen() {
     });
   };
 
+  const scrollToAbout = (e: React.MouseEvent) => {
+    mobileAppScreenContainerRef.current?.scrollTo({
+      left: aboutPageContainerRef.current?.offsetLeft,
+      top: 0,
+      behavior: scrollBehavior,
+    });
+  };
+
+  const onScroll = (e: React.UIEvent<HTMLElement>) => {
+    bottomNavigatorRef?.current.onMobileAppScreenContainerScroll(e);
+  };
+
   return (
     <RootMobileContainer>
       {/* <div style={{ height: "100vh", backgroundColor: "red" }}>mobile</div> */}
       <MobileAppScreenContainer
         ref={mobileAppScreenContainerRef}
-        onScroll={(e: React.UIEvent<HTMLElement>) => {
-          const scrollPosition = (e.target as Element).scrollLeft;
-          setBottomNavValue(getIndex(scrollPosition));
-        }}
+        onScroll={onScroll}
         id={"mobile-app-screen-container"}
       >
         <FirstPage scrollToResults={scrollToResults} />
@@ -218,79 +184,13 @@ function MobileAppScreen() {
         <AboutPage containerRef={aboutPageContainerRef} />
       </MobileAppScreenContainer>
 
-      <BottomNavigation
-        value={bottomNavValue}
-        className={classes.stickToBottom + " " + classes.bottomNavigation}
-        /* value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }} */
-        showLabels
-      >
-        <BottomNavigationAction
-          classes={bottomNavigationClasses}
-          onClick={() => {
-            mobileAppScreenContainerRef.current?.scrollTo({
-              left: 0,
-              top: 0,
-              behavior: scrollBehavior,
-            });
-          }}
-          label={intl.formatMessage({
-            id: "search",
-          })}
-          icon={<SearchIcon />}
-        />
-
-        <BottomNavigationAction
-          classes={bottomNavigationClasses}
-          onClick={() => {
-            mobileAppScreenContainerRef.current?.scrollTo({
-              left: componentsPageContainerRef.current?.offsetLeft,
-              top: 0,
-              behavior: scrollBehavior,
-            });
-          }}
-          label={intl.formatMessage({
-            id: "components",
-          })}
-          icon={
-            <span
-              style={{
-                fontFamily: "var(--default-sans)",
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-              }}
-            >
-              咅 阝
-            </span>
-          }
-        />
-
-        <BottomNavigationAction
-          classes={bottomNavigationClasses}
-          onClick={scrollToResults}
-          label={intl.formatMessage({
-            id: "results",
-          })}
-          icon={<ShortTextIcon />}
-        />
-
-        <BottomNavigationAction
-          classes={bottomNavigationClasses}
-          onClick={() => {
-            mobileAppScreenContainerRef.current?.scrollTo({
-              left: aboutPageContainerRef.current?.offsetLeft,
-              top: 0,
-              behavior: scrollBehavior,
-            });
-          }}
-          label={intl.formatMessage({
-            id: "about",
-          })}
-          icon={<InfoIcon />}
-        />
-      </BottomNavigation>
+      <BottomNavigator
+        ref={bottomNavigatorRef}
+        onSearchClick={scrollToSearch}
+        onComponentsClick={scrollToComponents}
+        onResultsClick={scrollToResults}
+        onAboutClick={scrollToAbout}
+      />
 
       {showAlertContainer && (
         <InfoContainer>
