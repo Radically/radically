@@ -97,10 +97,18 @@ function WrappedComponentsPage() {
     },
   });
   return (
-    <LandscapeBarWrapper className={"page"} {...componentsPageSwipeHandlers}>
+    <div
+      className={"page"}
+      {...componentsPageSwipeHandlers}
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <ComponentsPage />
       {isLandscape && <LandscapeHandle />}
-    </LandscapeBarWrapper>
+    </div>
   );
 }
 
@@ -124,11 +132,20 @@ function WrappedResultsPage() {
       }
     },
   });
+
   return (
-    <LandscapeBarWrapper className={"page"} {...resultsPageSwipeHandlers}>
+    <div
+      className={"page"}
+      {...resultsPageSwipeHandlers}
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <ResultsPage />
       {isLandscape && <LandscapeHandle />}
-    </LandscapeBarWrapper>
+    </div>
   );
 }
 
@@ -225,9 +242,9 @@ function Routes() {
     <TransitionGroup component={null}>
       <CSSTransition
         containerStyle={{ height: "100%" }}
-        // key={location.pathname}
+        key={location.pathname}
         timeout={{ enter: 200, exit: 200 }}
-        // classNames="pageSlider"
+        classNames="pageSlider"
         mountOnEnter={false}
         unmountOnExit={true}
       >
@@ -245,8 +262,12 @@ function Routes() {
               <WrappedFirstPage />
             </Route>
 
-            <Route path="/pickers">
-              <ComponentResults />
+            <Route path="/pickers/components">
+              <WrappedComponentsPage />
+            </Route>
+
+            <Route path="/pickers/results">
+              <WrappedResultsPage />
             </Route>
 
             <Route exact path="/about">
