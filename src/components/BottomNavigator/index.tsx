@@ -2,10 +2,9 @@ import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
-import { forwardRef, useContext, useImperativeHandle, useState } from "react";
-import { useWindowDimensions } from "../../utils";
+import { useContext } from "react";
 
 import teal from "@material-ui/core/colors/teal";
 import grey from "@material-ui/core/colors/grey";
@@ -52,21 +51,14 @@ const useBottomNavigationStyles = makeStyles((theme: any) => ({
   }),
 }));
 
-interface BottomNavigatorProps {
-  onSearchClick: React.MouseEventHandler<HTMLButtonElement>;
-  onComponentsClick: React.MouseEventHandler<HTMLButtonElement>;
-  onResultsClick: React.MouseEventHandler<HTMLButtonElement>;
-  onAboutClick: React.MouseEventHandler<HTMLButtonElement>;
-}
+const pathNameToIndex = {
+  "/search": 0,
+  "/pickers/components": 1,
+  "/pickers/results": 2,
+  "/about": 3,
+} as { [key: string]: number };
 
 const BottomNavigator = () => {
-  /* const {
-    onSearchClick,
-    onComponentsClick,
-    onResultsClick,
-    onAboutClick,
-  } = props; */
-
   const { darkMode } = useContext(SettingsContext);
   const intl = useIntl();
 
@@ -74,6 +66,7 @@ const BottomNavigator = () => {
   const bottomNavigationClasses = useBottomNavigationStyles({ darkMode });
 
   const history = useHistory();
+  const { pathname } = useLocation();
 
   const navigateToSearch = (e: React.MouseEvent) => {
     history.replace("/search");
@@ -93,7 +86,7 @@ const BottomNavigator = () => {
 
   return (
     <BottomNavigation
-      //   value={bottomNavValue}
+      value={pathNameToIndex[pathname]}
       className={classes.stickToBottom + " " + classes.bottomNavigation}
       /* value={value}
       onChange={(event, newValue) => {
