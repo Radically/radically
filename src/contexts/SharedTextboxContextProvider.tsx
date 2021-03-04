@@ -12,6 +12,9 @@ const defaultValue = {
   componentsInput: "",
   setComponentsInput: (unused: string) => {},
 
+  idcs: "",
+  setIDCs: (unused: string) => {},
+
   componentsSearchResults: {} as { [key: string]: string[] } | null,
   setComponentsSearchResults: (
     unused: { [key: string]: string[] } | null
@@ -38,6 +41,7 @@ export const SharedTextboxContextProvider = (props: { children: any }) => {
   const [output, setOutput] = useState("");
   const [relatedComponentsInput, setRelatedComponentsInput] = useState("");
   const [componentsInput, setComponentsInput] = useState("");
+  const [idcs, setIDCs] = useState("");
 
   // state saved for the components route
   const [componentsSearchResults, setComponentsSearchResults] = useState(
@@ -64,6 +68,8 @@ export const SharedTextboxContextProvider = (props: { children: any }) => {
     setRelatedComponentsInput,
     componentsInput,
     setComponentsInput,
+    idcs,
+    setIDCs,
 
     // state to be saved for the components route
     componentsSearchResults,

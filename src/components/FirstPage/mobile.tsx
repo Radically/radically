@@ -124,7 +124,7 @@ function FirstPage() {
   } = useContext(SettingsContext);
   const history = useHistory();
   const intl = useIntl();
-  const { componentsInput, setComponentsInput } = useContext(
+  const { componentsInput, setComponentsInput, idcs, setIDCs } = useContext(
     SharedTextboxContext
   );
 
@@ -143,8 +143,6 @@ function FirstPage() {
   const { showText } = useContext(QuickToastContext);
 
   const buttonStyles = useButtonStyles();
-
-  const [idcs, setIDCs] = useState("");
 
   const search = async () => {
     const hasResults = await performSearch(
