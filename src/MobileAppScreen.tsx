@@ -6,6 +6,8 @@ import styled from "styled-components";
 import AboutPage from "./components/AboutPage";
 import { useHistory } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
+import SwipeableViews from "react-swipeable-views";
+
 import BottomNavigator from "./components/BottomNavigator";
 import { LandscapeHandle } from "./components/ComponentsBrowser";
 import ComponentsPage from "./components/ComponentsPage";
@@ -73,77 +75,31 @@ const LandscapeBarWrapper = styled.div`
 `;
 
 function ComponentResults() {
-  let { path, url } = useRouteMatch();
-
-  const isLandscape = useMediaQuery("screen and (orientation: landscape)");
-
-  const history = useHistory();
-
-  const componentsPageSwipeHandlers = useSwipeable({
-    onSwipedLeft: (eventData) => {
-      const { velocity } = eventData;
-      if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`${path}/results`);
-      }
-    },
-    onSwipedRight: (eventData) => {
-      const { velocity } = eventData;
-      if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`/search`);
-      }
-    },
-  });
-
-  const resultsPageSwipeHandlers = useSwipeable({
-    onSwipedLeft: (eventData) => {
-      const { velocity } = eventData;
-      /*if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`${path}/results`);
-      }*/
-    },
-    onSwipedRight: (eventData) => {
-      const { velocity } = eventData;
-      if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`${path}/components`);
-      }
-    },
-  });
-
   return (
-    <div
-      style={{
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <>
       <OutputBar />
-      <Switch>
-        <Route exact path={path}>
-          <Redirect to={`${path}/components`} />
-        </Route>
 
-        <Route exact path={`${path}/components`}>
-          <LandscapeBarWrapper {...componentsPageSwipeHandlers}>
-            <ComponentsPage />
-            {isLandscape && <LandscapeHandle />}
-          </LandscapeBarWrapper>
-        </Route>
-
-        <Route exact path={`${path}/results`}>
-          <LandscapeBarWrapper {...resultsPageSwipeHandlers}>
-            <ResultsPage />
-            {isLandscape && <LandscapeHandle />}
-          </LandscapeBarWrapper>
-        </Route>
-      </Switch>
-    </div>
+      <SwipeableViews
+        style={{ height: "100%" }}
+        containerStyle={{
+          height: "100%",
+        }}
+        slideStyle={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <ComponentsPage />
+        <ResultsPage />
+      </SwipeableViews>
+    </>
   );
 }
 
 function Routes() {
   const history = useHistory();
+
   const searchPageSwipeHandlers = useSwipeable({
     onSwipedLeft: (eventData) => {
       const { velocity } = eventData;
@@ -155,30 +111,21 @@ function Routes() {
 
   return (
     <MobileAppScreenContainer id={"mobile-app-screen-container"}>
-      <Route exact path="/">
-        <Redirect to="/search" />
-      </Route>
-
-      <Route exact path="/search">
-        <div
-          {...searchPageSwipeHandlers}
-          style={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <FirstPage />
-        </div>
-      </Route>
-
-      <Route path="/pickers">
+      <SwipeableViews
+        style={{ height: "100%" }}
+        containerStyle={{
+          height: "100%",
+        }}
+        slideStyle={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <FirstPage />
         <ComponentResults />
-      </Route>
-
-      <Route exact path="/about">
         <AboutPage />
-      </Route>
+      </SwipeableViews>
     </MobileAppScreenContainer>
   );
 }
@@ -210,6 +157,8 @@ function MobileAppScreen() {
   }, [isLandscape]);
 
   const alertStyles = useAlertStyles();
+
+  console.log("main rerendering");
 
   return (
     <Router>
