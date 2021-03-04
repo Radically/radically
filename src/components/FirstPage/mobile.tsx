@@ -9,6 +9,7 @@ import Brightness3Icon from "@material-ui/icons/Brightness3";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import { FunctionComponent, useContext, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
@@ -31,15 +32,11 @@ export const AppNameDescWrapper = styled.div`
 `;
 
 const FirstPageContainer = withTheme(styled("div")`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  position: relative;
-
-  scroll-snap-align: start;
-  min-width: 100vw;
 `);
 
 const LetterBox = styled.div`
@@ -111,8 +108,8 @@ const SwitchLabelContainer: FunctionComponent<{}> = (props) => {
   return <_SwitchLabelContainer>{children}</_SwitchLabelContainer>;
 };
 
-function FirstPage(props: { scrollToResults: () => void }) {
-  const { scrollToResults } = props;
+function FirstPage() {
+  // const { scrollToResults } = props;
   const {
     atLeastComponentFreq,
     setAtLeastComponentFreq,
@@ -125,6 +122,7 @@ function FirstPage(props: { scrollToResults: () => void }) {
     locale,
     setLocale,
   } = useContext(SettingsContext);
+  const history = useHistory();
   const intl = useIntl();
   const { componentsInput, setComponentsInput } = useContext(
     SharedTextboxContext
@@ -157,7 +155,7 @@ function FirstPage(props: { scrollToResults: () => void }) {
     );
 
     if (hasResults) {
-      scrollToResults();
+      history.push("/pickers/results");
     } else {
       showText(
         intl.formatMessage({
@@ -176,7 +174,7 @@ function FirstPage(props: { scrollToResults: () => void }) {
   };
 
   return (
-    <FirstPageContainer id="first-page-container">
+    <FirstPageContainer className={"page"} id="first-page-container">
       <IconButton
         onClick={() => {
           setDarkMode(!darkMode);
@@ -185,6 +183,9 @@ function FirstPage(props: { scrollToResults: () => void }) {
           position: "absolute",
           right: 15,
           top: 15,
+
+          height: 20,
+          width: 20,
         }}
         color="primary"
         id="darkmode-toggle"
@@ -204,6 +205,9 @@ function FirstPage(props: { scrollToResults: () => void }) {
           position: "absolute",
           right: 60,
           top: 15,
+
+          height: 20,
+          width: 20,
         }}
         color="primary"
         id="darkmode-toggle"

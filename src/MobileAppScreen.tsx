@@ -1,21 +1,26 @@
+import { makeStyles, withTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Alert from "@material-ui/lab/Alert";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-
-import FirstPage from "./components/FirstPage/mobile";
+import AboutPage from "./components/AboutPage";
+import { useHistory } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
+import BottomNavigator from "./components/BottomNavigator";
+import { LandscapeHandle } from "./components/ComponentsBrowser";
 import ComponentsPage from "./components/ComponentsPage";
+import FirstPage from "./components/FirstPage/mobile";
+import OutputBar, { heightPx } from "./components/OutputBar";
 import ResultsPage from "./components/ResultsPage";
 
-import { withTheme, makeStyles } from "@material-ui/core/styles";
-import Alert from "@material-ui/lab/Alert";
-
-import { SettingsContext } from "./contexts/SettingsContextProvider";
-
-import OutputBar, { heightPx } from "./components/OutputBar";
-import AboutPage from "./components/AboutPage";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { LandscapeHandle } from "./components/ComponentsBrowser";
-
-import BottomNavigator from "./components/BottomNavigator";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+  useRouteMatch,
+} from "react-router-dom";
+import { SwipeVelocityThreshold } from "./constants";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -27,6 +32,11 @@ const RootMobileContainer = styled.div`
 const MobileAppScreenContainer = withTheme(styled.div`
   @media (orientation: portrait) {
     height: calc(100% - 56px);
+    @-moz-document url-prefix() {
+      height: 100%;
+      padding-bottom: 56px;
+      box-sizing: border-box;
+    }
   }
 
   @media (orientation: landscape) {
@@ -37,37 +47,9 @@ const MobileAppScreenContainer = withTheme(styled.div`
     }
   }
 
-  // important for iOS !!!
-  -webkit-overflow-scrolling: touch;
-  -webkit-scroll-snap-type: mandatory;
-  scroll-snap-type: x mandatory;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-
   transition: background-color 0.3s;
   background-color: ${(props) => props.theme.palette.background.default};
 `);
-
-const StickyOutputBarWrapper = styled.div`
-  height: 100%;
-  // @media (orientation: landscape) {
-  //   display: flex;
-  //   flex-direction: column;
-  // }
-`;
-
-const ComponentResultsPageWrapper = styled.div`
-  display: flex;
-  // @media (orientation: landscape) {
-  //   flex: 1;
-  // }
-
-  // height instead of min-height
-  // because i want it the contents to be scrollable
-  // and not mess with the tab navigation
-  height: calc(100% - ${heightPx}px);
-`;
 
 const InfoContainer = styled.div`
   position: absolute;
@@ -84,11 +66,132 @@ const useAlertStyles = makeStyles((theme: any) => ({
   },
 }));
 
+const LandscapeBarWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  max-height: calc(100% - ${heightPx}px);
+`;
+
+function ComponentResults() {
+  let { path, url } = useRouteMatch();
+
+  const isLandscape = useMediaQuery("screen and (orientation: landscape)");
+
+  const history = useHistory();
+
+  const componentsPageSwipeHandlers = useSwipeable({
+    onSwipedLeft: (eventData) => {
+      const { velocity } = eventData;
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`${path}/results`);
+      }
+    },
+    onSwipedRight: (eventData) => {
+      const { velocity } = eventData;
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`/search`);
+      }
+    },
+  });
+
+  const resultsPageSwipeHandlers = useSwipeable({
+    onSwipedLeft: (eventData) => {
+      const { velocity } = eventData;
+      /*if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`${path}/results`);
+      }*/
+    },
+    onSwipedRight: (eventData) => {
+      const { velocity } = eventData;
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`${path}/components`);
+      }
+    },
+  });
+
+  return (
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <OutputBar />
+      <Switch>
+        <Route exact path={path}>
+          <Redirect to={`${path}/components`} />
+        </Route>
+
+        <Route exact path={`${path}/components`}>
+          <LandscapeBarWrapper {...componentsPageSwipeHandlers}>
+            <ComponentsPage />
+            {isLandscape && <LandscapeHandle />}
+          </LandscapeBarWrapper>
+        </Route>
+
+        <Route exact path={`${path}/results`}>
+          <LandscapeBarWrapper {...resultsPageSwipeHandlers}>
+            <ResultsPage />
+            {isLandscape && <LandscapeHandle />}
+          </LandscapeBarWrapper>
+        </Route>
+      </Switch>
+    </div>
+  );
+}
+
+function Routes() {
+  const history = useHistory();
+  const searchPageSwipeHandlers = useSwipeable({
+    onSwipedLeft: (eventData) => {
+      const { velocity } = eventData;
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`/pickers/components`);
+      }
+    },
+  });
+
+  return (
+    <MobileAppScreenContainer id={"mobile-app-screen-container"}>
+      <Route exact path="/">
+        <Redirect to="/search" />
+      </Route>
+
+      <Route exact path="/search">
+        <div
+          {...searchPageSwipeHandlers}
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <FirstPage />
+        </div>
+      </Route>
+
+      <Route path="/pickers">
+        <ComponentResults />
+      </Route>
+
+      <Route exact path="/about">
+        <AboutPage />
+      </Route>
+    </MobileAppScreenContainer>
+  );
+}
+
 function MobileAppScreen() {
-  const { darkMode } = useContext(SettingsContext);
+  const history = useHistory();
+
+  const isSafari = navigator.vendor.includes("Apple");
 
   const isLandscape = useMediaQuery(
-    "screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)"
+    isSafari
+      ? "screen and (orientation: landscape)"
+      : "screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)"
   );
 
   const [showLandscapeAlert, setShowLandscapeAlert] = useState(false);
@@ -99,131 +202,54 @@ function MobileAppScreen() {
   const bottomNavigatorRef = useRef({
     onMobileAppScreenContainerScroll: (e: React.UIEvent<HTMLElement>) => {},
   });
-  // const { width, height } = useWindowDimensions();
 
   useEffect(() => {
     setShowLandscapeAlert(isLandscape);
     // @ts-ignore
-    setShowMobileChromeAlert(!!window.chrome && isLandscape);
+    // setShowMobileChromeAlert(!!window.chrome && isLandscape);
   }, [isLandscape]);
 
-  const mobileAppScreenContainerRef = useRef<HTMLDivElement>(null);
-  const componentsPageContainerRef = useRef<HTMLDivElement>(null);
-  const resultsPageContainerRef = useRef<HTMLDivElement>(null);
-  const aboutPageContainerRef = useRef<HTMLDivElement>(null);
-
   const alertStyles = useAlertStyles();
-  // android ff has a bug with scrolling to componentspage' offset
-  const scrollBehavior = CSS.supports("(-moz-appearance:none)")
-    ? "auto"
-    : "smooth";
-
-  const scrollToSearch = (e: React.MouseEvent) => {
-    mobileAppScreenContainerRef.current?.scrollTo({
-      left: 0,
-      top: 0,
-      behavior: scrollBehavior,
-    });
-  };
-
-  const scrollToComponents = (e: React.MouseEvent) => {
-    mobileAppScreenContainerRef.current?.scrollTo({
-      left: componentsPageContainerRef.current?.offsetLeft,
-      top: 0,
-      behavior: scrollBehavior,
-    });
-  };
-
-  const scrollToResults = () => {
-    mobileAppScreenContainerRef.current?.scrollTo({
-      left: resultsPageContainerRef.current?.offsetLeft,
-      top: 0,
-      behavior: scrollBehavior,
-    });
-  };
-
-  const scrollToAbout = (e: React.MouseEvent) => {
-    mobileAppScreenContainerRef.current?.scrollTo({
-      left: aboutPageContainerRef.current?.offsetLeft,
-      top: 0,
-      behavior: scrollBehavior,
-    });
-  };
-
-  const onScroll = (e: React.UIEvent<HTMLElement>) => {
-    bottomNavigatorRef?.current.onMobileAppScreenContainerScroll(e);
-  };
 
   return (
-    <RootMobileContainer>
-      {/* <div style={{ height: "100vh", backgroundColor: "red" }}>mobile</div> */}
-      <MobileAppScreenContainer
-        ref={mobileAppScreenContainerRef}
-        onScroll={onScroll}
-        id={"mobile-app-screen-container"}
-      >
-        <FirstPage scrollToResults={scrollToResults} />
+    <Router>
+      <RootMobileContainer>
+        <Routes />
+        <BottomNavigator />
 
-        <StickyOutputBarWrapper id={"stickyoutputbarwrapper"}>
-          {/* the results bar */}
-          <OutputBar />
-          <ComponentResultsPageWrapper id={"componentresultspagewrapper"}>
-            <div style={{ display: "flex", minWidth: "100vw" }}>
-              <ComponentsPage containerRef={componentsPageContainerRef} />
+        {showAlertContainer && (
+          <InfoContainer>
+            {showLandscapeAlert && (
+              <Alert
+                classes={alertStyles}
+                severity="info"
+                onClose={() => {
+                  setShowLandscapeAlert(false);
+                }}
+              >
+                Landscape mode detected - scroll downwards to reveal the navbar!
+              </Alert>
+            )}
 
-              {isLandscape && <LandscapeHandle />}
-            </div>
-
-            <div style={{ display: "flex", minWidth: "100vw" }}>
-              <ResultsPage containerRef={resultsPageContainerRef} />
-
-              {isLandscape && <LandscapeHandle />}
-            </div>
-          </ComponentResultsPageWrapper>
-        </StickyOutputBarWrapper>
-        <AboutPage containerRef={aboutPageContainerRef} />
-      </MobileAppScreenContainer>
-
-      <BottomNavigator
-        ref={bottomNavigatorRef}
-        onSearchClick={scrollToSearch}
-        onComponentsClick={scrollToComponents}
-        onResultsClick={scrollToResults}
-        onAboutClick={scrollToAbout}
-      />
-
-      {showAlertContainer && (
-        <InfoContainer>
-          {showLandscapeAlert && (
-            <Alert
-              classes={alertStyles}
-              severity="info"
-              onClose={() => {
-                setShowLandscapeAlert(false);
-              }}
-            >
-              Landscape mode detected - scroll downwards to reveal the navbar!
-            </Alert>
-          )}
-
-          {showMobileChromeAlert && (
-            <Alert
-              classes={alertStyles}
-              severity="error"
-              onClose={() => {
-                setShowMobileChromeAlert(false);
-              }}
-            >
-              Regretfully, landscape mode performs suboptimally in mobile
-              Chromium. Unexpected behavior, mostly abrupt jumps, may occur when
-              using the pickers. Waiting for the momentum scrolling to finish or
-              using the navbar can help mitigate this. Portrait mode is strongly
-              recommended.
-            </Alert>
-          )}
-        </InfoContainer>
-      )}
-    </RootMobileContainer>
+            {showMobileChromeAlert && (
+              <Alert
+                classes={alertStyles}
+                severity="error"
+                onClose={() => {
+                  setShowMobileChromeAlert(false);
+                }}
+              >
+                Regretfully, landscape mode performs suboptimally in mobile
+                Chromium. Unexpected behavior, mostly abrupt jumps, may occur
+                when using the pickers. Waiting for the momentum scrolling to
+                finish or using the navbar can help mitigate this. Portrait mode
+                is strongly recommended.
+              </Alert>
+            )}
+          </InfoContainer>
+        )}
+      </RootMobileContainer>
+    </Router>
   );
 }
 

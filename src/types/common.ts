@@ -28,3 +28,9 @@ export enum CharacterVariantLocale {
   zhuang = "Z",
   vietnamese = "V", // unused
 }
+
+export interface SelectedInfo {
+  index: number;
+  col: number;
+  radical: string;
+}

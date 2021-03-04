@@ -48,6 +48,10 @@ export const AppNameh1 = styled.h1<{ locale?: string; darkMode?: boolean }>`
   display: inline-block;
   font-size: ${(props) => (props.locale === "en" ? "2.5rem" : "3rem")};
 
+  @media screen and (max-height: 600px) {
+    font-size: 2rem;
+  }
+
   margin: 0px;
   /* Create the gradient. */
   background-image: linear-gradient(
@@ -70,6 +74,11 @@ export const AppNameh1 = styled.h1<{ locale?: string; darkMode?: boolean }>`
 
 export const AppDesch3 = styled.h3<{ locale?: string; darkMode?: boolean }>`
   display: inline-block;
+
+  // iPhone SE
+  @media screen and (orientation: portrait) and (max-height: 550px) {
+    display: none;
+  }
 
   font-size: ${(props) => (props.locale === "en" ? "0.8rem" : "1.2rem")};
 

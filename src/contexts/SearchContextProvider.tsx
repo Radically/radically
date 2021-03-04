@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import { filterUsingIDCs, performComponentQuery } from "../searchalgo";
 import { DataContext } from "./DataContextProvider";
 import SearchWorker from "../searchworker";
+import { SharedTextboxContext } from "./SharedTextboxContextProvider";
+import { SelectedInfo } from "../types/common";
 
 const defaultValue = {
   searching: false,
@@ -29,7 +31,17 @@ const searchWorkerInstance = new SearchWorker();
 
 export const SearchContextProvider = (props: { children: any }) => {
   const [searching, setSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState([] as string[]);
+  const [searchResults, _setSearchResults] = useState([] as string[]);
+
+  const { setResultsSelectedInfo, setResultsScrollPosition } = useContext(
+    SharedTextboxContext
+  );
+
+  const setSearchResults = (searchResults: string[]) => {
+    setResultsSelectedInfo({} as SelectedInfo);
+    setResultsScrollPosition(0);
+    _setSearchResults(searchResults);
+  };
 
   const {
     forwardMap,

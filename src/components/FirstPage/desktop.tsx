@@ -155,6 +155,9 @@ function FirstPageDesktop() {
           position: "absolute",
           right: 15,
           top: 15,
+
+          height: 20,
+          width: 20,
         }}
         color="primary"
         id="darkmode-toggle"
@@ -174,6 +177,9 @@ function FirstPageDesktop() {
           position: "absolute",
           right: 60,
           top: 15,
+
+          height: 20,
+          width: 20,
         }}
         color="primary"
         id="darkmode-toggle"

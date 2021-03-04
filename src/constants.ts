@@ -73,6 +73,8 @@ export const CharacterVariantLocaleColors = {
   vietnamese: { dark: green[800], light: green[200] },
 };
 
+export const SwipeVelocityThreshold = 0.8;
+
 /* export const PAKO_FILE_NAMES = {
   reverseMap: "reverseMap.pako",
 };

@@ -46,28 +46,7 @@ const ResultsPageContainer = styled("div")`
   flex: 1;
   display: flex;
   flex-direction: column;
-  // align-items: center;
-  // justify-content: center;
-  // height: 100%;
-  // position: relative;
-
-  scroll-snap-align: start;
-  // min-width: 100vw;
-
-  // for mobile safari
-  // 56px is the height of the MUI bottom navbar
-  /* @supports (-webkit-touch-callout: none) {
-    @media (orientation: portrait) {
-      margin-bottom: calc(56px + ${heightPx}px);
-    }
-  } */
 `;
-
-interface SelectedInfo {
-  index: number;
-  col: number;
-  radical: string;
-}
 
 function ResultsPage(props: {
   containerRef?: React.Ref<HTMLDivElement>;
@@ -81,8 +60,14 @@ function ResultsPage(props: {
   const {
     output,
     setOutput,
-    relatedComponentsInput: input,
-    setRelatedComponentsInput: setInput,
+    // relatedComponentsInput: input,
+    // setRelatedComponentsInput: setInput,
+
+    resultsScrollPosition,
+    setResultsScrollPosition,
+
+    resultsSelectedInfo: selectedInfo,
+    setResultsSelectedInfo: setSelectedInfo,
   } = useContext(SharedTextboxContext);
 
   const { width, height } = useWindowDimensions();
@@ -109,12 +94,6 @@ function ResultsPage(props: {
   } = useContext(DataContext);
 
   // radicals list handlers and methods begin here
-  const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
-
-  useEffect(() => {
-    setSelectedInfo({} as SelectedInfo);
-  }, [searchResults]);
-
   const componentSelected = "index" in selectedInfo && "col" in selectedInfo;
 
   const handleRadicalClick = (
@@ -201,6 +180,10 @@ function ResultsPage(props: {
               <AutoSizer>
                 {({ height, width }) => (
                   <List
+                    initialScrollOffset={resultsScrollPosition}
+                    onScroll={({ scrollOffset }) => {
+                      setResultsScrollPosition(scrollOffset);
+                    }}
                     style={{
                       color: darkMode ? "white" : "black",
                       fontWeight: "bold",

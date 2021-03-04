@@ -1,7 +1,6 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef } from "react";
 import styled from "styled-components";
 import { withTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
@@ -26,6 +25,7 @@ import {
   ListChildComponentProps,
 } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import { SwipeableHandlers } from "react-swipeable";
 import {
   outerElementType,
   ComponentPickerRow,
@@ -53,6 +53,7 @@ import {
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 import { widthPx } from "../FirstPage/desktop";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
+import { SelectedInfo } from "../../types/common";
 
 export const searchInputHeightInPx = 45;
 
@@ -60,21 +61,6 @@ const ComponentsPageContainer = styled("div")`
   flex: 1;
   display: flex;
   flex-direction: column;
-  // align-items: center;
-  // justify-content: center;
-  // height: 100%;
-  // position: relative;
-
-  scroll-snap-align: start;
-  // min-width: 100vw;
-
-  // for mobile safari
-  // 56px is the height of the MUI bottom navbar
-  /* @supports (-webkit-touch-callout: none) {
-    @media (orientation: portrait) {
-      margin-bottom: calc(56px + ${heightPx}px);
-    }
-  } */
 
   @media (min-width: 768px) {
     border-right: 1px solid #909090;
@@ -112,12 +98,6 @@ const SearchInput = withTheme(
   `
 );
 
-interface SelectedInfo {
-  index: number;
-  col: number;
-  radical: string;
-}
-
 function ComponentsPage(props: {
   containerRef?: React.Ref<HTMLDivElement>;
   desktop?: boolean;
@@ -130,6 +110,15 @@ function ComponentsPage(props: {
     setRelatedComponentsInput: setInput,
     componentsInput,
     setComponentsInput,
+
+    componentsSelectedInfo: selectedInfo,
+    setComponentsSelectedInfo: setSelectedInfo,
+
+    componentsSearchResults: searchResults,
+    setComponentsSearchResults: setSearchResults,
+
+    componentsScrollPosition,
+    setComponentsScrollPosition,
   } = useContext(SharedTextboxContext);
 
   const { showText } = useContext(QuickToastContext);
@@ -168,8 +157,6 @@ function ComponentsPage(props: {
   );
 
   // radicals list handlers and methods begin here
-  const [selectedInfo, setSelectedInfo] = useState({} as SelectedInfo);
-
   const componentSelected = "index" in selectedInfo && "col" in selectedInfo;
 
   const handleRadicalClick = (
@@ -201,9 +188,9 @@ function ComponentsPage(props: {
 
   // search data structures & algos begin here
   // simple map of search input to results
-  const [searchResults, setSearchResults] = useState(
+  /* const [searchResults, setSearchResults] = useState(
     null as { [key: string]: string[] } | null
-  );
+  ); */
 
   let arrayified: {
     header: boolean;
@@ -238,6 +225,8 @@ function ComponentsPage(props: {
     }
     if (Object.entries(res).length > 0) {
       setSearchResults(res);
+      // scroll to top
+      if (!searchResults) componentListRef.current?.scrollTo(0);
     }
   };
 
@@ -260,6 +249,7 @@ function ComponentsPage(props: {
             if (!e.target.value) {
               setSelectedInfo({} as SelectedInfo);
               setSearchResults(null);
+              componentListRef.current?.scrollTo(0);
             }
             setInput(e.target.value);
           }}
@@ -328,6 +318,10 @@ function ComponentsPage(props: {
             <AutoSizer>
               {({ height, width }) => (
                 <List
+                  initialScrollOffset={componentsScrollPosition}
+                  onScroll={({ scrollOffset }) => {
+                    setComponentsScrollPosition(scrollOffset);
+                  }}
                   style={{
                     color: darkMode ? "white" : "black",
                     fontWeight: "bold",

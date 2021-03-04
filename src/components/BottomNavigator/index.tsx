@@ -2,6 +2,7 @@ import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
+import { useHistory } from "react-router-dom";
 
 import { forwardRef, useContext, useImperativeHandle, useState } from "react";
 import { useWindowDimensions } from "../../utils";
@@ -58,27 +59,13 @@ interface BottomNavigatorProps {
   onAboutClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const BottomNavigator = forwardRef((props: BottomNavigatorProps, ref) => {
-  const {
+const BottomNavigator = () => {
+  /* const {
     onSearchClick,
     onComponentsClick,
     onResultsClick,
     onAboutClick,
-  } = props;
-
-  const [bottomNavValue, setBottomNavValue] = useState(0);
-  const { width, height } = useWindowDimensions();
-
-  useImperativeHandle(ref, () => ({
-    onMobileAppScreenContainerScroll: (e: React.UIEvent<HTMLElement>) => {
-      const newBottomNavValue = Math.floor(
-        (e.target as Element).scrollLeft / (width || 1)
-      );
-
-      if (newBottomNavValue !== bottomNavValue)
-        setBottomNavValue(newBottomNavValue);
-    },
-  }));
+  } = props; */
 
   const { darkMode } = useContext(SettingsContext);
   const intl = useIntl();
@@ -86,19 +73,37 @@ const BottomNavigator = forwardRef((props: BottomNavigatorProps, ref) => {
   const classes = useStyles({ darkMode });
   const bottomNavigationClasses = useBottomNavigationStyles({ darkMode });
 
+  const history = useHistory();
+
+  const navigateToSearch = (e: React.MouseEvent) => {
+    history.replace("/search");
+  };
+
+  const navigateToComponents = (e: React.MouseEvent) => {
+    history.replace("/pickers/components");
+  };
+
+  const navigateToResults = (e: React.MouseEvent) => {
+    history.replace("/pickers/results");
+  };
+
+  const navigateToAbout = (e: React.MouseEvent) => {
+    history.replace("/about");
+  };
+
   return (
     <BottomNavigation
-      value={bottomNavValue}
+      //   value={bottomNavValue}
       className={classes.stickToBottom + " " + classes.bottomNavigation}
       /* value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }} */
+      onChange={(event, newValue) => {
+        setValue(newValue);
+      }} */
       showLabels
     >
       <BottomNavigationAction
         classes={bottomNavigationClasses}
-        onClick={onSearchClick}
+        onClick={navigateToSearch}
         label={intl.formatMessage({
           id: "search",
         })}
@@ -107,7 +112,7 @@ const BottomNavigator = forwardRef((props: BottomNavigatorProps, ref) => {
 
       <BottomNavigationAction
         classes={bottomNavigationClasses}
-        onClick={onComponentsClick}
+        onClick={navigateToComponents}
         label={intl.formatMessage({
           id: "components",
         })}
@@ -126,7 +131,7 @@ const BottomNavigator = forwardRef((props: BottomNavigatorProps, ref) => {
 
       <BottomNavigationAction
         classes={bottomNavigationClasses}
-        onClick={onResultsClick}
+        onClick={navigateToResults}
         label={intl.formatMessage({
           id: "results",
         })}
@@ -135,7 +140,7 @@ const BottomNavigator = forwardRef((props: BottomNavigatorProps, ref) => {
 
       <BottomNavigationAction
         classes={bottomNavigationClasses}
-        onClick={onAboutClick}
+        onClick={navigateToAbout}
         label={intl.formatMessage({
           id: "about",
         })}
@@ -143,6 +148,6 @@ const BottomNavigator = forwardRef((props: BottomNavigatorProps, ref) => {
       />
     </BottomNavigation>
   );
-});
+};
 
 export default BottomNavigator;
