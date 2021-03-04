@@ -1,10 +1,10 @@
 import { makeStyles, withTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Alert from "@material-ui/lab/Alert";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import AboutPage from "./components/AboutPage";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 import BottomNavigator from "./components/BottomNavigator";
 import { LandscapeHandle } from "./components/ComponentsBrowser";
@@ -21,6 +21,9 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { SwipeVelocityThreshold } from "./constants";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+
+import "./MobileAppTransitions.css";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -72,79 +75,142 @@ const LandscapeBarWrapper = styled.div`
   max-height: calc(100% - ${heightPx}px);
 `;
 
-function ComponentResults() {
-  let { path, url } = useRouteMatch();
-
-  const isLandscape = useMediaQuery("screen and (orientation: landscape)");
-
+function WrappedComponentsPage() {
   const history = useHistory();
-
+  const isLandscape = useMediaQuery("screen and (orientation: landscape)");
   const componentsPageSwipeHandlers = useSwipeable({
     onSwipedLeft: (eventData) => {
       const { velocity } = eventData;
       if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`${path}/results`);
+        history.replace(`/pickers/results`, {
+          forward: true,
+        });
       }
     },
     onSwipedRight: (eventData) => {
       const { velocity } = eventData;
       if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`/search`);
+        history.replace(`/search`, {
+          forward: false,
+        });
       }
     },
   });
+  return (
+    <LandscapeBarWrapper className={"page"} {...componentsPageSwipeHandlers}>
+      <ComponentsPage />
+      {isLandscape && <LandscapeHandle />}
+    </LandscapeBarWrapper>
+  );
+}
+
+function WrappedResultsPage() {
+  const history = useHistory();
+  const isLandscape = useMediaQuery("screen and (orientation: landscape)");
 
   const resultsPageSwipeHandlers = useSwipeable({
     onSwipedLeft: (eventData) => {
       const { velocity } = eventData;
-      /*if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`${path}/results`);
-      }*/
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`/about`);
+      }
     },
     onSwipedRight: (eventData) => {
       const { velocity } = eventData;
       if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`${path}/components`);
+        history.replace(`/pickers/components`, {
+          forward: false,
+        });
+      }
+    },
+  });
+  return (
+    <LandscapeBarWrapper className={"page"} {...resultsPageSwipeHandlers}>
+      <ResultsPage />
+      {isLandscape && <LandscapeHandle />}
+    </LandscapeBarWrapper>
+  );
+}
+
+function ComponentResults() {
+  let { path, url } = useRouteMatch();
+
+  const history = useHistory();
+
+  const location = useLocation();
+  console.log("location from inside componentresults", location);
+
+  return (
+    <TransitionGroup component={null}>
+      <CSSTransition
+        containerStyle={{ height: "100%" }}
+        key={location.pathname}
+        timeout={{ enter: 200, exit: 200 }}
+        classNames="pageSlider"
+        mountOnEnter={false}
+        unmountOnExit={true}
+      >
+        <div
+          // @ts-ignore
+          className={location.state?.forward ? "left" : "right"}
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <OutputBar />
+          <Switch>
+            <Route exact path={path}>
+              <Redirect to={`${path}/components`} />
+            </Route>
+
+            <Route exact path={`${path}/components`}>
+              <WrappedComponentsPage />
+            </Route>
+
+            <Route exact path={`${path}/results`}>
+              <WrappedResultsPage />
+            </Route>
+          </Switch>
+        </div>
+      </CSSTransition>
+    </TransitionGroup>
+  );
+}
+
+function WrappedFirstPage() {
+  const history = useHistory();
+  const searchPageSwipeHandlers = useSwipeable({
+    onSwipedLeft: (eventData) => {
+      const { velocity } = eventData;
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`/pickers/components`, {
+          forward: true,
+        });
       }
     },
   });
 
   return (
     <div
+      {...searchPageSwipeHandlers}
       style={{
         height: "100%",
-        width: "100%",
         display: "flex",
         flexDirection: "column",
       }}
+      className={"page"}
     >
-      <OutputBar />
-      <Switch>
-        <Route exact path={path}>
-          <Redirect to={`${path}/components`} />
-        </Route>
-
-        <Route exact path={`${path}/components`}>
-          <LandscapeBarWrapper {...componentsPageSwipeHandlers}>
-            <ComponentsPage />
-            {isLandscape && <LandscapeHandle />}
-          </LandscapeBarWrapper>
-        </Route>
-
-        <Route exact path={`${path}/results`}>
-          <LandscapeBarWrapper {...resultsPageSwipeHandlers}>
-            <ResultsPage />
-            {isLandscape && <LandscapeHandle />}
-          </LandscapeBarWrapper>
-        </Route>
-      </Switch>
+      <FirstPage />
     </div>
   );
 }
 
 function Routes() {
-  const history = useHistory();
-  const searchPageSwipeHandlers = useSwipeable({
+  /* const history = useHistory();
+   const searchPageSwipeHandlers = useSwipeable({
     onSwipedLeft: (eventData) => {
       const { velocity } = eventData;
       if (velocity >= SwipeVelocityThreshold) {
@@ -152,34 +218,44 @@ function Routes() {
       }
     },
   });
+ */
+  const location = useLocation();
 
   return (
-    <MobileAppScreenContainer id={"mobile-app-screen-container"}>
-      <Route exact path="/">
-        <Redirect to="/search" />
-      </Route>
-
-      <Route exact path="/search">
-        <div
-          {...searchPageSwipeHandlers}
-          style={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
+    <TransitionGroup component={null}>
+      <CSSTransition
+        containerStyle={{ height: "100%" }}
+        // key={location.pathname}
+        timeout={{ enter: 200, exit: 200 }}
+        // classNames="pageSlider"
+        mountOnEnter={false}
+        unmountOnExit={true}
+      >
+        <MobileAppScreenContainer
+          // @ts-ignore
+          className={location.state?.forward ? "left" : "right"}
+          id={"mobile-app-screen-container"}
         >
-          <FirstPage />
-        </div>
-      </Route>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/search" />
+            </Route>
 
-      <Route path="/pickers">
-        <ComponentResults />
-      </Route>
+            <Route exact path="/search">
+              <WrappedFirstPage />
+            </Route>
 
-      <Route exact path="/about">
-        <AboutPage />
-      </Route>
-    </MobileAppScreenContainer>
+            <Route path="/pickers">
+              <ComponentResults />
+            </Route>
+
+            <Route exact path="/about">
+              <AboutPage />
+            </Route>
+          </Switch>
+        </MobileAppScreenContainer>
+      </CSSTransition>
+    </TransitionGroup>
   );
 }
 

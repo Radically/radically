@@ -174,7 +174,7 @@ function FirstPage() {
   };
 
   return (
-    <FirstPageContainer className={"page"} id="first-page-container">
+    <FirstPageContainer id="first-page-container">
       <IconButton
         onClick={() => {
           setDarkMode(!darkMode);
