@@ -324,7 +324,7 @@ function ComponentsPage(props: {
                   }}
                   style={{
                     color: darkMode ? "white" : "black",
-                    fontWeight: "bold",
+                    // fontWeight: "bold",
                   }}
                   outerElementType={outerElementType}
                   // outerRef={listOuterRef}
@@ -337,7 +337,7 @@ function ComponentsPage(props: {
                     handleRadicalClick,
                   }}
                   itemCount={arrayified.length}
-                  itemSize={40}
+                  itemSize={45}
                   width={width}
                 >
                   {ComponentPickerRow}

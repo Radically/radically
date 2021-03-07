@@ -57,8 +57,8 @@ const IndividualComponentCell = withTheme(styled("div") <{
   darkMode?: boolean;
   characterVariantLocales?: string;
 }>`
-  width: 27px;
-  height: 27px;
+  width: 35px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;

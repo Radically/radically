@@ -39,7 +39,7 @@ export function useWindowDimensions() {
 }
 
 export const getRadicalsPerRow = (windowWidth: number): number => {
-  return Math.trunc(windowWidth / 40);
+  return Math.trunc(windowWidth / 50);
 };
 
 export function isCJK(idsChar: string) {

@@ -46,7 +46,7 @@ const HeaderRow = styled.div`
 `;
 
 const NormalRow = styled.div`
-  font-size: 1.4em;
+  font-size: 1.7em;
   // padding-left: 5px;
   // padding-right: 5px;
   display: flex;
