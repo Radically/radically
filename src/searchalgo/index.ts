@@ -95,7 +95,7 @@ export const filterUsingIDCs = (
 ) => {
   const idcs = _idcs.split("").filter((idc) => IDCSet.has(idc));
   if (!idcs) return results;
-  const pattern = RegExp(idcs.join(".*"), "g");
+  const pattern = RegExp(idcs.join(".*"));
   return results.filter((result) => {
     for (let { i } of reverseMapIDSOnly[result]) {
       if (pattern.test(i)) {

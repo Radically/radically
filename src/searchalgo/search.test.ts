@@ -60,6 +60,7 @@ test("filterUsingIDCs", () => {
   const results = ["與", "义", "凶", "出", "函", "半"];
   expect(filterUsingIDCs(reverseMapCharIDSOnly, results, "⿶")).toEqual([
     "與",
+    "义",
     "凶",
     "函",
   ]);
