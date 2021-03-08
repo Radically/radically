@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { withTheme } from "@material-ui/core/styles";
 
@@ -54,6 +54,7 @@ import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvide
 import { widthPx } from "../FirstPage/desktop";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 import { SelectedInfo } from "../../types/common";
+import { ScrollOffsets } from "../../GlobalVariables";
 
 export const searchInputHeightInPx = 45;
 
@@ -116,9 +117,6 @@ function ComponentsPage(props: {
 
     componentsSearchResults: searchResults,
     setComponentsSearchResults: setSearchResults,
-
-    componentsScrollPosition,
-    setComponentsScrollPosition,
   } = useContext(SharedTextboxContext);
 
   const { showText } = useContext(QuickToastContext);
@@ -238,6 +236,16 @@ function ComponentsPage(props: {
     }
   };
 
+  const [componentsScrollPosition, setComponentsScrollPosition] = useState(0);
+
+  const onScroll = ({ scrollOffset }: { scrollOffset: number }) => {
+    ScrollOffsets.componentsPage = scrollOffset;
+  };
+
+  useEffect(() => {
+    setComponentsScrollPosition(ScrollOffsets.componentsPage);
+  }, []);
+
   return (
     <ComponentsPageContainer ref={containerRef} id="components-page-container">
       <SearchContainer>
@@ -319,9 +327,7 @@ function ComponentsPage(props: {
               {({ height, width }) => (
                 <List
                   initialScrollOffset={componentsScrollPosition}
-                  onScroll={({ scrollOffset }) => {
-                    setComponentsScrollPosition(scrollOffset);
-                  }}
+                  onScroll={onScroll}
                   style={{
                     color: darkMode ? "white" : "black",
                     // fontWeight: "bold",

@@ -21,18 +21,12 @@ const defaultValue = {
   ) => {},
 
   // state saved for the components route
-  componentsScrollPosition: 0,
-  setComponentsScrollPosition: (position: number) => {},
-
   componentsSelectedInfo: {} as SelectedInfo,
   setComponentsSelectedInfo: (unused: SelectedInfo) => {},
 
   // state saved for the results route
   resultsSelectedInfo: {} as SelectedInfo,
   setResultsSelectedInfo: (unused: SelectedInfo) => {},
-
-  resultsScrollPosition: 0,
-  setResultsScrollPosition: (unused: number) => {},
 };
 
 export const SharedTextboxContext = React.createContext(defaultValue);
@@ -48,15 +42,11 @@ export const SharedTextboxContextProvider = (props: { children: any }) => {
     null as { [key: string]: string[] } | null
   );
 
-  const [componentsScrollPosition, setComponentsScrollPosition] = useState(0);
-
   const [componentsSelectedInfo, setComponentsSelectedInfo] = useState(
     {} as SelectedInfo
   );
 
   // state saved for the results route
-  const [resultsScrollPosition, setResultsScrollPosition] = useState(0);
-
   const [resultsSelectedInfo, setResultsSelectedInfo] = useState(
     {} as SelectedInfo
   );
@@ -75,14 +65,8 @@ export const SharedTextboxContextProvider = (props: { children: any }) => {
     componentsSearchResults,
     setComponentsSearchResults,
 
-    componentsScrollPosition,
-    setComponentsScrollPosition,
-
     componentsSelectedInfo,
     setComponentsSelectedInfo,
-
-    resultsScrollPosition,
-    setResultsScrollPosition,
 
     resultsSelectedInfo,
     setResultsSelectedInfo,

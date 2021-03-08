@@ -5,6 +5,8 @@ import SearchWorker from "../searchworker";
 import { SharedTextboxContext } from "./SharedTextboxContextProvider";
 import { SelectedInfo } from "../types/common";
 
+import { ScrollOffsets } from "../GlobalVariables";
+
 const defaultValue = {
   searching: false,
   searchResults: [],
@@ -33,13 +35,14 @@ export const SearchContextProvider = (props: { children: any }) => {
   const [searching, setSearching] = useState(false);
   const [searchResults, _setSearchResults] = useState([] as string[]);
 
-  const { setResultsSelectedInfo, setResultsScrollPosition } = useContext(
+  const { setResultsSelectedInfo /* setResultsScrollPosition */ } = useContext(
     SharedTextboxContext
   );
 
   const setSearchResults = (searchResults: string[]) => {
     setResultsSelectedInfo({} as SelectedInfo);
-    setResultsScrollPosition(0);
+    // setResultsScrollPosition(0);
+    ScrollOffsets.resultsPage = 0;
     _setSearchResults(searchResults);
   };
 

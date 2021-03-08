@@ -41,6 +41,7 @@ import {
 } from "../ComponentsScrollComponents";
 import CharacterResultReadings from "../CharacterResultReadings";
 import { widthPx } from "../FirstPage/desktop";
+import { ScrollOffsets } from "../../GlobalVariables";
 
 const ResultsPageContainer = styled("div")`
   flex: 1;
@@ -60,11 +61,6 @@ function ResultsPage(props: {
   const {
     output,
     setOutput,
-    // relatedComponentsInput: input,
-    // setRelatedComponentsInput: setInput,
-
-    resultsScrollPosition,
-    setResultsScrollPosition,
 
     resultsSelectedInfo: selectedInfo,
     setResultsSelectedInfo: setSelectedInfo,
@@ -133,6 +129,15 @@ function ResultsPage(props: {
     radicalsPerRow
   ));
 
+  const [resultsScrollPosition, setResultsScrollPosition] = useState(0);
+  const onScroll = ({ scrollOffset }: { scrollOffset: number }) => {
+    ScrollOffsets.resultsPage = scrollOffset;
+  };
+
+  useEffect(() => {
+    setResultsScrollPosition(ScrollOffsets.resultsPage);
+  }, []);
+
   return (
     <ResultsPageContainer ref={containerRef} id="results-page-container">
       <ComponentsReadingSplit id="results-page-split-container">
@@ -181,9 +186,7 @@ function ResultsPage(props: {
                 {({ height, width }) => (
                   <List
                     initialScrollOffset={resultsScrollPosition}
-                    onScroll={({ scrollOffset }) => {
-                      setResultsScrollPosition(scrollOffset);
-                    }}
+                    onScroll={onScroll}
                     style={{
                       color: darkMode ? "white" : "black",
                       // fontWeight: "bold",
