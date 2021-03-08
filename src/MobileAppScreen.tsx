@@ -75,7 +75,13 @@ const LandscapeBarWrapper = styled.div`
 function ComponentResults() {
   let { path, url } = useRouteMatch();
 
-  const isLandscape = useMediaQuery("screen and (orientation: landscape)");
+  const isSafari = navigator.vendor.includes("Apple");
+
+  const isLandscape = useMediaQuery(
+    isSafari
+      ? "screen and (orientation: landscape)"
+      : "screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)"
+  );
 
   const history = useHistory();
 
