@@ -183,7 +183,15 @@ function Routes() {
       </Route>
 
       <Route exact path="/about">
-        <AboutPage />
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <AboutPage />
+        </div>
       </Route>
     </MobileAppScreenContainer>
   );
