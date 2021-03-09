@@ -66,7 +66,7 @@ export const AppNameDescWrapper = styled.div`
   flex-direction: column;
 `;
 
-export const widthPx = 350;
+export const widthPx = 310;
 
 const FirstPageContainer = withTheme(styled("div")`
   display: flex;
