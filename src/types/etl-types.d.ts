@@ -90,6 +90,7 @@ interface QueryResults {
 
 interface ProcessedIDSMetadata {
   entries: string;
+  pua_entries: string;
   unique_radicals: number;
   date: string;
 }

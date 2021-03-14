@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 // import pako from "pako";
 
-import { structuredClone } from "./utils";
+import { isPUA, structuredClone } from "./utils";
 
 import {
   IDCSet,
@@ -197,12 +197,12 @@ const processIDSText = (resolvedIDSData: string[][]) => {
 
   const processedIDSMetadata = {
     entries: 0,
+    pua_entries: 0,
     unique_radicals: 0,
     date: new Date(),
   };
 
   for (let entry of resolvedIDSData) {
-    processedIDSMetadata.entries += 1;
     const utfCp = entry[0];
     const char = entry[1];
 
@@ -264,6 +264,11 @@ const processIDSText = (resolvedIDSData: string[][]) => {
     } else {
       reverseMap[char] = { utf_code: entry[0], ids_strings: reverseMapValue };
     }
+  }
+
+  for (let char of Object.keys(reverseMap)) {
+    if (char && isPUA(char)) processedIDSMetadata.pua_entries += 1;
+    else processedIDSMetadata.entries += 1;
   }
 
   // .... and remove all characters that have a decomposition later
