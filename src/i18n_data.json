@@ -39,7 +39,17 @@
     "variant.sawndip_simplified": "ZA-Simplified",
     "variant.sawndip": "ZA",
     "variant.radical": "Radical",
-    "variant.unicode_pua": "Unicode PUA"
+    "variant.unicode_pua": "Unicode PUA",
+
+    "locale.chinese_simplified": "Simplified Chinese",
+    "locale.japanese": "Japanese, incl. Wasei Kanji, Shinjitai, & Kyujitai",
+    "locale.korean": "Korean, incl. Gukja, Basic Hanja, and preferred Hanja forms (e.g. 曺 aka 曹)",
+    "locale.zhuang": "Zhuang",
+    "locale.chinese_traditional": "Traditional Chinese",
+
+    "ack.chise_structural_info": "CHISE IDS Database",
+
+    "ack.kanji_database_project": "Kanji Database Project"
   },
   "lzh": {
     "app_name": "部將",
@@ -50,7 +60,7 @@
     "idcs": "表意文字構成符號",
     "component_freq": "考慮部品出現率",
     "use_web_worker": "託於副處理脈絡",
-    "componentspage.search_bar_placeholder": "分解與異體",
+    "componentspage.search_bar_placeholder": "分解、異體字、以及全部關聯字",
     "no_radical_selected": "未擇部品",
     "componentspage.add_to_search": "追加於檢索條件",
     "componentspage.get_related": "再取關聯字",
@@ -58,7 +68,7 @@
     "searching": "檢索中",
     "copy": "複製",
     "added": "以追加",
-    "resultspage.added_to_components_page": "已添加至部件頁",
+    "resultspage.added_to_components_page": "已添加至部品頁",
     "loading": "充填中...",
     "output": "輸出",
     "copied_to_clipboard": "已複製至切取粘貼板",
@@ -81,6 +91,15 @@
     "variant.sawndip_simplified": "簡化壯字",
     "variant.sawndip": "壯字",
     "variant.radical": "部首",
-    "variant.unicode_pua": "萬國碼私用領域"
+    "variant.unicode_pua": "萬國碼私用領域",
+
+    "locale.chinese_simplified": "简体中文",
+    "locale.japanese": "日本語, 包含和製漢字、新字体、與舊字體",
+    "locale.korean": "韓國語, 包含國字、基礎漢字、與常用字形 (例曺元曹)",
+    "locale.zhuang": "狀語",
+    "locale.chinese_traditional": "傳統中文",
+
+    "ack.chise_structural_info": "CHISE 漢字構造情報データベース",
+    "ack.kanji_database_project": "漢字データベースプロジェクト"
   }
 }

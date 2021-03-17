@@ -71,6 +71,8 @@ export const CharacterVariantLocaleColors = {
   korean: { dark: indigo[700], light: indigo["A100"] },
   zhuang: { dark: indigo["A700"], light: blue[400] },
   vietnamese: { dark: green[800], light: green[200] },
+} as {
+  [key: string]: { dark: string; light: string };
 };
 
 export const SwipeVelocityThreshold = 0.8;

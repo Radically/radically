@@ -6,7 +6,7 @@ import { getStringForCharacterVariants } from "../ComponentsScrollComponents/uti
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles, withTheme } from "@material-ui/core/styles";
-import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
+import { useSnackbar } from "notistack";
 import { SharedTextboxContext } from "../../contexts/SharedTextboxContextProvider";
 
 // import SimpleBar from "simplebar-react";
@@ -98,7 +98,7 @@ const CharacterResultReadings = React.memo(
   }) => {
     const { char, readings, toastOnGetRelated } = props;
     const intl = useIntl();
-    const { showText } = useContext(QuickToastContext);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const buttonStyles = useButtonStyles();
     const buttonGroupStyles = useButtonGroupStyles();
     const { variantsLocales, reverseMapIDSOnly } = useContext(DataContext);
@@ -117,30 +117,39 @@ const CharacterResultReadings = React.memo(
 
     const addToSearch = () => {
       setComponentsInput(componentsInput + char);
-      showText(
+      enqueueSnackbar(
         intl.formatMessage({
           id: "added",
-        })
+        }),
+        {
+          autoHideDuration: 800,
+        }
       );
     };
 
     function addToComponents() {
       setRelatedComponentsInput(relatedComponentsInput + char);
       if (toastOnGetRelated) {
-        showText(
+        enqueueSnackbar(
           intl.formatMessage({
             id: "resultspage.added_to_components_page",
-          })
+          }),
+          {
+            autoHideDuration: 800,
+          }
         );
       }
     }
 
     function copyToClipboard() {
       navigator.clipboard.writeText(char);
-      showText(
+      enqueueSnackbar(
         intl.formatMessage({
           id: "copied_to_clipboard",
-        })
+        }),
+        {
+          autoHideDuration: 800,
+        }
       );
     }
 

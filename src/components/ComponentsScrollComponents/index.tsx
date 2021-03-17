@@ -37,7 +37,7 @@ export const outerElementType = forwardRef((props, ref: any) => (
   />
 ));
 
-const HeaderRow = styled.div`
+export const HeaderRow = styled.div`
   font-size: 12pt;
   // padding-left: 5px;
   // padding-right: 5px;
@@ -45,7 +45,7 @@ const HeaderRow = styled.div`
   align-items: center;
 `;
 
-const NormalRow = styled.div`
+export const NormalRow = styled.div`
   font-size: 1.7em;
   // padding-left: 5px;
   // padding-right: 5px;

@@ -250,7 +250,7 @@ function FirstPage() {
 
           <div style={{ width: "100%", paddingTop: "10px" }}>
             <InputLabel htmlFor="idcs-search-input">
-              <FormattedMessage id="idcs" defaultMessage="IDCs" />
+              <FormattedMessage id="idcs" defaultMessage="IDCs" />¹
             </InputLabel>
             <Input
               id="idcs-search-input"
@@ -281,7 +281,7 @@ function FirstPage() {
                 id="component_freq"
                 defaultMessage="Component freq."
               />
-              *
+              ²
             </FirstPageSwitchCaption>
           </SwitchLabelContainer>
 
@@ -300,6 +300,7 @@ function FirstPage() {
                 id="use_web_worker"
                 defaultMessage="Use web worker"
               />
+              ³
             </FirstPageSwitchCaption>
           </SwitchLabelContainer>
 

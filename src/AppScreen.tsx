@@ -20,15 +20,22 @@ import { useContext } from "react";
 import "./App.css";
 import {
   createMuiTheme,
+  IconButton,
+  makeStyles,
   MuiThemeProvider,
   PaletteType,
 } from "@material-ui/core";
 
+import CloseIcon from "@material-ui/icons/Close";
+
 import { IntlProvider } from "react-intl";
 import i18n_data from "./i18n_data.json";
+import { SnackbarProvider } from "notistack";
 import { QuickToastContextProvider } from "./contexts/QuickToastContextProvider";
 import QuickToast from "./components/QuickToast";
 import { SearchContextProvider } from "./contexts/SearchContextProvider";
+import ServiceWorkerStateProvider from "./contexts/ServiceWorkerStateProvider";
+// import ServiceWorkerWrapper from "./components/ServiceWorkerWrapper";
 
 const i18n = i18n_data as { [key: string]: any };
 
@@ -65,23 +72,104 @@ const ReactIntlWrapper: FunctionComponent<{}> = (props) => {
   );
 };
 
+const useSnackbarStyles = makeStyles(({ palette }) => ({
+  // default variant
+  contentRoot: {
+    backgroundColor: teal[800],
+    color: "white",
+    // width: "100%",
+  },
+  collapseWrapperInner: {
+    width: "100%",
+  },
+  root: {
+    // width: "100%",
+  },
+  variantSuccess: {
+    backgroundColor: `${teal[800]} !important`,
+  },
+  variantError: {
+    backgroundColor: `${palette.error.dark} !important`,
+  },
+  variantInfo: {
+    backgroundColor: `${palette.info.dark} !important`,
+  },
+  variantWarning: {
+    backgroundColor: `${palette.warning.dark} !important`,
+  },
+}));
+
+const useSnackbarButtonStyles = makeStyles({
+  root: {
+    color: "white",
+  },
+});
+
+const SnackbarProviderWrapper = (props: { children: React.ReactElement }) => {
+  const notistackRef = React.createRef<SnackbarProvider>();
+  const onClickDismiss = (key: string) => () => {
+    console.log("dismissing" + key);
+    console.log(notistackRef.current);
+    notistackRef.current?.closeSnackbar(key);
+  };
+
+  const { children } = props;
+  const snackbarClasses = useSnackbarStyles();
+  const snackbarButtonClasses = useSnackbarButtonStyles();
+
+  return (
+    <SnackbarProvider
+      hideIconVariant={false}
+      maxSnack={10}
+      classes={snackbarClasses}
+      ref={notistackRef}
+      dense={true}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      transitionDuration={{ enter: 100, exit: 50 }}
+      action={(key: string) => (
+        <IconButton
+          classes={snackbarButtonClasses}
+          color="primary"
+          size="small"
+          aria-label="close-notification"
+          onClick={onClickDismiss(key)}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      )}
+    >
+      {children}
+    </SnackbarProvider>
+  );
+};
+
 function AppScreen() {
   return (
     <SettingsContextProvider>
+      {/* <ServiceWorkerWrapper /> */}
+
       <AppScreenMuiThemeWrapper>
-        <QuickToastContextProvider>
-          <QuickToast />
-          <DataContextProvider>
-            <SharedTextboxContextProvider>
-              <SearchContextProvider>
-                <ReactIntlWrapper>
-                  <MobileAppScreen />
-                  <DesktopAppScreen />
-                </ReactIntlWrapper>
-              </SearchContextProvider>
-            </SharedTextboxContextProvider>
-          </DataContextProvider>
-        </QuickToastContextProvider>
+        <ServiceWorkerStateProvider>
+          <QuickToastContextProvider>
+            <QuickToast />
+
+            <SnackbarProviderWrapper>
+              <DataContextProvider>
+                <SharedTextboxContextProvider>
+                  <SearchContextProvider>
+                    <ReactIntlWrapper>
+                      <MobileAppScreen />
+                      <DesktopAppScreen />
+                    </ReactIntlWrapper>
+                  </SearchContextProvider>
+                </SharedTextboxContextProvider>
+              </DataContextProvider>
+            </SnackbarProviderWrapper>
+          </QuickToastContextProvider>
+        </ServiceWorkerStateProvider>
       </AppScreenMuiThemeWrapper>
     </SettingsContextProvider>
   );

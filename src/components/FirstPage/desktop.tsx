@@ -255,7 +255,7 @@ function FirstPageDesktop() {
                 id="component_freq"
                 defaultMessage="Component freq."
               />
-              *
+              ¹
             </FirstPageSwitchCaption>
           </SwitchLabelContainer>
 
@@ -274,6 +274,7 @@ function FirstPageDesktop() {
                 id="use_web_worker"
                 defaultMessage="Use web worker"
               />
+              ²
             </FirstPageSwitchCaption>
           </SwitchLabelContainer>
 

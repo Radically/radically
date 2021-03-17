@@ -1,5 +1,62 @@
+import { useMediaQuery } from "@material-ui/core";
 import { useRef, useState, useEffect } from "react";
 import { IDCSet, StrokePlaceholderSet } from "./constants";
+
+import * as React from "react";
+
+interface IBeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: "accepted" | "dismissed";
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
+export function useAddToHomescreenPrompt(): [
+  IBeforeInstallPromptEvent | null,
+  () => void
+] {
+  const [prompt, setState] = React.useState<IBeforeInstallPromptEvent | null>(
+    null
+  );
+
+  const promptToInstall = () => {
+    if (prompt) {
+      return prompt.prompt();
+    }
+    return Promise.reject(
+      new Error(
+        'Tried installing before browser sent "beforeinstallprompt" event'
+      )
+    );
+  };
+
+  React.useEffect(() => {
+    const ready = (e: IBeforeInstallPromptEvent) => {
+      e.preventDefault();
+      setState(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", ready as any);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", ready as any);
+    };
+  }, []);
+
+  return [prompt, promptToInstall];
+}
+
+export const useIsMobileLandscape = () => {
+  const isSafari = navigator.vendor.includes("Apple");
+  return useMediaQuery(
+    isSafari
+      ? "screen and (orientation: landscape) and (max-width: 767px)"
+      : "screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape) and (max-width: 767px)"
+  );
+};
+
 export function usePrevious(value: any) {
   const ref = useRef();
   useEffect(() => {

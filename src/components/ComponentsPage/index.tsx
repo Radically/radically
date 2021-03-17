@@ -18,6 +18,8 @@ import {
 } from "../ComponentsBrowser";
 
 import { useIntl, FormattedMessage } from "react-intl";
+import { useSnackbar } from "notistack";
+
 // for the components scroll container
 import {
   FixedSizeList,
@@ -119,7 +121,7 @@ function ComponentsPage(props: {
     setComponentsSearchResults: setSearchResults,
   } = useContext(SharedTextboxContext);
 
-  const { showText } = useContext(QuickToastContext);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const { darkMode } = useContext(SettingsContext);
   const { width, height } = useWindowDimensions();
@@ -168,10 +170,13 @@ function ComponentsPage(props: {
     //   onRadicalSelected(radical);
     if (selectedInfo.index === index && selectedInfo.col === col) {
       setComponentsInput(componentsInput + radical);
-      showText(
+      enqueueSnackbar(
         intl.formatMessage({
           id: "added",
-        })
+        }),
+        {
+          autoHideDuration: 800,
+        }
       );
     }
 

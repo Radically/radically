@@ -3,6 +3,8 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Alert from "@material-ui/lab/Alert";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useSnackbar } from "notistack";
+
 import AboutPage from "./components/AboutPage";
 import { useHistory } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
@@ -21,6 +23,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { SwipeVelocityThreshold } from "./constants";
+import { useIsMobileLandscape } from "./utils";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -66,10 +69,10 @@ const useAlertStyles = makeStyles((theme: any) => ({
   },
 }));
 
-const LandscapeBarWrapper = styled.div`
+const LandscapeBarWrapper = styled.div<{ outputBar?: boolean }>`
   display: flex;
   flex: 1;
-  max-height: calc(100% - ${heightPx}px);
+  max-height: calc(100% - ${(props) => (props.outputBar ? heightPx : 0)}px);
 `;
 
 function ComponentResults() {
@@ -77,11 +80,7 @@ function ComponentResults() {
 
   const isSafari = navigator.vendor.includes("Apple");
 
-  const isLandscape = useMediaQuery(
-    isSafari
-      ? "screen and (orientation: landscape)"
-      : "screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)"
-  );
+  const isLandscape = useIsMobileLandscape();
 
   const history = useHistory();
 
@@ -103,9 +102,9 @@ function ComponentResults() {
   const resultsPageSwipeHandlers = useSwipeable({
     onSwipedLeft: (eventData) => {
       const { velocity } = eventData;
-      /*if (velocity >= SwipeVelocityThreshold) {
-        history.replace(`${path}/results`);
-      }*/
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`/about`);
+      }
     },
     onSwipedRight: (eventData) => {
       const { velocity } = eventData;
@@ -131,14 +130,14 @@ function ComponentResults() {
         </Route>
 
         <Route exact path={`${path}/components`}>
-          <LandscapeBarWrapper {...componentsPageSwipeHandlers}>
+          <LandscapeBarWrapper outputBar {...componentsPageSwipeHandlers}>
             <ComponentsPage />
             {isLandscape && <LandscapeHandle />}
           </LandscapeBarWrapper>
         </Route>
 
         <Route exact path={`${path}/results`}>
-          <LandscapeBarWrapper {...resultsPageSwipeHandlers}>
+          <LandscapeBarWrapper outputBar {...resultsPageSwipeHandlers}>
             <ResultsPage />
             {isLandscape && <LandscapeHandle />}
           </LandscapeBarWrapper>
@@ -150,11 +149,25 @@ function ComponentResults() {
 
 function Routes() {
   const history = useHistory();
+
+  const isSafari = navigator.vendor.includes("Apple");
+
+  const isLandscape = useIsMobileLandscape();
+
   const searchPageSwipeHandlers = useSwipeable({
     onSwipedLeft: (eventData) => {
       const { velocity } = eventData;
       if (velocity >= SwipeVelocityThreshold) {
         history.replace(`/pickers/components`);
+      }
+    },
+  });
+
+  const aboutPageSwipeHandlers = useSwipeable({
+    onSwipedRight: (eventData) => {
+      const { velocity } = eventData;
+      if (velocity >= SwipeVelocityThreshold) {
+        history.replace(`/pickers/results`);
       }
     },
   });
@@ -182,31 +195,24 @@ function Routes() {
         <ComponentResults />
       </Route>
 
-      <Route exact path="/about">
-        <div
-          style={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+      <Route path="/about">
+        <LandscapeBarWrapper {...aboutPageSwipeHandlers}>
           <AboutPage />
-        </div>
+          {isLandscape && <LandscapeHandle />}
+        </LandscapeBarWrapper>
       </Route>
     </MobileAppScreenContainer>
   );
 }
+
+let landscapeModeTipHandle: string | number | undefined = undefined;
 
 function MobileAppScreen() {
   const history = useHistory();
 
   const isSafari = navigator.vendor.includes("Apple");
 
-  const isLandscape = useMediaQuery(
-    isSafari
-      ? "screen and (orientation: landscape)"
-      : "screen and (min-device-aspect-ratio: 1/1) and (orientation: landscape)"
-  );
+  const isLandscape = useIsMobileLandscape();
 
   const [showLandscapeAlert, setShowLandscapeAlert] = useState(false);
   // @ts-ignore
@@ -217,8 +223,22 @@ function MobileAppScreen() {
     onMobileAppScreenContainerScroll: (e: React.UIEvent<HTMLElement>) => {},
   });
 
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   useEffect(() => {
-    setShowLandscapeAlert(isLandscape);
+    // setShowLandscapeAlert(isLandscape);
+
+    if (isLandscape)
+      landscapeModeTipHandle = enqueueSnackbar(
+        "Landscape mode detected - scroll downwards to reveal the navbar!",
+        {
+          variant: "info",
+          key: "landscape-mode-tip",
+          preventDuplicate: true,
+          persist: true,
+        }
+      );
+    else closeSnackbar(landscapeModeTipHandle);
     // @ts-ignore
     // setShowMobileChromeAlert(!!window.chrome && isLandscape);
   }, [isLandscape]);
