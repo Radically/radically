@@ -107,19 +107,22 @@ export const UsageSection = (props: { desktop?: false }) => {
         日月火水木金土.
       </SectionParagraph>
 
-      <div
-        style={{
-          paddingTop: "10px",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <U6EEBExample />
+      {/* nested div necessary for Safari iOS */}
+      <div>
+        <div
+          style={{
+            paddingTop: "10px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <U6EEBExample />
 
-        <SectionParagraph style={{ margin: 0 }} darkMode={darkMode}>
-          Let us search for U+6EEB 滫, which can be decomposed into the water
-          radical (氵), person radical (亻), 夂 or 攵, and 月:
-        </SectionParagraph>
+          <SectionParagraph style={{ margin: 0 }} darkMode={darkMode}>
+            Let us search for U+6EEB 滫, which can be decomposed into the water
+            radical (氵), person radical (亻), 夂 or 攵, and 月:
+          </SectionParagraph>
+        </div>
       </div>
 
       <SectionParagraph darkMode={darkMode}>
