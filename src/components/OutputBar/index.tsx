@@ -11,7 +11,7 @@ import {
 } from "../../contexts/SharedTextboxContextProvider";
 import { QuickToastContext } from "../../contexts/QuickToastContextProvider";
 
-export const heightPx = 30;
+export const heightPx = 45;
 
 const OutputBarContainer = withTheme(styled.div`
   position: sticky;
@@ -45,9 +45,9 @@ const Output = withTheme(
     border: none;
     color: ${(props) => props.theme.palette.text.primary};
     background-color: transparent;
-    font-size: 0.9em;
+    font-size: 1.15em;
     font-family: var(--default-sans);
-    font-weight: bold;
+    // font-weight: bold;
     box-sizing: border-box;
     margin-left: 10px;
   `

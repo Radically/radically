@@ -1,7 +1,7 @@
 import { makeStyles, withTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Alert from "@material-ui/lab/Alert";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import ServiceWorkerLifecycle from "./ServiceWorkerLifecycle";
 import styled from "styled-components";
 import { useSnackbar } from "notistack";
 
@@ -24,6 +24,7 @@ import {
 } from "react-router-dom";
 import { SwipeVelocityThreshold } from "./constants";
 import { useIsMobileLandscape } from "./utils";
+import { useIntl } from "react-intl";
 
 const RootMobileContainer = styled.div`
   @media (min-width: 768px) {
@@ -205,13 +206,12 @@ function Routes() {
   );
 }
 
-let landscapeModeTipHandle: string | number | undefined = undefined;
+// let landscapeModeTipHandle: string | number | undefined = undefined;
 
 function MobileAppScreen() {
-  const history = useHistory();
-
-  const isSafari = navigator.vendor.includes("Apple");
-
+  const intl = useIntl();
+  // const isSafari = navigator.vendor.includes("Apple");
+  // const isMobile = useIsMobile();
   const isLandscape = useIsMobileLandscape();
 
   const [showLandscapeAlert, setShowLandscapeAlert] = useState(false);
@@ -229,8 +229,10 @@ function MobileAppScreen() {
     // setShowLandscapeAlert(isLandscape);
 
     if (isLandscape)
-      landscapeModeTipHandle = enqueueSnackbar(
-        "Landscape mode detected - scroll downwards to reveal the navbar!",
+      enqueueSnackbar(
+        intl.formatMessage({
+          id: "landscape_notif",
+        }),
         {
           variant: "info",
           key: "landscape-mode-tip",
@@ -238,7 +240,7 @@ function MobileAppScreen() {
           persist: true,
         }
       );
-    else closeSnackbar(landscapeModeTipHandle);
+    else closeSnackbar("landscape-mode-tip");
     // @ts-ignore
     // setShowMobileChromeAlert(!!window.chrome && isLandscape);
   }, [isLandscape]);
@@ -247,6 +249,7 @@ function MobileAppScreen() {
 
   return (
     <Router>
+      <ServiceWorkerLifecycle />
       <RootMobileContainer>
         <Routes />
         <BottomNavigator />

@@ -57,6 +57,8 @@ body {
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* to prevent pull to refresh on mobile chromium */
+  overscroll-behavior-y: contain;
 }
 
 textarea {

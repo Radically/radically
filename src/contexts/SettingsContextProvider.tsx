@@ -12,6 +12,12 @@ const defaultValue = {
 
   useWebWorker: false,
   setUseWebWorker: (unused: boolean) => {},
+
+  installLastDismissed: new Date(0),
+  setInstallLastDismissed: (unused: Date) => {},
+
+  showInstall: true,
+  setShowInstall: (unused: boolean) => {},
 };
 
 export const SettingsContext = React.createContext(defaultValue);
@@ -47,6 +53,15 @@ export const SettingsContextProvider = (props: { children: any }) => {
   // for "internationalization"
   const [locale, setLocale] = usePersistedState("locale", "en");
 
+  // for keeping track of when the install noti was last dismissed
+  const [installLastDismissed, setInstallLastDismissed] = usePersistedState(
+    "installLastDismissed",
+    new Date(0)
+  );
+
+  // whether to show the install noti
+  const [showInstall, setShowInstall] = usePersistedState("showInstall", true);
+
   const context = React.useMemo(
     () => ({
       atLeastComponentFreq,
@@ -57,6 +72,12 @@ export const SettingsContextProvider = (props: { children: any }) => {
       setLocale,
       useWebWorker,
       setUseWebWorker,
+
+      installLastDismissed,
+      setInstallLastDismissed,
+
+      showInstall,
+      setShowInstall,
     }),
     [
       atLeastComponentFreq,
@@ -67,6 +88,11 @@ export const SettingsContextProvider = (props: { children: any }) => {
       setLocale,
       useWebWorker,
       setUseWebWorker,
+      installLastDismissed,
+      setInstallLastDismissed,
+
+      showInstall,
+      setShowInstall,
     ]
   );
 

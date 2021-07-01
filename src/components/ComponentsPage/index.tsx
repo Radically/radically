@@ -94,9 +94,9 @@ const SearchInput = withTheme(
     border: none;
     color: ${(props) => props.theme.palette.text.primary};
     background-color: transparent;
-    font-size: 1em;
+    font-size: 1.15em;
     font-family: var(--default-sans);
-    font-weight: bold;
+    // font-weight: bold;
     box-sizing: border-box;
   `
 );
@@ -273,13 +273,14 @@ function ComponentsPage(props: {
 
         <IconButton
           disabled={!input}
+          size="small"
           onClick={performSearch}
           color="primary"
           id="components-search"
           aria-label="search and decompose the input characters"
           component="span"
         >
-          <SearchIcon />
+          <SearchIcon fontSize="small" />
         </IconButton>
       </SearchContainer>
 

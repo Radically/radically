@@ -3,6 +3,7 @@ import { register } from "../../src/serviceWorkerRegistration";
 // import { useAddToHomescreenPrompt } from "../utils";
 
 const defaultValue = {
+  registration: null as ServiceWorkerRegistration | null,
   initialized: false,
   installing: null as ServiceWorker | null,
   active: null as ServiceWorker | null,
@@ -30,10 +31,15 @@ const ServiceWorkerStateProvider = (props: {
   const [active, setActive] = useState<ServiceWorker | null>(null);
   const [installing, setInstalling] = useState<ServiceWorker | null>(null);
   const [freshlyInstalled, setFreshlyInstalled] = useState(false);
-
   const [updateAvailable, setUpdateAvailable] = useState(false);
 
+  const [
+    registration,
+    setRegistration,
+  ] = useState<ServiceWorkerRegistration | null>(null);
+
   const context = {
+    registration,
     initialized,
     active,
     installing,
@@ -44,6 +50,7 @@ const ServiceWorkerStateProvider = (props: {
   // register promise has resolved but may not be actually installed yet
   const onSWInitialized = (registration: ServiceWorkerRegistration) => {
     console.log("sw inited", registration);
+    setRegistration(registration);
     setInitialized(true);
     setInstalling(registration.installing);
     setActive(registration.active);
@@ -51,6 +58,7 @@ const ServiceWorkerStateProvider = (props: {
 
   const onSWSuccess = (registration: ServiceWorkerRegistration) => {
     console.log("sw success", registration);
+    setRegistration(registration);
     setFreshlyInstalled(true);
     setInstalling(registration.installing);
     setActive(registration.active);
@@ -58,6 +66,7 @@ const ServiceWorkerStateProvider = (props: {
 
   const onSWUpdate = (registration: ServiceWorkerRegistration) => {
     console.log("sw updated", registration);
+    setRegistration(registration);
     setUpdateAvailable(true);
     setInstalling(registration.installing);
     setActive(registration.active);

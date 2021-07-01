@@ -48,6 +48,31 @@ export function useAddToHomescreenPrompt(): [
   return [prompt, promptToInstall];
 }
 
+export const supportsGetInstalledPWAs = () => {
+  return "getInstalledRelatedApps" in navigator;
+};
+
+export const getInstalledPWAs = async () => {
+  if (!supportsGetInstalledPWAs()) return null;
+  // @ts-ignore
+  const relatedApps = await navigator.getInstalledRelatedApps();
+  if (!relatedApps || relatedApps.length === 0) return null;
+  return (relatedApps as unknown) as InstalledPWA[];
+};
+
+/* 
+Currently unsupported by Fenix 
+https://github.com/mozilla-mobile/android-components/issues/8584
+export const isStandalone = (): boolean => {
+  const mqStandAlone = "(display-mode: standalone)";
+  // @ts-ignore
+  return navigator.standalone || window.matchMedia(mqStandAlone).matches;
+};*/
+
+export const useIsMobile = () => {
+  return useMediaQuery("screen and (max-width: 767px)");
+};
+
 export const useIsMobileLandscape = () => {
   const isSafari = navigator.vendor.includes("Apple");
   return useMediaQuery(

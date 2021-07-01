@@ -199,7 +199,7 @@ function FirstPageDesktop() {
           <AppDesch3 locale={intl.locale} darkMode={darkMode}>
             <FormattedMessage
               id="app_desc"
-              defaultMessage="A CJK character components-based search tool"
+              defaultMessage="A component-based CJK character search engine"
             />
           </AppDesch3>
         </div>

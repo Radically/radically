@@ -25,6 +25,8 @@
     "no_results": "No results",
     "about": "About",
 
+    "landscape_notif": "Landscape mode detected - scroll downwards to reveal the navbar!",
+
     "variant.gukja": "KO-Gukja",
     "variant.korean_standard": "KO-Basic",
     "variant.kokuji": "JA-Kokuji",
@@ -47,13 +49,15 @@
     "locale.zhuang": "Zhuang",
     "locale.chinese_traditional": "Traditional Chinese",
 
-    "ack.chise_structural_info": "CHISE IDS Database",
+    "about.updates_stats": "Updates & Stats",
+    "about.current_version": "Current Version",
 
+    "ack.chise_structural_info": "CHISE IDS Database",
     "ack.kanji_database_project": "Kanji Database Project"
   },
   "lzh": {
     "app_name": "部將",
-    "app_desc": "漢字部品組合式檢索利器",
+    "app_desc": "漢字部品組成式檢索利器",
     "strokes": "{count, plural, other {# 筆畫}}",
     "unclear": "不詳",
     "components": "部品",
@@ -77,6 +81,8 @@
     "no_results": "無結果",
     "about": "說明",
 
+    "landscape_notif": "橫向狀態也, 向下開卷見導欄",
+
     "variant.gukja": "韓國國字",
     "variant.korean_standard": "韓國基礎漢字",
     "variant.kokuji": "和製漢字",
@@ -95,9 +101,12 @@
 
     "locale.chinese_simplified": "简体中文",
     "locale.japanese": "日本語, 包含和製漢字、新字体、與舊字體",
-    "locale.korean": "韓國語, 包含國字、基礎漢字、與常用字形 (例曺元曹)",
+    "locale.korean": "韓國語, 包含國字、基礎漢字、與常用字形 (例「曺」元「曹」)",
     "locale.zhuang": "狀語",
     "locale.chinese_traditional": "傳統中文",
+
+    "about.updates_stats": "更新與統計",
+    "about.current_version": "現行版",
 
     "ack.chise_structural_info": "CHISE 漢字構造情報データベース",
     "ack.kanji_database_project": "漢字データベースプロジェクト"

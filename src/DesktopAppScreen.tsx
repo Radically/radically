@@ -1,10 +1,20 @@
 import { withTheme } from "@material-ui/core/styles";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import AboutPage from "./components/AboutPage";
 import ComponentsPage from "./components/ComponentsPage";
 import FirstPage from "./components/FirstPage/desktop";
 import OutputBar from "./components/OutputBar";
 import ResultsPage from "./components/ResultsPage";
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+  useRouteMatch,
+} from "react-router-dom";
+import ServiceWorkerLifecycle from "./ServiceWorkerLifecycle";
 
 const DesktopAppScreenContainer = withTheme(styled.div`
   @media (max-width: 767px) {
@@ -33,35 +43,30 @@ const MainContainer = styled.div`
 
 function DesktopAppScreen() {
   return (
-    <DesktopAppScreenContainer id="app-screen-container-desktop">
-      <MainContainer id="main-container-desktop">
-        <FirstPage />
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div style={{ width: "100%", flex: 1, display: "flex" }}>
-            <ComponentsPage desktop />
-            <ResultsPage desktop />
+    <Router>
+      <ServiceWorkerLifecycle />
+      <DesktopAppScreenContainer id="desktop-app-screen-container">
+        <MainContainer id="main-container-desktop">
+          <FirstPage />
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ width: "100%", flex: 1, display: "flex" }}>
+              <ComponentsPage desktop />
+              <ResultsPage desktop />
+            </div>
+
+            <OutputBar />
           </div>
+        </MainContainer>
 
-          <OutputBar />
-        </div>
-      </MainContainer>
-
-      <div>
-        blah blah this is the about section blah blah this is the about section
-        blah blah this is the about section blah blah this is the about section
-        blah blah this is the about section blah blah this is the about section
-        blah blah this is the about section blah blah this is the about
-        sectionblah blah this is the about section blah blah this is the about
-        sectionblah blah this is the about section blah blah this is the about
-        section blah blah this is the about section
-      </div>
-    </DesktopAppScreenContainer>
+        <AboutPage desktop />
+      </DesktopAppScreenContainer>
+    </Router>
   );
 }
 

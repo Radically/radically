@@ -75,8 +75,11 @@ export const CharacterVariantLocaleColors = {
   [key: string]: { dark: string; light: string };
 };
 
+// used in MobileAppScreen.tsx when deciding whether to navigate
 export const SwipeVelocityThreshold = 0.8;
 
+// only if getInstalledPWAs is available
+export const InstallReminderDays = 15;
 /* export const PAKO_FILE_NAMES = {
   reverseMap: "reverseMap.pako",
 };

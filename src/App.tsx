@@ -385,7 +385,7 @@ function App() {
           <AppContainer>
             <SearchAndRadicalContainer>
               <SearchArea>
-                <AppNameh1>部首組合式漢字檢索</AppNameh1>
+                <AppNameh1>部首組成式漢字檢索</AppNameh1>
 
                 <RadicalIDSContainer>
                   <Dimmer active={!!loadingText}>

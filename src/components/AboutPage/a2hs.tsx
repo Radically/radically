@@ -4,9 +4,10 @@ import { teal } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import styled from "styled-components";
 import { SettingsContext } from "../../contexts/SettingsContextProvider";
@@ -66,6 +67,50 @@ function A2HSInstructions() {
         <ArrowBackIcon fontSize={"large"} classes={backButtonArrowStyles} />
         <BackButtonText darkMode={darkMode}>Back</BackButtonText>
       </BackButton>
+
+      <div>
+        <SectionTitle darkMode={darkMode}>Desktop</SectionTitle>
+      </div>
+
+      <div>
+        <SectionTitle small darkMode={darkMode}>
+          Chrome
+        </SectionTitle>
+        <SectionParagraph>
+          Find the install button at the right end of the address bar, or the{" "}
+          <MoreVertIcon /> icon, then click "Install Radically".
+        </SectionParagraph>
+      </div>
+
+      <div>
+        <SectionTitle small darkMode={darkMode}>
+          Edge
+        </SectionTitle>
+        <SectionParagraph>
+          Find the install button at the right end of the address bar, or the{" "}
+          <MoreHorizIcon /> icon, then click "Apps", then click "Install
+          Radically".
+        </SectionParagraph>
+      </div>
+
+      <div>
+        <SectionTitle small darkMode={darkMode}>
+          Vivaldi
+        </SectionTitle>
+        <SectionParagraph darkMode={darkMode}>
+          Make sure that "Menu entries for installing Progressive Web Apps" is
+          enabled in{" "}
+          <Link
+            target="_blank"
+            to={{
+              pathname: "vivaldi://experiments/",
+            }}
+          >
+            vivaldi://experiments/
+          </Link>
+          . Right click on the tab, then click "Install Radically".
+        </SectionParagraph>
+      </div>
 
       <div>
         <SectionTitle darkMode={darkMode}>Android</SectionTitle>

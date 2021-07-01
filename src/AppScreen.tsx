@@ -35,6 +35,7 @@ import { QuickToastContextProvider } from "./contexts/QuickToastContextProvider"
 import QuickToast from "./components/QuickToast";
 import { SearchContextProvider } from "./contexts/SearchContextProvider";
 import ServiceWorkerStateProvider from "./contexts/ServiceWorkerStateProvider";
+import { useIsMobile } from "./utils";
 // import ServiceWorkerWrapper from "./components/ServiceWorkerWrapper";
 
 const i18n = i18n_data as { [key: string]: any };
@@ -72,7 +73,7 @@ const ReactIntlWrapper: FunctionComponent<{}> = (props) => {
   );
 };
 
-const useSnackbarStyles = makeStyles(({ palette }) => ({
+const useSnackbarStyles = makeStyles(({ palette, breakpoints }) => ({
   // default variant
   contentRoot: {
     backgroundColor: teal[800],
@@ -84,6 +85,12 @@ const useSnackbarStyles = makeStyles(({ palette }) => ({
   },
   root: {
     // width: "100%",
+  },
+  // for mobile!
+  anchorOriginBottomRight: {
+    [breakpoints.down(767)]: {
+      bottom: 70,
+    },
   },
   variantSuccess: {
     backgroundColor: `${teal[800]} !important`,
@@ -147,28 +154,29 @@ const SnackbarProviderWrapper = (props: { children: React.ReactElement }) => {
 };
 
 function AppScreen() {
+  const isMobile = useIsMobile();
+
   return (
     <SettingsContextProvider>
       {/* <ServiceWorkerWrapper /> */}
 
       <AppScreenMuiThemeWrapper>
         <ServiceWorkerStateProvider>
-          <QuickToastContextProvider>
-            <QuickToast />
+          {/* <QuickToastContextProvider>
+            <QuickToast /> */}
 
-            <SnackbarProviderWrapper>
-              <DataContextProvider>
-                <SharedTextboxContextProvider>
-                  <SearchContextProvider>
-                    <ReactIntlWrapper>
-                      <MobileAppScreen />
-                      <DesktopAppScreen />
-                    </ReactIntlWrapper>
-                  </SearchContextProvider>
-                </SharedTextboxContextProvider>
-              </DataContextProvider>
-            </SnackbarProviderWrapper>
-          </QuickToastContextProvider>
+          <SnackbarProviderWrapper>
+            <DataContextProvider>
+              <SharedTextboxContextProvider>
+                <SearchContextProvider>
+                  <ReactIntlWrapper>
+                    {isMobile ? <MobileAppScreen /> : <DesktopAppScreen />}
+                  </ReactIntlWrapper>
+                </SearchContextProvider>
+              </SharedTextboxContextProvider>
+            </DataContextProvider>
+          </SnackbarProviderWrapper>
+          {/* </QuickToastContextProvider> */}
         </ServiceWorkerStateProvider>
       </AppScreenMuiThemeWrapper>
     </SettingsContextProvider>
