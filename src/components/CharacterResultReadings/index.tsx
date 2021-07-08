@@ -235,7 +235,9 @@ const CharacterResultReadings = React.memo(
             )}
             <MetadataContainer>
               {`U+${char.codePointAt(0)?.toString(16).toUpperCase()} ${
-                reverseMapIDSOnly[char]?.map(({ i }) => i).join(" • ") || ""
+                reverseMapIDSOnly[char]
+                  ?.map(({ i, l }) => i + (l ? ` ${l} ` : ""))
+                  .join(" • ") || ""
               }`}
             </MetadataContainer>
             {char in readings ? (

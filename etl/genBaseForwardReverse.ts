@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 // import pako from "pako";
 
-import { isPUA, structuredClone } from "./utils";
+import { isPUA, isValidIDS, structuredClone } from "./utils";
 
 import {
   IDCSet,
@@ -18,6 +18,7 @@ const utfstring = require("utfstring");
 import {
   getAvailableIDSData,
   getAllResolvedIDSData,
+  getAllPartiallyResolvedIDSData,
 } from "./unicode-ids-fetcher";
 
 import {
@@ -125,12 +126,15 @@ export const freqPerm = (freqsArr: powerset[][]): powerset[] => {
   return ans;
 };
 
-export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
+export const rec = (reverseMap: ReverseMap, char: string, encountered: Set<String>): powerset[] => {
   const freqsAtThisNode = [] as { [key: string]: number }[]; // it is *not* a powerset!
 
-  if (!(char in reverseMap)) {
+  if (!(char in reverseMap) || 
+    encountered.has(char)) { // avoid cycles!
     return [{}];
   }
+
+  encountered.add(char);
 
   const { ids_strings } = reverseMap[char];
 
@@ -167,7 +171,7 @@ export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
   for (let i = 0; i < freqsAtThisNode.length; i++) {
     let freqs = freqPerm(
       Object.keys(freqsAtThisNode[i]).map((key) => {
-        const powersets = rec(reverseMap, key) as powerset[];
+        const powersets = rec(reverseMap, key, new Set(encountered)) as powerset[];
         for (let powerset of powersets) {
           for (let component in powerset) {
             powerset[component] *= freqsAtThisNode[i][key];
@@ -185,30 +189,21 @@ export const rec = (reverseMap: ReverseMap, char: string): powerset[] => {
 
 const finalizeReverseMap = (reverseMap: ReverseMap) => {
   for (let char of Object.keys(reverseMap)) {
-    reverseMap[char].charFreqs = rec(reverseMap, char);
+    reverseMap[char].charFreqs = rec(reverseMap, char, new Set());
   }
 };
 
-const processIDSText = (resolvedIDSData: string[][]) => {
-  const forwardMap: any = {};
-  const reverseMap: ReverseMap = {};
-
-  const baseRadicals = new Set<string>();
-
-  const processedIDSMetadata = {
-    entries: 0,
-    pua_entries: 0,
-    unique_radicals: 0,
-    date: new Date(),
-  };
-
-  for (let entry of resolvedIDSData) {
+const processIDSEntries = (idsEntries: IDSEntries, forwardMap: any, reverseMap: ReverseMap, baseRadicals: Set<String>) => {
+  for (let entry of idsEntries) {
     const utfCp = entry[0];
     const char = entry[1];
 
+    // add everything first
+    baseRadicals.add(char);
+
     if (!char) continue;
 
-    const reverseMapValue = [];
+    let reverseMapValue = [] as { ids: string, locales: string }[];
 
     for (let i = 2; i < entry.length; i++) {
       // it does appear that kawabata and glyphwiki do not use kangxi radicals,
@@ -254,6 +249,7 @@ const processIDSText = (resolvedIDSData: string[][]) => {
       }
     }
 
+    reverseMapValue = reverseMapValue.filter(({ids}) => isValidIDS(ids));
     // unihan-fetcher simply concats all the entries in the different files
     // together, 𨘒 (U+28612) is both in
     // MANUALLY_RESOLVED_ and MANUALLY_PARTIALLY_RESOLVED_
@@ -265,6 +261,23 @@ const processIDSText = (resolvedIDSData: string[][]) => {
       reverseMap[char] = { utf_code: entry[0], ids_strings: reverseMapValue };
     }
   }
+}
+
+const processIDSText = (resolvedIDSData: IDSEntries, partiallyResolvedIDSData: IDSEntries) => {
+  const forwardMap: any = {};
+  const reverseMap: ReverseMap = {};
+
+  const baseRadicals = new Set<string>();
+
+  const processedIDSMetadata = {
+    entries: 0,
+    pua_entries: 0,
+    unique_radicals: 0,
+    date: new Date(),
+  };
+
+  processIDSEntries(resolvedIDSData, forwardMap, reverseMap, baseRadicals);
+  processIDSEntries(partiallyResolvedIDSData, forwardMap, reverseMap, baseRadicals);
 
   for (let char of Object.keys(reverseMap)) {
     if (char && isPUA(char)) processedIDSMetadata.pua_entries += 1;
@@ -275,7 +288,8 @@ const processIDSText = (resolvedIDSData: string[][]) => {
   for (let entry of resolvedIDSData) {
     const utfCp = entry[0];
     const char = entry[1];
-    if (entry[2] !== entry[1]) baseRadicals.delete(entry[1]);
+    // if (entry[2] !== entry[1]) baseRadicals.delete(entry[1]);
+    if (entry.slice(2).some(ids => ids !== entry[1])) baseRadicals.delete(entry[1]);
   }
 
   processedIDSMetadata.unique_radicals = baseRadicals.size;
@@ -365,9 +379,15 @@ const main = async () => {
   // const IRGSourcesString = await getRawIRGSources();
   // console.log(IRGSourcesString.substring(0, 100));
 
-  let resolvedIDSData: string[][] = [];
+  let resolvedIDSData: IDSEntries = [];
   for (let sourceFile of await getAvailableIDSData()) {
+    console.log(sourceFile);
     resolvedIDSData = resolvedIDSData.concat(getAllResolvedIDSData(sourceFile));
+  }
+
+  let partiallyResolvedIDSData: IDSEntries = [];
+  for (let sourceFile of await getAvailableIDSData()) {
+    partiallyResolvedIDSData = partiallyResolvedIDSData.concat(getAllPartiallyResolvedIDSData(sourceFile));
   }
 
   const babelstonePUAData = await getPUAData();
@@ -382,7 +402,7 @@ const main = async () => {
     forwardMap,
     reverseMap,
     processedIDSMetadata,
-  } = processIDSText(resolvedIDSData);
+  } = processIDSText(resolvedIDSData, partiallyResolvedIDSData);
 
   // write to output
   writeJSON(

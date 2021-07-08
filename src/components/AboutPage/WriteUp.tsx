@@ -73,7 +73,7 @@ export default () => {
         )}
       </div>
       <SectionParagraph darkMode={darkMode}>
-        {metadata?.entries} Unicode characters indexes.
+        {metadata?.entries} Unicode characters indexed.
         <br />
         {metadata?.pua_entries} PUA characters indexed.
         <br />

@@ -1,0 +1,2 @@
+# characters which are only ever used with one another
+曱,radically/related-character,甴

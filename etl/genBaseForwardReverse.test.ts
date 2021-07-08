@@ -158,7 +158,7 @@ test("powerset generation", () => {
     },
   } as ReverseMap;
 
-  expect(rec(dummyReverseMap, "櫣")).toEqual([
+  expect(rec(dummyReverseMap, "櫣", new Set())).toEqual([
     { 丨: 1, 十: 1, 木: 1, 艹: 1, 莗: 1, 車: 1, 辶: 1 },
     { 十: 2, 木: 1, 艹: 1, 莗: 1, 車: 1, 辶: 1 },
     { 丨: 1, 十: 1, 木: 1, 艹: 1, 蓮: 1, 車: 1, 辶: 1, 連: 1 },
@@ -179,7 +179,7 @@ test("powerset generation", () => {
     },
   } as ReverseMap;
 
-  expect(rec(dummyReverseMap2, "从")).toEqual([
+  expect(rec(dummyReverseMap2, "从", new Set())).toEqual([
     {
       人: 2,
     },
@@ -212,7 +212,7 @@ test("powerset generation", () => {
     },
   } as ReverseMap;
 
-  expect(rec(dummyReverseMap3, "𠚕")).toEqual([
+  expect(rec(dummyReverseMap3, "𠚕", new Set())).toEqual([
     {
       一: 1,
       人: 4, // there are 2 instances of 从 !!!

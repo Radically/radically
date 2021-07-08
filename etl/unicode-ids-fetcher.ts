@@ -5,6 +5,7 @@ import {
   UNICODE_IDS_DATABASE_BASE_URL,
   UNICODE_IDS_DATABASE_URL,
   UNICODE_IDS_RESOLVED_PREFIXES,
+  UNICODE_IDS_PARTIALLY_RESOLVED_PREFIXES,
 } from "./constants";
 import axios from "axios";
 import path from "path";
@@ -159,6 +160,34 @@ export const getAllResolvedIDSData = (originalFilename: string): string[][] => {
 
       const split = text.split("\n");
       for (let _entry of split) {
+        if (!_entry) continue;
+        if (_entry.trim().startsWith("#")) continue;
+        res.push(_entry.split("\t").map((s) => s.trim()));
+      }
+    }
+  }
+  return res;
+};
+
+const isPartiallyResolvedFile = (filename: string) => {
+  for (let prefix of UNICODE_IDS_PARTIALLY_RESOLVED_PREFIXES) {
+    if (filename.startsWith(prefix)) return true;
+  }
+  return false;
+};
+
+export const getAllPartiallyResolvedIDSData = (originalFilename: string): string[][] => {
+  const res: string[][] = [];
+  for (let filename of fs.readdirSync(UNICODE_IDS_SUBDIR)) {
+    if (filename.endsWith(originalFilename) && isPartiallyResolvedFile(filename)) {
+      const text = fs.readFileSync(
+        path.join(UNICODE_IDS_SUBDIR, filename),
+        "utf8"
+      );
+
+      const split = text.split("\n");
+      for (let _entry of split) {
+        if (!_entry) continue;
         if (_entry.trim().startsWith("#")) continue;
         res.push(_entry.split("\t").map((s) => s.trim()));
       }

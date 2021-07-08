@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Radically",
+  "name": "Radically CJK Search Engine",
+  "description": "A component-based CJK character search engine",
   "icons": [
     {
       "src": "favicon.ico",
@@ -35,5 +36,12 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#ffffff",
-  "background_color": "#016154"
+  "background_color": "#016154",
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "%PUBLIC_URL%/manifest.json"
+    }
+  ]
 }

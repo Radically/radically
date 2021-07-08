@@ -4,6 +4,8 @@ type powerset = {
   [key: string]: number;
 };
 
+type IDSEntries = string[][]; // list of [ 'U+312E9', '𱋩', '⿰麦&CDP-85A8;' ]
+
 interface ReverseMap {
   [key: string]: {
     utf_code: string;
