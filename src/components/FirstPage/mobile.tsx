@@ -124,9 +124,8 @@ function FirstPage() {
   } = useContext(SettingsContext);
   const history = useHistory();
   const intl = useIntl();
-  const { componentsInput, setComponentsInput, idcs, setIDCs } = useContext(
-    SharedTextboxContext
-  );
+  const { componentsInput, setComponentsInput, idcs, setIDCs } =
+    useContext(SharedTextboxContext);
 
   const {
     forwardMap,
@@ -222,7 +221,11 @@ function FirstPage() {
           </AppNameh1>
         </div>
         <div>
-          <AppDesch3 locale={intl.locale} darkMode={darkMode}>
+          <AppDesch3
+            locale={intl.locale}
+            darkMode={darkMode}
+            data-testid="radically-subtitle"
+          >
             <FormattedMessage
               id="app_desc"
               defaultMessage="A component-based CJK character search engine"

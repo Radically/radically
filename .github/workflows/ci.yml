@@ -25,9 +25,8 @@ jobs:
         with:
           node-version: 12.x
       - name: npm ci and test
-        env:
-          CI: false
         run: |
           npm ci
           npm run test-etl
-          npm run build
+          npm run test
+          # npm run build

@@ -161,7 +161,7 @@ export const UsageSection = (props: { desktop?: false }) => {
             .map((x, col: number) => (
               <IndividualComponentCell
                 filler={true}
-                // key={`filler-${index}-${col}`}
+                key={`filler-${0}-${col}`}
                 selected={false}
               />
             ))}
@@ -211,7 +211,7 @@ export const UsageSection = (props: { desktop?: false }) => {
             .map((x, col: number) => (
               <IndividualComponentCell
                 filler={true}
-                // key={`filler-${index}-${col}`}
+                key={`filler-${0}-${col}`}
                 selected={false}
               />
             ))}
@@ -271,7 +271,7 @@ export const UsageSection = (props: { desktop?: false }) => {
             .map((x, col: number) => (
               <IndividualComponentCell
                 filler={true}
-                // key={`filler-${index}-${col}`}
+                key={`filler-${0}-${col}`}
                 selected={false}
               />
             ))}
@@ -319,7 +319,7 @@ export const UsageSection = (props: { desktop?: false }) => {
       <SectionParagraph darkMode={darkMode}>
         A character with any of the following background colors is used in...
         {Object.keys(LocaleColorToName).map((key) => (
-          <div style={{ paddingBottom: "5px", paddingTop: "5px" }}>
+          <div key={`char-color-demo-${key}`} style={{ paddingBottom: "5px", paddingTop: "5px" }}>
             <IconDescRow
               icon={
                 <ColorDemoSquare

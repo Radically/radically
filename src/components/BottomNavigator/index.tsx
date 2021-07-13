@@ -86,6 +86,7 @@ const BottomNavigator = () => {
 
   return (
     <BottomNavigation
+      data-testid="bottom-navigation"
       value={pathNameToIndex[pathname]}
       className={classes.stickToBottom + " " + classes.bottomNavigation}
       /* value={value}

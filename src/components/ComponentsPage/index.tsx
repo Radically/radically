@@ -202,15 +202,11 @@ function ComponentsPage(props: {
   }[];
   let sideBarToStart: { [key: string]: number };
   if (!!searchResults) {
-    ({
-      arrayified,
-      radicalToStart: sideBarToStart,
-    } = arrayifySearchResultsForReactWindow(searchResults, radicalsPerRow));
+    ({ arrayified, radicalToStart: sideBarToStart } =
+      arrayifySearchResultsForReactWindow(searchResults, radicalsPerRow));
   } else {
-    ({
-      arrayified,
-      strokeCountToStart: sideBarToStart,
-    } = arrayifyForReactWindow(strokeCountToRadicalsMap, intl, radicalsPerRow));
+    ({ arrayified, strokeCountToStart: sideBarToStart } =
+      arrayifyForReactWindow(strokeCountToRadicalsMap, intl, radicalsPerRow));
   }
 
   const performSearch = () => {
@@ -252,7 +248,11 @@ function ComponentsPage(props: {
   }, []);
 
   return (
-    <ComponentsPageContainer ref={containerRef} id="components-page-container">
+    <ComponentsPageContainer
+      ref={containerRef}
+      data-testid="components-page-container"
+      id="components-page-container"
+    >
       <SearchContainer>
         <SearchInput
           onKeyUp={handleEnterKey}
@@ -286,7 +286,7 @@ function ComponentsPage(props: {
 
       <ComponentsReadingsSplit
         id="components-page-split-container"
-        negativePx={searchInputHeightInPx}
+        negativepx={searchInputHeightInPx}
       >
         <StrokesComponentsContainer
           id={"components-page-strokes-components-container"}

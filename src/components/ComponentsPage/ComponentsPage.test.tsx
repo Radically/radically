@@ -6,20 +6,24 @@ import { IntlProvider } from "react-intl";
 
 import i18n_data from "../../i18n_data.json";
 import { DataContext } from "../../contexts/DataContextProvider";
+import { SnackbarProviderWrapper } from "../../AppScreen";
 const i18n = i18n_data as { [key: string]: any };
 
-jest.mock("react-virtualized-auto-sizer", () => ({ children }: any) =>
-  children({ height: 600, width: 600 })
+jest.mock(
+  "react-virtualized-auto-sizer",
+  () =>
+    ({ children }: any) =>
+      children({ height: 800, width: 600 }) // each row is 45px high...
 );
 
 const mockDataContext = {
-  baseRadicals: ["a", "b", "c", "d", "e", "f", "x", "y", "z"],
+  baseRadicals: ["a", "b", "c", "d", "e", "f", "x", "y", "z"] as BaseRadicals,
   baseRadicalsLoading: false,
 
   // metadata,
   metadataLoading: false,
 
-  strokeCount: { a: 2, b: 5, c: 9, d: 1, e: 4, f: 6, x: 10, y: 11, z: 12 },
+  strokeCount: { a: 2, b: 5, c: 9, d: 1, e: 4, f: 6, x: 10, y: 11, z: 12 }, // thus we have 45 * 9 * 2 = 810 px
   strokeCountLoading: false,
   readings: {
     a: { dummy: "test a reading" },
@@ -38,40 +42,148 @@ const mockDataContext = {
   },
 
   variantsLocalesLoading: false,
+
+  variantsIslands: {
+    islands: [] as string[][],
+    chars: {},
+  },
+  variantsIslandsLoading: false,
+
+  reverseMapIDSOnly: {},
+  reverseMapIDSOnlyLoading: false,
+
+  reverseMapCharFreqsOnly: {},
+  reverseMapCharFreqsOnlyLoading: false,
+
+  forwardMap: {},
+  forwardMapLoading: false,
   // setExactRadicalFreq,
   // setMetadata,
   // setReadings,
   // loading,
 };
 
+const charactersPerRowMockDataContext = {
+  ...mockDataContext,
+  baseRadicals: [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+  ],
+  baseRadicalsLoading: false,
+
+  // metadata,
+  metadataLoading: false,
+
+  strokeCount: {
+    a: 2,
+    b: 5,
+    c: 9,
+    d: 1,
+    e: 4,
+
+    f: 6,
+    g: 6,
+    h: 6,
+    i: 6,
+    j: 6,
+    k: 6,
+    l: 6,
+    m: 6,
+    n: 6,
+    o: 6,
+    p: 6,
+    q: 6,
+    r: 6,
+    s: 6,
+    t: 6,
+    u: 6,
+    v: 6,
+    w: 6,
+
+    x: 10,
+    y: 11,
+    z: 12,
+  },
+  strokeCountLoading: false,
+  readings: {
+    a: { dummy: "test a reading" },
+    b: { dummy: "test b reading" },
+    c: { dummy: "test c reading" },
+    x: { dummy: "test x reading" },
+    y: { dummy: "test y reading" },
+    z: { dummy: "test z reading" },
+  },
+
+  readingsLoading: false,
+
+  variantsLocales: {
+    a: { v: [14, 6, 2, 10, 9], l: "JKST" },
+    b: { v: [14, 9], l: "S" },
+  },
+
+  variantsLocalesLoading: false,
+};
+
 describe("Components Page Tests", () => {
-  test("test stroke count appear", () => {
+  test("test stroke count appear in the right scrolling pane", () => {
     render(
-      <DataContext.Provider value={mockDataContext}>
-        <IntlProvider locale="en" messages={i18n["en"]}>
-          <ComponentsPage />
-        </IntlProvider>
-      </DataContext.Provider>
+      <SnackbarProviderWrapper>
+        <DataContext.Provider value={mockDataContext}>
+          <IntlProvider locale="en" messages={i18n["en"]}>
+            <ComponentsPage />
+          </IntlProvider>
+        </DataContext.Provider>
+      </SnackbarProviderWrapper>
     );
+
+    const container = document.querySelector(
+      "#components-page-strokes-components-container"
+    ) as HTMLElement;
 
     for (let cnt of Object.values(mockDataContext.strokeCount)) {
       expect(
-        screen.getByText(`${cnt} stroke${cnt === 1 ? "" : "s"}`)
+        getByText(container, `${cnt} stroke${cnt === 1 ? "" : "s"}`)
       ).toBeInTheDocument();
     }
   });
 
   test("test stroke count appear in the left scrolling pane", () => {
     render(
-      <DataContext.Provider value={mockDataContext}>
-        <IntlProvider locale="en" messages={i18n["en"]}>
-          <ComponentsPage />
-        </IntlProvider>
-      </DataContext.Provider>
+      <SnackbarProviderWrapper>
+        <DataContext.Provider value={mockDataContext}>
+          <IntlProvider locale="en" messages={i18n["en"]}>
+            <ComponentsPage />
+          </IntlProvider>
+        </DataContext.Provider>
+      </SnackbarProviderWrapper>
     );
 
     const container = document.querySelector(
-      "#components-page-strokes-scroll-container"
+      "#components-page-strokes-components-container"
     ) as HTMLElement;
 
     for (let cnt of Object.values(mockDataContext.strokeCount)) {
@@ -89,95 +201,13 @@ describe("Components Page Tests", () => {
     window.dispatchEvent(new Event("resize"));
 
     render(
-      <DataContext.Provider
-        value={{
-          baseRadicals: [
-            "a",
-            "b",
-            "c",
-            "d",
-            "e",
-            "f",
-            "g",
-            "h",
-            "i",
-            "j",
-            "k",
-            "l",
-            "m",
-            "n",
-            "o",
-            "p",
-            "q",
-            "r",
-            "s",
-            "t",
-            "u",
-            "v",
-            "w",
-            "x",
-            "y",
-            "z",
-          ],
-          baseRadicalsLoading: false,
-
-          // metadata,
-          metadataLoading: false,
-
-          strokeCount: {
-            a: 2,
-            b: 5,
-            c: 9,
-            d: 1,
-            e: 4,
-
-            f: 6,
-            g: 6,
-            h: 6,
-            i: 6,
-            j: 6,
-            k: 6,
-            l: 6,
-            m: 6,
-            n: 6,
-            o: 6,
-            p: 6,
-            q: 6,
-            r: 6,
-            s: 6,
-            t: 6,
-            u: 6,
-            v: 6,
-            w: 6,
-
-            x: 10,
-            y: 11,
-            z: 12,
-          },
-          strokeCountLoading: false,
-          readings: {
-            a: { dummy: "test a reading" },
-            b: { dummy: "test b reading" },
-            c: { dummy: "test c reading" },
-            x: { dummy: "test x reading" },
-            y: { dummy: "test y reading" },
-            z: { dummy: "test z reading" },
-          },
-
-          readingsLoading: false,
-
-          variantsLocales: {
-            a: { v: [14, 6, 2, 10, 9], l: "JKST" },
-            b: { v: [14, 9], l: "S" },
-          },
-
-          variantsLocalesLoading: false,
-        }}
-      >
-        <IntlProvider locale="en" messages={i18n["en"]}>
-          <ComponentsPage />
-        </IntlProvider>
-      </DataContext.Provider>
+      <SnackbarProviderWrapper>
+        <DataContext.Provider value={charactersPerRowMockDataContext}>
+          <IntlProvider locale="en" messages={i18n["en"]}>
+            <ComponentsPage />
+          </IntlProvider>
+        </DataContext.Provider>
+      </SnackbarProviderWrapper>
     );
 
     // first, find the row beginning with "6 strokes"
@@ -186,7 +216,7 @@ describe("Components Page Tests", () => {
 
     expect(firstRowBelowSixStrokesHeader).not.toBeNull();
     expect(firstRowBelowSixStrokesHeader?.children.length).toEqual(
-      Math.floor(600 / 40)
+      Math.floor(600 / 50) // refer to getRadicalsPerRow in utils.ts
     );
   });
 });

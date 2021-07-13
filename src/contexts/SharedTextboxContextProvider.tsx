@@ -15,7 +15,7 @@ const defaultValue = {
   idcs: "",
   setIDCs: (unused: string) => {},
 
-  componentsSearchResults: {} as { [key: string]: string[] } | null,
+  componentsSearchResults: null as { [key: string]: string[] } | null,
   setComponentsSearchResults: (
     unused: { [key: string]: string[] } | null
   ) => {},
