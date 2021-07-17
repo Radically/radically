@@ -7,6 +7,8 @@ import { render, screen } from "@testing-library/react";
 import mediaQuery from "css-mediaquery";
 import AppScreen from "./AppScreen";
 
+import * as utils from "./utils";
+
 function createMatchMedia(width: number) {
   return (query: string) => ({
     matches: mediaQuery.match(query, { width }),
@@ -21,9 +23,32 @@ describe("Smoke Tests", () => {
     window.matchMedia = createMatchMedia(window.innerWidth);
   });
 
-  test("renders learn react link", () => {
+  test("renders app description", () => {
     render(<AppScreen />);
-    const linkElement = screen.getByText(/IDC/i);
-    expect(linkElement).toBeInTheDocument();
+    const subtitle = screen.getByTestId("radically-subtitle");
+    expect(subtitle).toBeInTheDocument();
+  });
+
+  test("bottom navigation is visible below mobile breakpoint (max-width: 767px), see utils.ts", () => {
+    jest.spyOn(utils, "useIsMobile").mockImplementation(() => true);
+    render(<AppScreen />);
+    const bottomNavigation = screen.getByTestId("bottom-navigation");
+    expect(bottomNavigation).toBeInTheDocument();
+  });
+
+  test("all elements of the main interface are rendered in desktop mode", () => {
+    jest.spyOn(utils, "useIsMobile").mockImplementation(() => false);
+    render(<AppScreen />);
+
+    const firstPage = screen.getByTestId("first-page-container-desktop");
+    expect(firstPage).toBeInTheDocument();
+
+    const componentsPageContainer = screen.getByTestId(
+      "components-page-container"
+    );
+    expect(componentsPageContainer).toBeInTheDocument();
+
+    const resultsPageContainer = screen.getByTestId("results-page-container");
+    expect(resultsPageContainer).toBeInTheDocument();
   });
 });

@@ -35,7 +35,7 @@ export const SectionTitle = styled.h4<{
   -moz-text-fill-color: transparent;
 `;
 
-export const SectionParagraph = withTheme(styled.p`
+export const SectionParagraph = withTheme(styled.div`
   font-size: 0.95rem;
   // text-align: justify;
   // padding-top: 5px;

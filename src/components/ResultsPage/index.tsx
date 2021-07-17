@@ -139,7 +139,11 @@ function ResultsPage(props: {
   }, []);
 
   return (
-    <ResultsPageContainer ref={containerRef} id="results-page-container">
+    <ResultsPageContainer
+      ref={containerRef}
+      data-testid="results-page-container"
+      id="results-page-container"
+    >
       <ComponentsReadingSplit id="results-page-split-container">
         <StrokesComponentsContainer
           id={"results-page-strokes-components-container"}

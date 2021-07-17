@@ -112,7 +112,7 @@ const useSnackbarButtonStyles = makeStyles({
   },
 });
 
-const SnackbarProviderWrapper = (props: { children: React.ReactElement }) => {
+export const SnackbarProviderWrapper = (props: { children: React.ReactElement }) => {
   const notistackRef = React.createRef<SnackbarProvider>();
   const onClickDismiss = (key: string) => () => {
     console.log("dismissing" + key);

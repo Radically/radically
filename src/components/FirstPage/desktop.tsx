@@ -97,9 +97,8 @@ function FirstPageDesktop() {
 
   const [idcs, setIDCs] = useState("");
 
-  const { componentsInput, setComponentsInput } = useContext(
-    SharedTextboxContext
-  );
+  const { componentsInput, setComponentsInput } =
+    useContext(SharedTextboxContext);
 
   const {
     forwardMap,
@@ -146,7 +145,10 @@ function FirstPageDesktop() {
   const buttonStyles = useButtonStyles();
 
   return (
-    <FirstPageContainer id="first-page-container-desktop">
+    <FirstPageContainer
+      data-testid="first-page-container-desktop"
+      id="first-page-container-desktop"
+    >
       <IconButton
         onClick={() => {
           setDarkMode(!darkMode);
@@ -196,7 +198,11 @@ function FirstPageDesktop() {
           </AppNameh1>
         </div>
         <div>
-          <AppDesch3 locale={intl.locale} darkMode={darkMode}>
+          <AppDesch3
+            locale={intl.locale}
+            darkMode={darkMode}
+            data-testid="radically-subtitle"
+          >
             <FormattedMessage
               id="app_desc"
               defaultMessage="A component-based CJK character search engine"
