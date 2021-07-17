@@ -176,6 +176,8 @@ Refer above[<sup>2</sup>](#ref_2) for what a "powerset" means here.
 
 **reverseMapCharFreqsOnly.json** and **reverseMapIDSOnly.json** are optimized versions of **reverseMap.json** in order to fit within Apple's 50MB service worker cache limit for PWAs.
 
+**reverseMap.json** is gzipped and served as **reverseMap.json.gz** in the deployed version.
+
 ## Rules of thumb
 
 The IDS sequences as provided by CHISE use Kangxi radicals and their actual CJK character counterparts interchangeably.
