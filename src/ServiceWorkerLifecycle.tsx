@@ -20,12 +20,8 @@ const actionButtonStyles = {
 
 const ServiceWorkerLifecycle = () => {
   const history = useHistory();
-  const {
-    active,
-    freshlyInstalled,
-    updateAvailable,
-    registration,
-  } = useContext(ServiceWorkerContext);
+  const { active, freshlyInstalled, updateAvailable, registration } =
+    useContext(ServiceWorkerContext);
 
   const {
     installLastDismissed,
@@ -40,6 +36,10 @@ const ServiceWorkerLifecycle = () => {
   const shouldShowFreshInstallNoti = async () => {
     // debugging
     // return true;
+
+    const windowUrl = window.location.search;
+    const params = new URLSearchParams(windowUrl);
+    if (params.get("utm_source") === "android_twa") return false;
 
     // freshly installed, unconditionally show!
     if (freshlyInstalled) return true;
