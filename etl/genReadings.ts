@@ -21,12 +21,18 @@ const main = async () => {
   }
 
   const babelstonePUAData = await getPUAData();
-  for (let { char, note, src, src_refs, enc_stat } of babelstonePUAData.data) {
+  for (let {
+    char,
+    note,
+    src,
+    src_refs,
+    // enc_stat
+  } of babelstonePUAData.data) {
     map[char] = {
       note,
       src,
       src_refs,
-      enc_stat,
+      // enc_stat,
     };
 
     for (let key of Object.keys(map[char])) {
