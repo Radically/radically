@@ -21,7 +21,7 @@
       "searchworker": "<rootDir>/__mocks__/searchworker"
     }
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.2.0",
@@ -44,7 +44,7 @@
     "flatbuffers": "^1.12.0",
     "hanamin": "0.0.5",
     "ivs": "^2.0.2",
-    "kaixinsong": "0.0.2",
+    "kaixinsong": "0.0.4",
     "moment": "^2.29.1",
     "notistack": "^1.0.5",
     "pako": "^2.0.3",
